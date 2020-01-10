@@ -1,6 +1,9 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
+use Event;
 use Exception;
+use PlanetaDelEste\ApiShopaholic\Plugin;
+use PlanetaDelEste\ApiShopaholic\Traits\Controllers\ApiBaseTrait;
 
 /**
  * Class Base
@@ -15,72 +18,7 @@ use Exception;
  */
 class Base
 {
-    /**
-     * @var \Lovata\Buddies\Models\User|\RainLab\User\Models\User|null
-     */
-    protected $user;
-
-    /**
-     * @var \Eloquent|\October\Rain\Database\Builder
-     */
-    protected $collection;
-
-    /**
-     * @var \Model
-     */
-    protected $model;
-
-    /**
-     * @var string
-     */
-    protected $modelClass;
-
-    /**
-     * API Resource collection class used for list items
-     *
-     * @var null|string
-     */
-    protected $listResource = null;
-
-    /**
-     * API Resource collection class used for index
-     *
-     * @var null|string
-     */
-    protected $indexResource = null;
-
-    /**
-     * API Resource class for load item
-     *
-     * @var null|string
-     */
-    protected $showResource = null;
-
-    /**
-     * Primary column name for show element
-     *
-     * @var string
-     */
-    protected $primaryKey = 'id';
-
-    /**
-     * @var bool
-     */
-    protected $exists = false;
-
-    /**
-     * Default sort by column
-     *
-     * @var string
-     */
-    protected $sortColumn = 'created_at';
-
-    /**
-     * Default sort direction
-     *
-     * @var string
-     */
-    protected $sortDirection = 'desc';
+    use ApiBaseTrait;
 
     /**
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Http\JsonResponse
@@ -105,8 +43,9 @@ class Base
                 $this->extendIndex();
             }
 
-            return new $this->indexResource($this->collection->paginate());
+            Event::fire(Plugin::EVENT_API_EXTEND_INDEX, [$this, &$this->collection], true);
 
+            return new $this->indexResource($this->collection->paginate());
         } catch (Exception $e) {
             trace_log($e);
             return response()->json(['error' => $e->getMessage()], 403);
@@ -136,8 +75,9 @@ class Base
                 $this->extendList();
             }
 
-            return new $this->listResource($this->collection->get());
+            Event::fire(Plugin::EVENT_API_EXTEND_LIST, [$this]);
 
+            return new $this->listResource($this->collection->get());
         } catch (Exception $e) {
             trace_log($e);
             return response()->json(['error' => $e->getMessage()], 403);
@@ -168,8 +108,9 @@ class Base
                 $this->extendShow();
             }
 
-            return new $this->showResource($this->collection->first());
+            Event::fire(Plugin::EVENT_API_EXTEND_SHOW, [$this]);
 
+            return new $this->showResource($this->collection->first());
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 403);
         }
@@ -182,7 +123,6 @@ class Base
     {
         try {
             throw new Exception('Comming soon');
-
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 403);
         }
@@ -197,7 +137,6 @@ class Base
     {
         try {
             throw new Exception('Comming soon');
-
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 403);
         }
@@ -212,7 +151,6 @@ class Base
     {
         try {
             throw new Exception('Comming soon');
-
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 403);
         }
@@ -258,21 +196,5 @@ class Base
         }
 
         return compact('sort', 'filters');
-    }
-
-    protected function setResources()
-    {
-        if ($this->listResource && $this->indexResource && $this->showResource) {
-            return;
-        }
-
-        $classname = ltrim(static::class, '\\');
-        $arPath = explode('\\', $this->modelClass);
-        $name = array_pop($arPath);
-        list($author, $plugin) = explode('\\', $classname);
-        $resourceClassBase = join('\\', [$author, $plugin, 'Classes', 'Resource', $name]);
-        $this->showResource = $resourceClassBase.'\\ShowResource';
-        $this->listResource = $resourceClassBase.'\\ListCollection';
-        $this->indexResource = $resourceClassBase.'\\IndexCollection';
     }
 }

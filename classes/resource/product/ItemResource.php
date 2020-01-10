@@ -26,6 +26,7 @@ class ItemResource extends Resource
             'slug'            => $this->slug,
             'category_id'     => $this->category_id,
             'category_name'   => $this->category ? $this->category->name : null,
+            'preview_text'    => $this->preview_text,
             'created_at'      => $this->created_at->toDateTimeString(),
             'updated_at'      => $this->updated_at->toDateTimeString(),
             'thumbnail'       => $this->preview_image ? $this->preview_image->getThumb(
