@@ -43,6 +43,9 @@ class Base
                 $this->extendIndex();
             }
 
+            /**
+             * Extend collection results
+             */
             Event::fire(Plugin::EVENT_API_EXTEND_INDEX, [$this, &$this->collection], true);
 
             return new $this->indexResource($this->collection->paginate());
@@ -75,6 +78,9 @@ class Base
                 $this->extendList();
             }
 
+            /**
+             * Extend collestion results
+             */
             Event::fire(Plugin::EVENT_API_EXTEND_LIST, [$this, &$this->collection], true);
 
             return new $this->listResource($this->collection->get());
@@ -98,6 +104,9 @@ class Base
                 throw new Exception('showResource is required');
             }
 
+            /**
+             * Fire event before show item
+             */
             Event::fire(Plugin::EVENT_API_BEFORE_SHOW_COLLECT, [$this, $value]);
 
             $this->collection = app($this->modelClass)->where($this->primaryKey, $value);
@@ -110,6 +119,9 @@ class Base
                 $this->extendShow();
             }
 
+            /**
+             * Extend collection results
+             */
             Event::fire(Plugin::EVENT_API_EXTEND_SHOW, [$this, &$this->collection], true);
 
             return new $this->showResource($this->collection->first());
