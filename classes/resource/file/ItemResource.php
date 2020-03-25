@@ -14,7 +14,7 @@ class ItemResource extends Resource
     {
         return [
             'thumb'       => $this->getThumb(300, 300, ['mode' => 'crop']),
-            'path'        => $this->path,
+            'path'        => $this->getPath(),
             'file_name'   => $this->getFilename(),
             'ext'         => $this->getExtension(),
             'title'       => $this->title,

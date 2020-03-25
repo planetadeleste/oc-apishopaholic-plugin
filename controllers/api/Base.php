@@ -75,7 +75,7 @@ class Base
                 $this->extendList();
             }
 
-            Event::fire(Plugin::EVENT_API_EXTEND_LIST, [$this]);
+            Event::fire(Plugin::EVENT_API_EXTEND_LIST, [$this, &$this->collection], true);
 
             return new $this->listResource($this->collection->get());
         } catch (Exception $e) {
@@ -98,9 +98,11 @@ class Base
                 throw new Exception('showResource is required');
             }
 
+            Event::fire(Plugin::EVENT_API_BEFORE_SHOW_COLLECT, [$this, $value]);
+
             $this->collection = app($this->modelClass)->where($this->primaryKey, $value);
 
-            if (!$this->collection) {
+            if (!$this->collection->count()) {
                 throw new Exception('model_not_found', 403);
             }
 
@@ -108,7 +110,7 @@ class Base
                 $this->extendShow();
             }
 
-            Event::fire(Plugin::EVENT_API_EXTEND_SHOW, [$this]);
+            Event::fire(Plugin::EVENT_API_EXTEND_SHOW, [$this, &$this->collection], true);
 
             return new $this->showResource($this->collection->first());
         } catch (Exception $e) {

@@ -1,4 +1,4 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Category;
+<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 

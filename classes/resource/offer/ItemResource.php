@@ -1,15 +1,15 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
+<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
 
 use Event;
 use Illuminate\Http\Resources\Json\Resource;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer\IndexCollection as IndexCollectionOffer;
+use Lovata\Shopaholic\Classes\Helper\CurrencyHelper;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 
 /**
  * Class itemResource
  *
- * @mixin \Lovata\Shopaholic\Models\Product
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Product
+ * @mixin \Lovata\Shopaholic\Models\Offer
+ * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer
  */
 class ItemResource extends Resource
 {
@@ -24,19 +24,16 @@ class ItemResource extends Resource
             'id'              => $this->id,
             'name'            => $this->name,
             'code'            => $this->code,
-            'slug'            => $this->slug,
-            'category_id'     => $this->category_id,
-            'category_name'   => $this->category ? $this->category->name : null,
+            'price'           => $this->price,
+            'price_value'     => (float)$this->price_value,
+            'old_price'       => $this->old_price,
+            'old_price_value' => (float)$this->old_price_value,
+            'quantity'        => $this->quantity,
+            'currency'        => CurrencyHelper::instance()->getDefault()->symbol,
             'preview_text'    => $this->preview_text,
             'created_at'      => $this->created_at->toDateTimeString(),
             'updated_at'      => $this->updated_at->toDateTimeString(),
-            'offers'          => $this->offer->count() ? IndexCollectionOffer::make($this->offer) : [],
             'thumbnail'       => $this->preview_image ? $this->preview_image->getThumb(
-                300,
-                300,
-                ['mode' => 'crop']
-            ) : null,
-            'secondary_thumb' => $this->images->count() ? $this->images->first()->getThumb(
                 300,
                 300,
                 ['mode' => 'crop']
