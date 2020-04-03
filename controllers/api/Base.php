@@ -20,19 +20,25 @@ class Base
 {
     use ApiBaseTrait;
 
+    public function __construct()
+    {
+        $this->setResources();
+        $this->collection = $this->makeCollection();
+    }
+
     /**
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Http\JsonResponse
      */
     public function index()
     {
         try {
-            $this->setResources();
-
             if (!$this->indexResource) {
                 throw new Exception('indexResource is required');
             }
 
-            $this->collection = app()->make($this->modelClass);
+            if($this->collection->methodExists('active')) {
+                $this->collection->active();
+            }
 
             if ($this->collection->methodExists('scopeFrontend')) {
                 $data = $this->filters();
@@ -61,13 +67,9 @@ class Base
     public function list()
     {
         try {
-            $this->setResources();
-
             if (!$this->listResource) {
                 throw new Exception('listResource is required');
             }
-
-            $this->collection = app()->make($this->modelClass);
 
             if ($this->collection->methodExists('scopeFrontend')) {
                 $data = $this->filters();
@@ -83,7 +85,8 @@ class Base
              */
             Event::fire(Plugin::EVENT_API_EXTEND_LIST, [$this, &$this->collection], true);
 
-            return new $this->listResource($this->collection->get());
+            $arListItems = $this->collection->values();
+            return new $this->listResource( collect( $arListItems ) );
         } catch (Exception $e) {
             trace_log($e);
             return response()->json(['error' => $e->getMessage()], 403);
@@ -98,8 +101,6 @@ class Base
     public function show($value)
     {
         try {
-            $this->setResources();
-
             if (!$this->showResource) {
                 throw new Exception('showResource is required');
             }
@@ -109,11 +110,14 @@ class Base
              */
             Event::fire(Plugin::EVENT_API_BEFORE_SHOW_COLLECT, [$this, $value]);
 
-            $this->collection = app($this->modelClass)->where($this->primaryKey, $value);
+            /** @var \Model $obModel */
+            $obModel = app($this->modelClass)->where($this->primaryKey, $value)->first();
 
-            if (!$this->collection->count()) {
+            if (!$obModel) {
                 throw new Exception('model_not_found', 403);
             }
+
+            $this->collection->intersect([$obModel->id]);
 
             if (method_exists($this, 'extendShow')) {
                 $this->extendShow();

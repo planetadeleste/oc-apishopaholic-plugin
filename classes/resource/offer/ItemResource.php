@@ -8,7 +8,7 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
 /**
  * Class itemResource
  *
- * @mixin \Lovata\Shopaholic\Models\Offer
+ * @mixin \Lovata\Shopaholic\Classes\Item\OfferItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer
  */
 class ItemResource extends Resource
@@ -31,8 +31,6 @@ class ItemResource extends Resource
             'quantity'        => $this->quantity,
             'currency'        => CurrencyHelper::instance()->getDefault()->symbol,
             'preview_text'    => $this->preview_text,
-            'created_at'      => $this->created_at->toDateTimeString(),
-            'updated_at'      => $this->updated_at->toDateTimeString(),
             'thumbnail'       => $this->preview_image ? $this->preview_image->getThumb(
                 300,
                 300,

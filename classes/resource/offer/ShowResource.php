@@ -11,7 +11,7 @@ use System\Classes\PluginManager;
 /**
  * Class showResource
  *
- * @mixin \Lovata\Shopaholic\Models\Offer
+ * @mixin \Lovata\Shopaholic\Classes\Item\OfferItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer
  */
 class ShowResource extends ItemResource
@@ -27,7 +27,6 @@ class ShowResource extends ItemResource
             parent::toArray($request),
             [
                 'active'        => $this->active,
-                'external_id'   => $this->external_id,
                 'description'   => $this->description,
                 'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
                 'images'        => IndexCollectionImages::make($this->images),

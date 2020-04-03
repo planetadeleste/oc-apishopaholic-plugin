@@ -1,6 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic;
 
 use Backend;
+use PlanetaDelEste\ApiShopaholic\Classes\Event\ExtendElementCollection;
 use System\Classes\PluginBase;
 
 /**
@@ -36,5 +37,10 @@ class Plugin extends PluginBase
             'author'      => 'PlanetaDelEste',
             'icon'        => 'icon-leaf'
         ];
+    }
+
+    public function boot()
+    {
+        \Event::subscribe(ExtendElementCollection::class);
     }
 }

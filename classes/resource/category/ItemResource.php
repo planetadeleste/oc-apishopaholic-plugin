@@ -5,7 +5,7 @@ use Illuminate\Http\Resources\Json\Resource;
 /**
  * Class itemResource
  *
- * @mixin \Lovata\Shopaholic\Models\Category
+ * @mixin \Lovata\Shopaholic\Classes\Item\CategoryItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Category
  */
 class ItemResource extends Resource

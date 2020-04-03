@@ -8,7 +8,7 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
 /**
  * Class itemResource
  *
- * @mixin \Lovata\Shopaholic\Models\Product
+ * @mixin \Lovata\Shopaholic\Classes\Item\ProductItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Product
  */
 class ItemResource extends Resource
@@ -28,8 +28,6 @@ class ItemResource extends Resource
             'category_id'     => $this->category_id,
             'category_name'   => $this->category ? $this->category->name : null,
             'preview_text'    => $this->preview_text,
-            'created_at'      => $this->created_at->toDateTimeString(),
-            'updated_at'      => $this->updated_at->toDateTimeString(),
             'offers'          => $this->offer->count() ? IndexCollectionOffer::make($this->offer) : [],
             'thumbnail'       => $this->preview_image ? $this->preview_image->getThumb(
                 300,

@@ -1,9 +1,12 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Category;
 
+use Event;
+use PlanetaDelEste\ApiShopaholic\Plugin;
+
 /**
  * Class showResource
  *
- * @mixin \Lovata\Shopaholic\Models\Category
+ * @mixin \Lovata\Shopaholic\Classes\Item\CategoryItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Category
  */
 class ShowResource extends ItemResource
@@ -18,14 +21,13 @@ class ShowResource extends ItemResource
         $data = array_merge(
             parent::toArray($request),
             [
-                'created_at'    => $this->created_at->toDateTimeString(),
                 'updated_at'    => $this->updated_at->toDateTimeString(),
-                'active'        => $this->active,
-                'external_id'   => $this->external_id,
                 'preview_text'  => $this->preview_text,
                 'description'   => $this->description
             ]
         );
+
+        Event::fire(Plugin::EVENT_SHOWRESOURCE_DATA, [&$data, $this]);
 
         return $data;
     }

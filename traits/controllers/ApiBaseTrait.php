@@ -1,5 +1,28 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Traits\Controllers;
 
+use Lovata\OrdersShopaholic\Classes\Collection\CartPositionCollection;
+use Lovata\OrdersShopaholic\Classes\Collection\OrderCollection;
+use Lovata\OrdersShopaholic\Classes\Collection\OrderPositionCollection;
+use Lovata\OrdersShopaholic\Classes\Collection\PaymentMethodCollection;
+use Lovata\OrdersShopaholic\Models\CartPosition;
+use Lovata\OrdersShopaholic\Models\Order;
+use Lovata\OrdersShopaholic\Models\OrderPosition;
+use Lovata\OrdersShopaholic\Models\PaymentMethod;
+use Lovata\Shopaholic\Classes\Collection\BrandCollection;
+use Lovata\Shopaholic\Classes\Collection\CategoryCollection;
+use Lovata\Shopaholic\Classes\Collection\CurrencyCollection;
+use Lovata\Shopaholic\Classes\Collection\OfferCollection;
+use Lovata\Shopaholic\Classes\Collection\ProductCollection;
+use Lovata\Shopaholic\Classes\Collection\PromoBlockCollection;
+use Lovata\Shopaholic\Classes\Collection\TaxCollection;
+use Lovata\Shopaholic\Models\Brand;
+use Lovata\Shopaholic\Models\Category;
+use Lovata\Shopaholic\Models\Currency;
+use Lovata\Shopaholic\Models\Offer;
+use Lovata\Shopaholic\Models\Product;
+use Lovata\Shopaholic\Models\PromoBlock;
+use Lovata\Shopaholic\Models\Tax;
+
 trait ApiBaseTrait
 {
     /**
@@ -44,7 +67,7 @@ trait ApiBaseTrait
     protected $exists = false;
 
     /**
-     * @var \Eloquent|\October\Rain\Database\Builder
+     * @var \Lovata\Toolbox\Classes\Collection\ElementCollection
      */
     public $collection;
 
@@ -131,5 +154,37 @@ trait ApiBaseTrait
         $this->showResource = $resourceClassBase.'\\ShowResource';
         $this->listResource = $resourceClassBase.'\\ListCollection';
         $this->indexResource = $resourceClassBase.'\\IndexCollection';
+    }
+
+    /**
+     * @return \Lovata\Toolbox\Classes\Collection\ElementCollection|null
+     */
+    protected function makeCollection()
+    {
+        // Main Shopaholic collections
+        $arCollectionClasses = [
+            Brand::class      => BrandCollection::class,
+            Category::class   => CategoryCollection::class,
+            Currency::class   => CurrencyCollection::class,
+            Offer::class      => OfferCollection::class,
+            Product::class    => ProductCollection::class,
+            PromoBlock::class => PromoBlockCollection::class,
+            Tax::class        => TaxCollection::class
+        ];
+
+        // OrderShopaholic plugin collections
+        $arCollectionClasses += [
+            CartPosition::class => CartPositionCollection::class,
+            Order::class        => OrderCollection::class,
+            OrderPosition::class => OrderPositionCollection::class,
+            PaymentMethod::class => PaymentMethodCollection::class,
+
+        ];
+
+        if ($sCollectionClass = array_get($arCollectionClasses, $this->modelClass)) {
+            return forward_static_call([$sCollectionClass, 'make']);
+        }
+
+        return null;
     }
 }
