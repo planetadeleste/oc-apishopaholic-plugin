@@ -1,6 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\File;
 
-use Illuminate\Http\Resources\Json\Resource;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
 
 /**
  * Class ItemResource
@@ -8,9 +8,9 @@ use Illuminate\Http\Resources\Json\Resource;
  * @mixin \System\Models\File
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\File
  */
-class ItemResource extends Resource
+class ItemResource extends BaseResource
 {
-    public function toArray($request)
+    public function getData()
     {
         return [
             'thumb'       => $this->getThumb(300, 300, ['mode' => 'crop']),
@@ -20,5 +20,10 @@ class ItemResource extends Resource
             'title'       => $this->title,
             'description' => $this->description
         ];
+    }
+
+    protected function getEvent()
+    {
+        return null;
     }
 }

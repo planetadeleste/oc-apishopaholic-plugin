@@ -12,23 +12,22 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
 class ShowResource extends ItemResource
 {
     /**
-     * @param \Illuminate\Http\Request $request
-     *
      * @return array|void
      */
-    public function toArray($request)
+    public function getData()
     {
-        $data = array_merge(
-            parent::toArray($request),
+        return array_merge(
+            parent::getData(),
             [
                 'updated_at'    => $this->updated_at->toDateTimeString(),
                 'preview_text'  => $this->preview_text,
                 'description'   => $this->description
             ]
         );
+    }
 
-        Event::fire(Plugin::EVENT_SHOWRESOURCE_DATA, [&$data, $this]);
-
-        return $data;
+    protected function getEvent()
+    {
+        return Plugin::EVENT_SHOWRESOURCE_DATA;
     }
 }

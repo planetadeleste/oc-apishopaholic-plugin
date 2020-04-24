@@ -3,6 +3,7 @@
 use Event;
 use Illuminate\Http\Resources\Json\Resource;
 use Lovata\Shopaholic\Classes\Helper\CurrencyHelper;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 
 /**
@@ -11,16 +12,14 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  * @mixin \Lovata\Shopaholic\Classes\Item\OfferItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer
  */
-class ItemResource extends Resource
+class ItemResource extends BaseResource
 {
     /**
-     * @param \Illuminate\Http\Request $request
-     *
      * @return array|void
      */
-    public function toArray($request)
+    public function getData()
     {
-        $data = [
+        return [
             'id'              => $this->id,
             'name'            => $this->name,
             'code'            => $this->code,
@@ -39,9 +38,10 @@ class ItemResource extends Resource
             'text'            => $this->name,
             'value'           => $this->id,
         ];
+    }
 
-        Event::fire(Plugin::EVENT_ITEMRESOURCE_DATA, [&$data, $this]);
-
-        return $data;
+    protected function getEvent()
+    {
+        return Plugin::EVENT_ITEMRESOURCE_DATA;
     }
 }

@@ -3,6 +3,7 @@
 use Event;
 use Lovata\PropertiesShopaholic\Classes\Collection\PropertyCollection;
 use Lovata\PropertiesShopaholic\Classes\Helper\CommonPropertyHelper;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ItemResource as ItemResourceCategory;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
 use PlanetaDelEste\ApiShopaholic\Plugin;
@@ -17,35 +18,34 @@ use System\Classes\PluginManager;
 class ShowResource extends ItemResource
 {
     /**
-     * @param \Illuminate\Http\Request $request
-     *
      * @return array|void
      */
-    public function toArray($request)
+    public function getData()
     {
-        $data = array_merge(
-            parent::toArray($request),
+        return array_merge(
+            parent::getData(),
             [
                 'active'        => $this->active,
                 'description'   => $this->description,
                 'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
-                'images'        => IndexCollectionImages::make($this->images),
+                'images'        => IndexCollectionImages::make(collect($this->images)),
                 'property'      => $this->formatProperty()
             ]
         );
-
-        Event::fire(Plugin::EVENT_SHOWRESOURCE_DATA, [&$data, $this]);
-
-        return $data;
     }
 
     protected function formatProperty()
     {
+        $arProperties = [];
         if (PluginManager::instance()->exists('Lovata.PropertiesShopaholic')) {
-            $collection = collect(PropertyCollection::make(array_keys($this->property))->pluck('code'));
-            return $collection->combine(array_values($this->property))->all();
+            $arProperties = $this->property->toSimpleArray();
         }
 
-        return [];
+        return $arProperties;
+    }
+
+    protected function getEvent()
+    {
+        return Plugin::EVENT_SHOWRESOURCE_DATA;
     }
 }

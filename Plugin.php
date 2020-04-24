@@ -1,7 +1,9 @@
 <?php namespace PlanetaDelEste\ApiShopaholic;
 
-use Backend;
+use Event;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ExtendElementCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Event\Property\ExtendPropertyCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Event\User\UserModelHandler;
 use System\Classes\PluginBase;
 
 /**
@@ -21,7 +23,8 @@ class Plugin extends PluginBase
 
     public $require = [
         'Lovata.OrdersShopaholic',
-        //'Vdomah.JWTAuth'
+        'Vdomah.JWTAuth',
+        'PlanetaDelEste.BuddiesGroup'
     ];
 
     /**
@@ -41,6 +44,8 @@ class Plugin extends PluginBase
 
     public function boot()
     {
-        \Event::subscribe(ExtendElementCollection::class);
+        Event::subscribe(ExtendElementCollection::class);
+        Event::subscribe(UserModelHandler::class);
+        Event::subscribe(ExtendPropertyCollection::class);
     }
 }

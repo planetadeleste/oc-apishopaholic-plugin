@@ -1,6 +1,8 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Category;
 
 use Illuminate\Http\Resources\Json\Resource;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
+use PlanetaDelEste\ApiShopaholic\Plugin;
 
 /**
  * Class itemResource
@@ -8,14 +10,12 @@ use Illuminate\Http\Resources\Json\Resource;
  * @mixin \Lovata\Shopaholic\Classes\Item\CategoryItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Category
  */
-class ItemResource extends Resource
+class ItemResource extends BaseResource
 {
     /**
-     * @param \Illuminate\Http\Request $request
-     *
      * @return array|void
      */
-    public function toArray($request)
+    public function getData()
     {
         return [
             'id'            => $this->id,
@@ -26,5 +26,10 @@ class ItemResource extends Resource
             'text'          => $this->name,
             'value'         => $this->id,
         ];
+    }
+
+    protected function getEvent()
+    {
+        return Plugin::EVENT_ITEMRESOURCE_DATA;
     }
 }

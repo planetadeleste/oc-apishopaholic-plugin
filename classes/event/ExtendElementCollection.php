@@ -18,6 +18,7 @@ class ExtendElementCollection
             function ($obCollection) {
                 $this->addValuesMethod($obCollection);
                 $this->addPaginateMethod($obCollection);
+                $this->addCollectMethod($obCollection);
             }
         );
     }
@@ -59,6 +60,16 @@ class ExtendElementCollection
     {
         $obCollection->addDynamicMethod('values', function() use ($obCollection) {
             return array_values( $obCollection->all() );
+        });
+    }
+
+    /**
+     * @param ElementCollection $obCollection
+     */
+    protected function addCollectMethod($obCollection)
+    {
+        $obCollection->addDynamicMethod('collect', function() use ($obCollection) {
+            return collect($obCollection->all());
         });
     }
 

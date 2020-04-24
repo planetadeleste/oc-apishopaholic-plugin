@@ -2,6 +2,7 @@
 
 use Event;
 use Illuminate\Http\Resources\Json\Resource;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer\IndexCollection as IndexCollectionOffer;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 
@@ -11,16 +12,14 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  * @mixin \Lovata\Shopaholic\Classes\Item\ProductItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Product
  */
-class ItemResource extends Resource
+class ItemResource extends BaseResource
 {
     /**
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return array|void
+     * @return array
      */
-    public function toArray($request)
+    public function getData()
     {
-        $data = [
+        return [
             'id'              => $this->id,
             'name'            => $this->name,
             'code'            => $this->code,
@@ -28,13 +27,13 @@ class ItemResource extends Resource
             'category_id'     => $this->category_id,
             'category_name'   => $this->category ? $this->category->name : null,
             'preview_text'    => $this->preview_text,
-            'offers'          => $this->offer->count() ? IndexCollectionOffer::make($this->offer) : [],
+            'offers'          => $this->offer->count() ? IndexCollectionOffer::make($this->offer->collect()) : [],
             'thumbnail'       => $this->preview_image ? $this->preview_image->getThumb(
                 300,
                 300,
                 ['mode' => 'crop']
             ) : null,
-            'secondary_thumb' => $this->images->count() ? $this->images->first()->getThumb(
+            'secondary_thumb' => count($this->images) ? collect($this->images)->first()->getThumb(
                 300,
                 300,
                 ['mode' => 'crop']
@@ -42,9 +41,10 @@ class ItemResource extends Resource
             'text'            => $this->name,
             'value'           => $this->id,
         ];
+    }
 
-        Event::fire(Plugin::EVENT_ITEMRESOURCE_DATA, [&$data, $this]);
-
-        return $data;
+    protected function getEvent()
+    {
+        return Plugin::EVENT_ITEMRESOURCE_DATA;
     }
 }

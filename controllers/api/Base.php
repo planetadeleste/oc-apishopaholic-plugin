@@ -2,6 +2,7 @@
 
 use Event;
 use Exception;
+use Illuminate\Routing\Controller;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 use PlanetaDelEste\ApiShopaholic\Traits\Controllers\ApiBaseTrait;
 
@@ -16,7 +17,7 @@ use PlanetaDelEste\ApiShopaholic\Traits\Controllers\ApiBaseTrait;
  *
  * @package PlanetaDelEste\ApiShopaholic\Controllers\Api
  */
-class Base
+class Base extends Controller
 {
     use ApiBaseTrait;
 
