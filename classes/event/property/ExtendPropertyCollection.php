@@ -1,21 +1,23 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Event\Property;
 
 
-use Lovata\PropertiesShopaholic\Classes\Collection\PropertyCollection;
+use System\Classes\PluginManager;
 
 class ExtendPropertyCollection
 {
     public function subscribe()
     {
-        PropertyCollection::extend(
-            function ($obCollection) {
-                $this->addToSimpleArrayMethods($obCollection);
-            }
-        );
+        if (PluginManager::instance()->exists('Lovata.PropertiesShopaholic')) {
+            \Lovata\PropertiesShopaholic\Classes\Collection\PropertyCollection::extend(
+                function ($obCollection) {
+                    $this->addToSimpleArrayMethods($obCollection);
+                }
+            );
+        }
     }
 
     /**
-     * @param PropertyCollection $obCollection
+     * @param \Lovata\PropertiesShopaholic\Classes\Collection\PropertyCollection $obCollection
      */
     protected function addToSimpleArrayMethods($obCollection)
     {
