@@ -20,6 +20,7 @@ class Plugin extends PluginBase
     const EVENT_API_EXTEND_STORE = 'planetadeleste.apiShopaholic.apiExtendStore';
     const EVENT_API_EXTEND_UPDATE = 'planetadeleste.apiShopaholic.apiExtendUpdate';
     const EVENT_API_EXTEND_DESTROY = 'planetadeleste.apiShopaholic.apiExtendDestroy';
+    const EVENT_API_ADD_COLLECTION = 'planetadeleste.apiShopaholic.apiAddCollection';
 
     public $require = [
         'Lovata.OrdersShopaholic',

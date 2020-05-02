@@ -22,7 +22,10 @@ Route::prefix('api/v1')
             // AUTHENTICATE
             Route::prefix('auth')->group(plugins_path('/planetadeleste/apishopaholic/routes/auth.php'));
 
-            Route::group(['middleware' => GetUserFromToken::class], function() {
-            });
+            Route::group(
+                ['middleware' => GetUserFromToken::class],
+                function () {
+                }
+            );
         }
     );

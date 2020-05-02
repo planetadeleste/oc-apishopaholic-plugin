@@ -25,7 +25,7 @@ class Categories extends Base
             }
 
             $arListItems = $this->collection->tree()->values();
-            return new $this->listResource( collect( $arListItems ) );
+            return new $this->listResource(collect($arListItems));
         } catch (Exception $e) {
             trace_log($e);
             return response()->json(['error' => $e->getMessage()], 403);

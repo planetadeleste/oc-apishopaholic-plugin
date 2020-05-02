@@ -1,5 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Traits\Controllers;
 
+use Event;
 use Lovata\OrdersShopaholic\Classes\Collection\CartPositionCollection;
 use Lovata\OrdersShopaholic\Classes\Collection\OrderCollection;
 use Lovata\OrdersShopaholic\Classes\Collection\OrderPositionCollection;
@@ -22,6 +23,7 @@ use Lovata\Shopaholic\Models\Offer;
 use Lovata\Shopaholic\Models\Product;
 use Lovata\Shopaholic\Models\PromoBlock;
 use Lovata\Shopaholic\Models\Tax;
+use PlanetaDelEste\ApiShopaholic\Plugin;
 
 trait ApiBaseTrait
 {
@@ -72,6 +74,11 @@ trait ApiBaseTrait
     public $collection;
 
     /**
+     * @var \Lovata\Toolbox\Classes\Item\ElementItem
+     */
+    public $item;
+
+    /**
      * Primary column name for show element
      *
      * @var string
@@ -83,7 +90,7 @@ trait ApiBaseTrait
      *
      * @var string
      */
-    public $sortColumn = 'created_at';
+    public $sortColumn = 'no';
 
     /**
      * Default sort direction
@@ -161,6 +168,9 @@ trait ApiBaseTrait
      */
     protected function makeCollection()
     {
+        if (!$this->modelClass) {
+            return null;
+        }
         // Main Shopaholic collections
         $arCollectionClasses = [
             Brand::class      => BrandCollection::class,
@@ -174,12 +184,14 @@ trait ApiBaseTrait
 
         // OrderShopaholic plugin collections
         $arCollectionClasses += [
-            CartPosition::class => CartPositionCollection::class,
-            Order::class        => OrderCollection::class,
+            CartPosition::class  => CartPositionCollection::class,
+            Order::class         => OrderCollection::class,
             OrderPosition::class => OrderPositionCollection::class,
             PaymentMethod::class => PaymentMethodCollection::class,
 
         ];
+
+        Event::fire(Plugin::EVENT_API_ADD_COLLECTION, [&$arCollectionClasses]);
 
         if ($sCollectionClass = array_get($arCollectionClasses, $this->modelClass)) {
             return forward_static_call([$sCollectionClass, 'make']);

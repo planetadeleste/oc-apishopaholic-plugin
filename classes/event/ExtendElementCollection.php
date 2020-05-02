@@ -36,7 +36,7 @@ class ExtendElementCollection
                 $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
                 $total = $obCollection->count();
                 $arItems = $obCollection->page($page, $pageSize);
-                if(!empty($arItems)) {
+                if (!empty($arItems)) {
                     $arItems = array_values($arItems);
                 }
                 return self::paginator(
@@ -58,9 +58,12 @@ class ExtendElementCollection
      */
     protected function addValuesMethod($obCollection)
     {
-        $obCollection->addDynamicMethod('values', function() use ($obCollection) {
-            return array_values( $obCollection->all() );
-        });
+        $obCollection->addDynamicMethod(
+            'values',
+            function () use ($obCollection) {
+                return array_values($obCollection->all());
+            }
+        );
     }
 
     /**
@@ -68,9 +71,12 @@ class ExtendElementCollection
      */
     protected function addCollectMethod($obCollection)
     {
-        $obCollection->addDynamicMethod('collect', function() use ($obCollection) {
-            return collect($obCollection->all());
-        });
+        $obCollection->addDynamicMethod(
+            'collect',
+            function () use ($obCollection) {
+                return collect($obCollection->values());
+            }
+        );
     }
 
     /**

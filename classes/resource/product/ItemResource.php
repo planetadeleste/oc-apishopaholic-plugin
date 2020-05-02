@@ -28,16 +28,12 @@ class ItemResource extends BaseResource
             'category_name'   => $this->category ? $this->category->name : null,
             'preview_text'    => $this->preview_text,
             'offers'          => $this->offer->count() ? IndexCollectionOffer::make($this->offer->collect()) : [],
-            'thumbnail'       => $this->preview_image ? $this->preview_image->getThumb(
-                300,
-                300,
-                ['mode' => 'crop']
-            ) : null,
-            'secondary_thumb' => count($this->images) ? collect($this->images)->first()->getThumb(
-                300,
-                300,
-                ['mode' => 'crop']
-            ) : null,
+            'thumbnail'       => $this->preview_image
+                ? $this->preview_image->getThumb(300, 300, ['mode' => 'crop'])
+                : null,
+            'secondary_thumb' => $this->images
+                ? collect($this->images)->first()->getThumb(300, 300, ['mode' => 'crop'])
+                : null,
             'text'            => $this->name,
             'value'           => $this->id,
         ];
