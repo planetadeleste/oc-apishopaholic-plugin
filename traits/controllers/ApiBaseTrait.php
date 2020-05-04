@@ -24,6 +24,8 @@ use Lovata\Shopaholic\Models\Product;
 use Lovata\Shopaholic\Models\PromoBlock;
 use Lovata\Shopaholic\Models\Tax;
 use PlanetaDelEste\ApiShopaholic\Plugin;
+use RainLab\Translate\Classes\Translator;
+use RainLab\Translate\Models\Message;
 
 trait ApiBaseTrait
 {
@@ -147,6 +149,21 @@ trait ApiBaseTrait
         return $this->user;
     }
 
+    /**
+     * @param string $message
+     * @param array  $options
+     *
+     * @return string
+     */
+    public static function tr($message, $options = [])
+    {
+        if (!Message::$locale) {
+            Message::setContext(Translator::instance()->getLocale());
+        }
+
+        return Message::trans($message, $options);
+    }
+
     protected function setResources()
     {
         if ($this->listResource && $this->indexResource && $this->showResource) {
@@ -168,9 +185,10 @@ trait ApiBaseTrait
      */
     protected function makeCollection()
     {
-        if (!$this->modelClass) {
+        if(!$this->modelClass) {
             return null;
         }
+
         // Main Shopaholic collections
         $arCollectionClasses = [
             Brand::class      => BrandCollection::class,

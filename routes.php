@@ -21,6 +21,8 @@ Route::prefix('api/v1')
 
             // AUTHENTICATE
             Route::prefix('auth')->group(plugins_path('/planetadeleste/apishopaholic/routes/auth.php'));
+            // TRANSLATE
+            Route::prefix('lang')->group(plugins_path('/planetadeleste/apishopaholic/routes/lang.php'));
 
             Route::group(
                 ['middleware' => GetUserFromToken::class],

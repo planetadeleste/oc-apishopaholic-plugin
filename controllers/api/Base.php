@@ -3,8 +3,11 @@
 use Event;
 use Exception;
 use Illuminate\Routing\Controller;
+use JWTAuth;
+use Lovata\Buddies\Models\User;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 use PlanetaDelEste\ApiShopaholic\Traits\Controllers\ApiBaseTrait;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 /**
  * Class Base
@@ -20,6 +23,11 @@ use PlanetaDelEste\ApiShopaholic\Traits\Controllers\ApiBaseTrait;
 class Base extends Controller
 {
     use ApiBaseTrait;
+
+    const ALERT_TOKEN_NOT_FOUND = 'token_not_found';
+    const ALERT_USER_NOT_FOUND = 'user_not_found';
+    const ALERT_ACCESS_DENIED = 'access_denied';
+    const ALERT_PERMISSIONS_DENIED = 'insufficient_permissions';
 
     public function __construct()
     {
@@ -161,6 +169,54 @@ class Base extends Controller
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 403);
         }
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Tymon\JWTAuth\Exceptions\JWTException
+     */
+    public function check()
+    {
+        $success = false;
+        $group = null;
+        if ($this->currentUser()) {
+            $success = true;
+            $group = $this->user->getGroups();
+        }
+
+        return response()->json(compact('success', 'group'));
+    }
+
+    /**
+     * @throws \Tymon\JWTAuth\Exceptions\JWTException
+     * @throws \Exception
+     */
+    protected function currentUser()
+    {
+        if ($this->user) {
+            return $this->user;
+        }
+
+        if (!JWTAuth::getToken()) {
+            throw new JWTException(static::tr(static::ALERT_TOKEN_NOT_FOUND));
+        }
+
+        if (!$userId = JWTAuth::parseToken()->authenticate()->id) {
+            throw new JWTException(static::tr(static::ALERT_USER_NOT_FOUND));
+        }
+
+        /** @var User $user */
+        $user = User::find($userId);
+
+        if ($user->is_guest) {
+            throw new JWTException(static::tr(static::ALERT_ACCESS_DENIED));
+        } elseif ($user->is_admin || $user->is_registered) {
+            $this->user = $user;
+
+            return $this->user;
+        }
+
+        return null;
     }
 
     /**
