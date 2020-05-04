@@ -107,7 +107,6 @@ class Base extends Controller
 
             $sItemClass = $this->collection::ITEM_CLASS;
             $this->item = $sItemClass::make($iModelId);
-            debug($this->item);
 
             if (method_exists($this, 'extendShow')) {
                 $this->extendShow();

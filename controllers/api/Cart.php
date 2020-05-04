@@ -77,10 +77,10 @@ class Cart extends Base
                 /** @var \Lovata\Shopaholic\Models\Offer $obOfferModel */
 
                 $obOffer = $obCartPositionItem->offer;
-                $obOfferModel = $obOffer->getObject();
+//                $obOfferModel = $obOffer->getObject();
                 $arCartDataPositions[] = [
-                    'offer'       => ShowResourceOffer::make($obOfferModel),
-                    'product'     => ItemResourceProduct::make($obOfferModel->product),
+                    'offer'       => ShowResourceOffer::make($obOffer),
+                    'product'     => ItemResourceProduct::make($obOffer->product),
                     'price'       => $obOffer->price,
                     'currency'    => $obOffer->currency,
                     'total'       => $obCartPositionItem->price,
