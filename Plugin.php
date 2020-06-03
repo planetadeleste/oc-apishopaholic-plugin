@@ -24,7 +24,7 @@ class Plugin extends PluginBase
 
     public $require = [
         'Lovata.OrdersShopaholic',
-        'Vdomah.JWTAuth',
+        'PlanetaDelEste.JWTAuth',
         'PlanetaDelEste.BuddiesGroup'
     ];
 

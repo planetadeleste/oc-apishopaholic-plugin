@@ -24,8 +24,7 @@ use Lovata\Shopaholic\Models\Product;
 use Lovata\Shopaholic\Models\PromoBlock;
 use Lovata\Shopaholic\Models\Tax;
 use PlanetaDelEste\ApiShopaholic\Plugin;
-use RainLab\Translate\Classes\Translator;
-use RainLab\Translate\Models\Message;
+use System\Classes\PluginManager;
 
 trait ApiBaseTrait
 {
@@ -128,7 +127,7 @@ trait ApiBaseTrait
     /**
      * @return string|null
      */
-    public function getShopResource()
+    public function getShowResource()
     {
         return $this->showResource;
     }
@@ -157,21 +156,28 @@ trait ApiBaseTrait
      */
     public static function tr($message, $options = [])
     {
-        if (!Message::$locale) {
-            Message::setContext(Translator::instance()->getLocale());
+        if (!PluginManager::instance()->hasPlugin('RainLab.Translate')) {
+            return $message;
         }
 
-        return Message::trans($message, $options);
+        if (!RainLab\Translate\Models\Message::$locale) {
+            RainLab\Translate\Models\Message::setContext(RainLab\Translate\Classes\Translator::instance()->getLocale());
+        }
+
+        return RainLab\Translate\Models\Message::trans($message, $options);
     }
 
     protected function setResources()
     {
-        if ($this->listResource && $this->indexResource && $this->showResource) {
+        if ($this->getListResource()
+            && $this->getIndexResource()
+            && $this->getShowResource()
+            || !$this->getModelClass()) {
             return;
         }
 
         $classname = ltrim(static::class, '\\');
-        $arPath = explode('\\', $this->modelClass);
+        $arPath = explode('\\', $this->getModelClass());
         $name = array_pop($arPath);
         list($author, $plugin) = explode('\\', $classname);
         $resourceClassBase = join('\\', [$author, $plugin, 'Classes', 'Resource', $name]);
@@ -185,7 +191,7 @@ trait ApiBaseTrait
      */
     protected function makeCollection()
     {
-        if(!$this->modelClass) {
+        if (!$this->getModelClass()) {
             return null;
         }
 
@@ -211,7 +217,7 @@ trait ApiBaseTrait
 
         Event::fire(Plugin::EVENT_API_ADD_COLLECTION, [&$arCollectionClasses]);
 
-        if ($sCollectionClass = array_get($arCollectionClasses, $this->modelClass)) {
+        if ($sCollectionClass = array_get($arCollectionClasses, $this->getModelClass())) {
             return forward_static_call([$sCollectionClass, 'make']);
         }
 

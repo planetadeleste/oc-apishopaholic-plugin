@@ -2,6 +2,7 @@
 
 use PlanetaDelEste\ApiShopaholic\Controllers\Api\Categories;
 use PlanetaDelEste\ApiShopaholic\Controllers\Api\Products;
+use PlanetaDelEste\ApiShopaholic\Controllers\Api\Profile;
 use Tymon\JWTAuth\Middleware\GetUserFromToken;
 
 Route::prefix('api/v1')
@@ -27,6 +28,9 @@ Route::prefix('api/v1')
             Route::group(
                 ['middleware' => GetUserFromToken::class],
                 function () {
+                    Route::apiResources([
+                        'profile' => Profile::class
+                    ]);
                 }
             );
         }

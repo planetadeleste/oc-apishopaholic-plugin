@@ -4,6 +4,7 @@ use Event;
 use Exception;
 use Illuminate\Routing\Controller;
 use JWTAuth;
+use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 use PlanetaDelEste\ApiShopaholic\Traits\Controllers\ApiBaseTrait;
@@ -28,9 +29,23 @@ class Base extends Controller
     const ALERT_USER_NOT_FOUND = 'user_not_found';
     const ALERT_ACCESS_DENIED = 'access_denied';
     const ALERT_PERMISSIONS_DENIED = 'insufficient_permissions';
+    const ALERT_RECORD_NOT_FOUND = 'record_not_found';
+    const ALERT_RECORDS_NOT_FOUND = 'records_not_found';
+    const ALERT_RECORD_UPDATED = 'record_updated';
+    const ALERT_RECORDS_UPDATED = 'records_updated';
+    const ALERT_RECORD_CREATED = 'record_created';
+    const ALERT_RECORD_DELETED = 'record_deleted';
+    const ALERT_RECORD_NOT_UPDATED = 'record_not_updated';
+    const ALERT_RECORD_NOT_CREATED = 'record_not_created';
+
+    /**
+     * @var array
+     */
+    protected $data = [];
 
     public function __construct()
     {
+        $this->data = input();
         $this->setResources();
         $this->collection = $this->makeCollection();
         $this->collection = $this->applyFilters();
@@ -42,10 +57,6 @@ class Base extends Controller
     public function index()
     {
         try {
-            if (!$this->indexResource) {
-                throw new Exception('indexResource is required');
-            }
-
             if (method_exists($this, 'extendIndex')) {
                 $this->extendIndex();
             }
@@ -55,7 +66,10 @@ class Base extends Controller
              */
             Event::fire(Plugin::EVENT_API_EXTEND_INDEX, [$this, &$this->collection], true);
 
-            return new $this->indexResource($this->collection->paginate());
+            $obModelCollection = $this->collection->paginate();
+            return $this->getIndexResource()
+                ? app($this->getIndexResource(), [$obModelCollection])
+                : $obModelCollection;
         } catch (Exception $e) {
             trace_log($e);
             return response()->json(['error' => $e->getMessage()], 403);
@@ -68,10 +82,6 @@ class Base extends Controller
     public function list()
     {
         try {
-            if (!$this->listResource) {
-                throw new Exception('listResource is required');
-            }
-
             if (method_exists($this, 'extendList')) {
                 $this->extendList();
             }
@@ -82,7 +92,9 @@ class Base extends Controller
             Event::fire(Plugin::EVENT_API_EXTEND_LIST, [$this, &$this->collection], true);
 
             $arListItems = $this->collection->values();
-            return new $this->listResource(collect($arListItems));
+            return $this->getListResource()
+                ? app($this->getListResource(), [collect($arListItems)])
+                : $arListItems;
         } catch (Exception $e) {
             trace_log($e);
             return response()->json(['error' => $e->getMessage()], 403);
@@ -92,25 +104,21 @@ class Base extends Controller
     /**
      * @param int|string $value
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Lovata\Toolbox\Classes\Item\ElementItem
      */
     public function show($value)
     {
         try {
-            if (!$this->showResource) {
-                throw new Exception('showResource is required');
-            }
-
             /**
              * Fire event before show item
              */
             Event::fire(Plugin::EVENT_API_BEFORE_SHOW_COLLECT, [$this, $value]);
 
             /** @var int|null $iModelId */
-            $iModelId = app($this->modelClass)->where($this->primaryKey, $value)->value('id');
+            $iModelId = app($this->getModelClass())->where($this->primaryKey, $value)->value('id');
 
             if (!$iModelId) {
-                throw new Exception('model_not_found', 403);
+                throw new Exception(static::ALERT_RECORD_NOT_FOUND, 403);
             }
 
             $sItemClass = $this->collection::ITEM_CLASS;
@@ -125,35 +133,68 @@ class Base extends Controller
              */
             Event::fire(Plugin::EVENT_API_EXTEND_SHOW, [$this, $this->item], true);
 
-            return new $this->showResource($this->item);
+            return $this->getShowResource()
+                ? app($this->getShowResource(), [$this->item])
+                : $this->item;
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 403);
         }
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|string
      */
     public function store()
     {
         try {
-            throw new Exception('Comming soon');
+            $this->currentUser();
+
+            $model = app($this->getModelClass());
+            $this->exists = false;
+            $success = false;
+            $message = static::tr(static::ALERT_RECORD_NOT_CREATED);
+
+            if ($this->save($model, $this->data)) {
+                $success = true;
+                $message = static::tr(static::ALERT_RECORD_CREATED);
+            }
+
+            return Result::setData(compact('success', 'message', 'model'))->getJSON();
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 403);
         }
     }
 
     /**
-     * @param int $id
+     * @param int|string $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|string
      */
     public function update($id)
     {
         try {
-            throw new Exception('Comming soon');
+            $this->currentUser();
+
+            /** @var \Model $model */
+            $model = app($this->getModelClass())->where($this->primaryKey, $id)->firstOrFail();
+            $this->exists = true;
+            $message = static::tr(static::ALERT_RECORD_NOT_UPDATED);
+            Result::setFalse();
+            if (!$model) {
+                throw new JWTException(static::ALERT_RECORD_NOT_FOUND, 403);
+            }
+
+            if ($this->save($model, $this->data)) {
+                Result::setTrue();
+                $message = static::tr(static::ALERT_RECORD_UPDATED);
+            }
+
+            return Result::setData($model)
+                ->setMessage($message)
+                ->getJSON();
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 403);
+            Result::setFalse()->setMessage($e->getMessage());
+            return response()->json(Result::get(), 403);
         }
     }
 
@@ -172,19 +213,36 @@ class Base extends Controller
     }
 
     /**
+     * @param \Model $model
+     * @param array  $data
+     *
+     * @return mixed
+     */
+    protected function save($model, $data)
+    {
+        $model->fill($data);
+        return $model->save();
+    }
+
+    /**
      * @return \Illuminate\Http\JsonResponse
      * @throws \Tymon\JWTAuth\Exceptions\JWTException
      */
     public function check()
     {
-        $success = false;
-        $group = null;
-        if ($this->currentUser()) {
-            $success = true;
-            $group = $this->user->getGroups();
-        }
+        try {
+            $success = false;
+            $group = null;
+            if ($this->currentUser()) {
+                $success = true;
+                $group = $this->user->getGroups();
+            }
 
-        return response()->json(compact('success', 'group'));
+            return response()->json(compact('success', 'group'));
+        } catch (Exception $e) {
+            Result::setFalse()->setMessage($e->getMessage());
+            return response()->json(Result::get(), 403);
+        }
     }
 
     /**
@@ -206,17 +264,22 @@ class Base extends Controller
         }
 
         /** @var User $user */
-        $user = User::find($userId);
+        $user = User::active()->find($userId);
 
-        if ($user->is_guest) {
+        if (!$user) {
+            throw new JWTException(static::tr(static::ALERT_USER_NOT_FOUND));
+        }
+
+        $this->user = $user;
+        return $this->user;
+
+        /*if ($user->is_guest) {
             throw new JWTException(static::tr(static::ALERT_ACCESS_DENIED));
         } elseif ($user->is_admin || $user->is_registered) {
             $this->user = $user;
 
             return $this->user;
-        }
-
-        return null;
+        }*/
     }
 
     /**

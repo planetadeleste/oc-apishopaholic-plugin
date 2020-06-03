@@ -4,6 +4,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use JWTAuth;
+use Lovata\Buddies\Facades\AuthHelper;
 use Lovata\Buddies\Models\User;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -87,17 +88,20 @@ class Auth extends Controller
 
     public function signup(Request $request)
     {
-        $credentials = $request->only(['email', 'password', 'password_confirmation']);
+        $credentials = $request->only(['name', 'email', 'password', 'password_confirmation']);
 
         try {
-            $userModel = User::create($credentials);
+//            $userModel = User::create($credentials);
+            $userModel = AuthHelper::register($credentials, true);
             $user = ItemResource::make($userModel);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 401);
         }
 
         $token = JWTAuth::fromUser($userModel);
+        $ttl = config('jwt.ttl');
+        $expires_in = $ttl * 60;
 
-        return response()->json(compact('token', 'user'));
+        return response()->json(compact('token', 'user', 'expires_in'));
     }
 }

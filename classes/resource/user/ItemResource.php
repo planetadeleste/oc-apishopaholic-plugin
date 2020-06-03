@@ -23,7 +23,7 @@ class ItemResource extends BaseResource
             'phone'           => $this->phone,
             'phone_list'      => $this->phone_list,
             'socialite_token' => $this->socialite_token,
-            'avatar'          => $this->avatar,
+            'avatar'          => $this->avatar ? $this->avatar->getPath() : null,
             'property'        => $this->property,
             'groups'          => $this->groups()->count() ? $this->groups()->lists('code') : []
         ];

@@ -15,7 +15,7 @@ class Cart extends Base
      */
     public function getData()
     {
-        return $this->component()->onGetData();
+        return $this->component()->onGetCartData();
     }
 
     /**
@@ -39,9 +39,14 @@ class Cart extends Base
      * @return array
      * @throws \SystemException
      */
-    public function update($id)
+    public function update($id = null)
     {
-        return $this->component()->onUpdate();
+        $response = $this->component()->onUpdate();
+        if (!input('return_data')) {
+            return $this->get();
+        }
+
+        return $response;
     }
 
     /**
@@ -79,13 +84,15 @@ class Cart extends Base
                 $obOffer = $obCartPositionItem->offer;
 //                $obOfferModel = $obOffer->getObject();
                 $arCartDataPositions[] = [
-                    'offer'       => ShowResourceOffer::make($obOffer),
-                    'product'     => ItemResourceProduct::make($obOffer->product),
-                    'price'       => $obOffer->price,
-                    'currency'    => $obOffer->currency,
-                    'total'       => $obCartPositionItem->price,
-                    'total_value' => $obCartPositionItem->price_value,
-                    'quantity'    => $obCartPositionItem->quantity,
+                    'offer'                => ShowResourceOffer::make($obOffer),
+                    'product'              => ItemResourceProduct::make($obOffer->product),
+                    'price'                => $obOffer->price,
+                    'currency'             => $obOffer->currency,
+                    'total'                => $obCartPositionItem->price,
+                    'total_value'          => $obCartPositionItem->price_value,
+                    'quantity'             => $obCartPositionItem->quantity,
+                    'price_per_unit'       => $obCartPositionItem->price_per_unit,
+                    'price_per_unit_value' => $obCartPositionItem->price_per_unit_value,
                 ];
             }
 
