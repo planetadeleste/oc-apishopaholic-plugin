@@ -1,36 +1,59 @@
 <?php
 
-use PlanetaDelEste\ApiShopaholic\Controllers\Api\Categories;
-use PlanetaDelEste\ApiShopaholic\Controllers\Api\Products;
-use PlanetaDelEste\ApiShopaholic\Controllers\Api\Profile;
+use PlanetaDelEste\ApiShopaholic\Plugin;
 use Tymon\JWTAuth\Middleware\GetUserFromToken;
 
 Route::prefix('api/v1')
+    ->namespace('PlanetaDelEste\ApiShopaholic\Controllers\Api')
     ->middleware('web')
     ->group(
         function () {
-            Route::prefix('categories')->group(plugins_path('/planetadeleste/apishopaholic/routes/categories.php'));
-            Route::prefix('products')->group(plugins_path('/planetadeleste/apishopaholic/routes/products.php'));
-            Route::prefix('cart')->group(plugins_path('/planetadeleste/apishopaholic/routes/cart.php'));
+
+            Route::prefix('categories')
+                ->name('categories.')
+                ->group(plugins_path(Plugin::API_ROUTES.'categories.php'));
+
+            Route::prefix('products')
+                ->name('products.')
+                ->group(plugins_path(Plugin::API_ROUTES.'products.php'));
+
+            Route::prefix('cart')
+                ->name('cart.')
+                ->group(plugins_path(Plugin::API_ROUTES.'cart.php'));
+
+            Route::prefix('orders')
+                ->name('orders.')
+                ->group(plugins_path(Plugin::API_ROUTES.'orders_public.php'));
+
+            // AUTHENTICATE
+            Route::prefix('auth')
+                ->name('auth.')
+                ->group(plugins_path(Plugin::API_ROUTES.'auth.php'));
+
+            // TRANSLATE
+            Route::prefix('lang')
+                ->name('lang.')
+                ->group(plugins_path(Plugin::API_ROUTES.'lang.php'));
 
             Route::apiResources(
                 [
-                    'categories' => Categories::class,
-                    'products'   => Products::class
+                    'categories' => 'Categories',
+                    'products'   => 'Products'
                 ]
             );
-
-            // AUTHENTICATE
-            Route::prefix('auth')->group(plugins_path('/planetadeleste/apishopaholic/routes/auth.php'));
-            // TRANSLATE
-            Route::prefix('lang')->group(plugins_path('/planetadeleste/apishopaholic/routes/lang.php'));
 
             Route::group(
                 ['middleware' => GetUserFromToken::class],
                 function () {
-                    Route::apiResources([
-                        'profile' => Profile::class
-                    ]);
+                    Route::prefix('orders')->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
+                    Route::prefix('profile')->group(plugins_path(Plugin::API_ROUTES.'profile.php'));
+
+                    Route::apiResources(
+                        [
+                            'profile' => 'Profile',
+                            'orders'  => 'Orders'
+                        ]
+                    );
                 }
             );
         }

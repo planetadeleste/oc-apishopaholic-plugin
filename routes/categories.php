@@ -1,4 +1,4 @@
 <?php
 
-Route::get('list', 'PlanetaDelEste\ApiShopaholic\Controllers\Api\Categories@list');
-Route::get('tree', 'PlanetaDelEste\ApiShopaholic\Controllers\Api\Categories@tree');
+Route::get('list', 'Categories@list')->name('list');
+Route::get('tree', 'Categories@tree')->name('tree');

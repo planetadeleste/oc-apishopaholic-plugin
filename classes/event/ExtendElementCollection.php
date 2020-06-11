@@ -19,6 +19,7 @@ class ExtendElementCollection
                 $this->addValuesMethod($obCollection);
                 $this->addPaginateMethod($obCollection);
                 $this->addCollectMethod($obCollection);
+                $this->addToArrayMethod($obCollection);
             }
         );
     }
@@ -62,6 +63,27 @@ class ExtendElementCollection
             'values',
             function () use ($obCollection) {
                 return array_values($obCollection->all());
+            }
+        );
+    }
+
+    /**
+     * @param ElementCollection $obCollection
+     */
+    protected function addToArrayMethod($obCollection)
+    {
+        $obCollection->addDynamicMethod(
+            'toArray',
+            function () use ($obCollection) {
+                $arItems = [];
+                foreach ($obCollection as $obItem) {
+                    /** @var \Lovata\Toolbox\Classes\Item\ElementItem $obItem */
+                    if ($obItem->isNotEmpty()) {
+                        $arItems[] = $obItem->toArray();
+                    }
+                }
+
+                return $arItems;
             }
         );
     }

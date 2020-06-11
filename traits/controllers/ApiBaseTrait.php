@@ -212,10 +212,20 @@ trait ApiBaseTrait
             Order::class         => OrderCollection::class,
             OrderPosition::class => OrderPositionCollection::class,
             PaymentMethod::class => PaymentMethodCollection::class,
-
         ];
 
-        Event::fire(Plugin::EVENT_API_ADD_COLLECTION, [&$arCollectionClasses]);
+        $arResponseCollections = Event::fire(Plugin::EVENT_API_ADD_COLLECTION);
+        if (!empty($arResponseCollections)) {
+            foreach ($arResponseCollections as $arResponseCollection) {
+                if (empty($arResponseCollection) || !is_array($arResponseCollection)) {
+                    continue;
+                }
+
+                foreach ($arResponseCollection as $sKey => $sValue) {
+                    $arCollectionClasses[$sKey] = $sValue;
+                }
+            }
+        }
 
         if ($sCollectionClass = array_get($arCollectionClasses, $this->getModelClass())) {
             return forward_static_call([$sCollectionClass, 'make']);

@@ -21,6 +21,9 @@ class Plugin extends PluginBase
     const EVENT_API_EXTEND_UPDATE = 'planetadeleste.apiShopaholic.apiExtendUpdate';
     const EVENT_API_EXTEND_DESTROY = 'planetadeleste.apiShopaholic.apiExtendDestroy';
     const EVENT_API_ADD_COLLECTION = 'planetadeleste.apiShopaholic.apiAddCollection';
+    const EVENT_API_ORDER_RESPONSE_DATA = 'planetadeleste.apiShopaholic.apiOrderResponseData';
+    const EVENT_API_GATEWAY_IPN_RESPONSE = 'planetadeleste.apiShopaholic.apiGatewayIpnResponse';
+    const API_ROUTES = '/planetadeleste/apishopaholic/routes/';
 
     public $require = [
         'Lovata.OrdersShopaholic',
@@ -46,7 +49,7 @@ class Plugin extends PluginBase
     public function boot()
     {
         Event::subscribe(ExtendElementCollection::class);
-        Event::subscribe(UserModelHandler::class);
         Event::subscribe(ExtendPropertyCollection::class);
+        Event::subscribe(UserModelHandler::class);
     }
 }

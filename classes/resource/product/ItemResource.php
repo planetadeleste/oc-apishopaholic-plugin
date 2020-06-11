@@ -20,13 +20,7 @@ class ItemResource extends BaseResource
     public function getData()
     {
         return [
-            'id'              => $this->id,
-            'name'            => $this->name,
-            'code'            => $this->code,
-            'slug'            => $this->slug,
-            'category_id'     => $this->category_id,
             'category_name'   => $this->category ? $this->category->name : null,
-            'preview_text'    => $this->preview_text,
             'offers'          => $this->offer->count() ? IndexCollectionOffer::make($this->offer->collect()) : [],
             'thumbnail'       => $this->preview_image
                 ? $this->preview_image->getThumb(300, 300, ['mode' => 'crop'])
@@ -37,6 +31,11 @@ class ItemResource extends BaseResource
             'text'            => $this->name,
             'value'           => $this->id,
         ];
+    }
+
+    public function getDataKeys()
+    {
+        return ['id', 'name', 'code', 'slug', 'category_id', 'preview_text'];
     }
 
     protected function getEvent()

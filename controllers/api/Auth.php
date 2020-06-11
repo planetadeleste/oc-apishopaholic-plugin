@@ -1,11 +1,15 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
+use Cms\Classes\ComponentManager;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use JWTAuth;
+use Kharanenka\Helper\Result;
+use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Facades\AuthHelper;
 use Lovata\Buddies\Models\User;
+use Lovata\OrdersShopaholic\Components\UserAddress;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -32,6 +36,7 @@ class Auth extends Controller
 
         /** @var \Lovata\Buddies\Models\User $userModel */
         $userModel = JWTAuth::authenticate($token);
+        AuthHelper::authenticate($credentials, true);
         $user = $userModel ? ItemResource::make($userModel) : [];
         $ttl = config('jwt.ttl');
         $expires_in = $ttl * 60;
@@ -52,6 +57,7 @@ class Auth extends Controller
         try {
             // attempt to refresh the JWT
             if (!$token = JWTAuth::refresh($token)) {
+                AuthHelper::logout();
                 return response()->json(['error' => 'could_not_refresh_token'], 401);
             }
         } catch (Exception $e) {
@@ -75,6 +81,8 @@ class Auth extends Controller
         $token = $request->get('token');
 
         try {
+            // Logout from session
+            AuthHelper::logout();
             // invalidate the token
             JWTAuth::invalidate($token);
         } catch (Exception $e) {
@@ -86,7 +94,30 @@ class Auth extends Controller
         return response()->json('token_invalidated');
     }
 
-    public function signup(Request $request)
+    public function signup()
+    {
+        try {
+            /** @var Registration $obComponent */
+            $obComponent = ComponentManager::instance()->makeComponent(
+                Registration::class,
+                null,
+                ['activation' => 'activation_on', 'force_login' => true]
+            );
+            $obUserModel = $obComponent->registration(post());
+            $user = ItemResource::make($obUserModel);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+
+        $token = JWTAuth::fromUser($obUserModel);
+        $ttl = config('jwt.ttl');
+        $expires_in = $ttl * 60;
+        $message = Result::message();
+
+        return response()->json(compact('token', 'user', 'expires_in', 'message'));
+    }
+
+    public function signupOld(Request $request)
     {
         $credentials = $request->only(['name', 'email', 'password', 'password_confirmation']);
 

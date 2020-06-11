@@ -1,0 +1,85 @@
+<?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
+
+use Cms\Classes\ComponentManager;
+use Event;
+use Exception;
+use Kharanenka\Helper\Result;
+use Lovata\OrdersShopaholic\Components\MakeOrder;
+use Lovata\OrdersShopaholic\Models\Order;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\IndexCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\ListCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\ShowResource;
+use PlanetaDelEste\ApiShopaholic\Plugin;
+
+/**
+ * Class Orders
+ *
+ * @property \Lovata\OrdersShopaholic\Classes\Collection\OrderCollection $collection
+ * @package PlanetaDelEste\ApiShopaholic\Controllers\Api
+ */
+class Orders extends Base
+{
+
+    public function extendIndex()
+    {
+        try {
+            $this->currentUser();
+            $this->collection->user($this->user->id);
+        } catch (Exception $e) {
+            Result::setFalse()->setMessage($e->getMessage());
+            return response()->json(Result::get(), 403);
+        }
+    }
+
+    /**
+     * @return array|\Illuminate\Http\RedirectResponse
+     * @throws \SystemException
+     * @throws \Exception
+     */
+    public function create()
+    {
+        /** @var MakeOrder $obComponent */
+        $obComponent = ComponentManager::instance()->makeComponent(MakeOrder::class);
+        $obComponent->onCreate();
+        $arResponseData = Event::fire(Plugin::EVENT_API_ORDER_RESPONSE_DATA, [Result::data()]);
+
+        if (!empty($arResponseData)) {
+            $arResultData = Result::data();
+            foreach ($arResponseData as $arData) {
+                if (empty($arData) || !is_array($arData)) {
+                    continue;
+                }
+                $arResultData = array_merge($arResultData, $arData);
+            }
+
+            Result::setData($arResultData);
+        }
+
+        return Result::get();
+    }
+
+    public function ipn()
+    {
+        Event::fire(Plugin::EVENT_API_GATEWAY_IPN_RESPONSE, input());
+    }
+
+    public function getModelClass()
+    {
+        return Order::class;
+    }
+
+    public function getIndexResource()
+    {
+        return IndexCollection::class;
+    }
+
+    public function getListResource()
+    {
+        return ListCollection::class;
+    }
+
+    public function getShowResource()
+    {
+        return ShowResource::class;
+    }
+}

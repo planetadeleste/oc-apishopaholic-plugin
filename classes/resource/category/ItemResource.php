@@ -18,14 +18,15 @@ class ItemResource extends BaseResource
     public function getData()
     {
         return [
-            'id'            => $this->id,
-            'name'          => $this->name,
-            'code'          => $this->code,
-            'slug'          => $this->slug,
             'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
             'text'          => $this->name,
             'value'         => $this->id,
         ];
+    }
+
+    public function getDataKeys()
+    {
+        return ['id', 'name', 'code', 'slug'];
     }
 
     protected function getEvent()

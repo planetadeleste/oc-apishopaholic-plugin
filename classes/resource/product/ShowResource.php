@@ -19,17 +19,14 @@ class ShowResource extends ItemResource
      */
     public function getData()
     {
-        return array_merge(
-            parent::getData(),
-            [
+        return parent::getData() + [
                 'active'        => $this->active,
                 'description'   => $this->description,
                 'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
                 'category'      => $this->category ? ItemResourceCategory::make($this->category) : null,
                 'images'        => IndexCollectionImages::make(collect($this->images)),
                 'property'      => $this->formatProperty()
-            ]
-        );
+            ];
     }
 
     protected function formatProperty()

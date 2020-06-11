@@ -1,3 +1,3 @@
 <?php
 
-Route::get('list', 'PlanetaDelEste\ApiShopaholic\Controllers\Api\Products@list');
+Route::get('list', 'Products@list')->name('list');

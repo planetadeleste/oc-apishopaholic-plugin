@@ -272,14 +272,6 @@ class Base extends Controller
 
         $this->user = $user;
         return $this->user;
-
-        /*if ($user->is_guest) {
-            throw new JWTException(static::tr(static::ALERT_ACCESS_DENIED));
-        } elseif ($user->is_admin || $user->is_registered) {
-            $this->user = $user;
-
-            return $this->user;
-        }*/
     }
 
     /**

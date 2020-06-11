@@ -1,7 +1,8 @@
 <?php
 
-Route::get('data', 'PlanetaDelEste\ApiShopaholic\Controllers\Api\Cart@getData');
-Route::get('get/{shipping_type_id?}', 'PlanetaDelEste\ApiShopaholic\Controllers\Api\Cart@get');
-Route::post('add', 'PlanetaDelEste\ApiShopaholic\Controllers\Api\Cart@add');
-Route::post('update', 'PlanetaDelEste\ApiShopaholic\Controllers\Api\Cart@update');
-Route::post('remove', 'PlanetaDelEste\ApiShopaholic\Controllers\Api\Cart@remove');
+Route::get('data', 'Cart@getData')->name('data');
+Route::get('get/{shipping_type_id?}', 'Cart@get')->name('get');
+Route::post('add', 'Cart@add')->name('add');
+Route::post('update', 'Cart@update')->name('update');
+Route::post('remove', 'Cart@remove')->name('remove');
+Route::get('payment_method_list', 'PaymentMethodList@get')->name('payment_method_list');

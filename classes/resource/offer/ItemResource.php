@@ -20,23 +20,29 @@ class ItemResource extends BaseResource
     public function getData()
     {
         return [
-            'id'              => $this->id,
-            'name'            => $this->name,
-            'code'            => $this->code,
-            'price'           => $this->price,
             'price_value'     => (float)$this->price_value,
-            'old_price'       => $this->old_price,
             'old_price_value' => (float)$this->old_price_value,
-            'quantity'        => $this->quantity,
             'currency'        => CurrencyHelper::instance()->getDefault()->symbol,
-            'preview_text'    => $this->preview_text,
             'thumbnail'       => $this->preview_image ? $this->preview_image->getThumb(
                 300,
                 300,
                 ['mode' => 'crop']
             ) : null,
-            'text'            => $this->name,
-            'value'           => $this->id,
+            'text' => $this->name,
+            'value' => $this->id,
+        ];
+    }
+
+    public function getDataKeys()
+    {
+        return [
+            'id',
+            'name',
+            'code',
+            'price',
+            'old_price',
+            'quantity',
+            'preview_text'
         ];
     }
 
