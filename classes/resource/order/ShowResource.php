@@ -1,6 +1,8 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Order;
 
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\PaymentMethod\ItemResource as ItemResourcePaymentMethod;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Status\ItemResource as ItemResourceStatus;
+use PlanetaDelEste\ApiShopaholic\Plugin;
 
 class ShowResource extends ItemResource
 {
@@ -16,7 +18,10 @@ class ShowResource extends ItemResource
                 'position_total_price_value'          => (float)$this->position_total_price_value,
                 'old_position_total_price_value'      => (float)$this->old_position_total_price_value,
                 'discount_position_total_price_value' => (float)$this->discount_position_total_price_value,
-                'status'                              => ItemResourceStatus::make($this->status)
+                'status'                              => ItemResourceStatus::make($this->status),
+                'payment_method'                      => $this->payment_method
+                    ? ItemResourcePaymentMethod::make($this->payment_method)
+                    : null
             ];
     }
 
@@ -42,7 +47,13 @@ class ShowResource extends ItemResource
                 'order_position_id',
                 'order_promo_mechanism_id',
                 'shipping_tax_percent',
+                'secret_key'
             ]
         );
+    }
+
+    protected function getEvent()
+    {
+        return Plugin::EVENT_SHOWRESOURCE_DATA;
     }
 }

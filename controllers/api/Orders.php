@@ -19,7 +19,7 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  */
 class Orders extends Base
 {
-
+    public $primaryKey = 'secret_key';
     public function extendIndex()
     {
         try {

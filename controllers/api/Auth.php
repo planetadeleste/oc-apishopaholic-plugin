@@ -58,17 +58,20 @@ class Auth extends Controller
             // attempt to refresh the JWT
             if (!$token = JWTAuth::refresh($token)) {
                 AuthHelper::logout();
-                return response()->json(['error' => 'could_not_refresh_token'], 401);
+                Result::setFalse()->setMessage('could_not_refresh_token');
+                return response()->json(Result::get(), 401);
             }
         } catch (Exception $e) {
             // something went wrong
-            return response()->json(['error' => 'could_not_refresh_token'], 500);
+            Result::setFalse()->setMessage('could_not_refresh_token');
+            return response()->json(Result::get(), 500);
         }
 
         // if no errors are encountered we can return a new JWT
         $ttl = config('jwt.ttl');
         $expires_in = $ttl * 60;
-        return response()->json(compact('token', 'expires_in'));
+        Result::setTrue(compact('token', 'expires_in'));
+        return response()->json(Result::get());
     }
 
     /**
@@ -115,24 +118,5 @@ class Auth extends Controller
         $message = Result::message();
 
         return response()->json(compact('token', 'user', 'expires_in', 'message'));
-    }
-
-    public function signupOld(Request $request)
-    {
-        $credentials = $request->only(['name', 'email', 'password', 'password_confirmation']);
-
-        try {
-//            $userModel = User::create($credentials);
-            $userModel = AuthHelper::register($credentials, true);
-            $user = ItemResource::make($userModel);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
-        }
-
-        $token = JWTAuth::fromUser($userModel);
-        $ttl = config('jwt.ttl');
-        $expires_in = $ttl * 60;
-
-        return response()->json(compact('token', 'user', 'expires_in'));
     }
 }

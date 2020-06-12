@@ -226,19 +226,19 @@ class Base extends Controller
 
     /**
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Tymon\JWTAuth\Exceptions\JWTException
      */
     public function check()
     {
         try {
-            $success = false;
             $group = null;
             if ($this->currentUser()) {
-                $success = true;
                 $group = $this->user->getGroups();
+                Result::setTrue(compact('group'));
+            } else {
+                Result::setFalse();
             }
 
-            return response()->json(compact('success', 'group'));
+            return response()->json(Result::get());
         } catch (Exception $e) {
             Result::setFalse()->setMessage($e->getMessage());
             return response()->json(Result::get(), 403);
