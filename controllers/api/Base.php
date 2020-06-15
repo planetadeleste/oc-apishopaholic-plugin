@@ -246,6 +246,16 @@ class Base extends Controller
     }
 
     /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function csrfToken()
+    {
+        Result::setData(['token' => csrf_token()]);
+
+        return response()->json(Result::get());
+    }
+
+    /**
      * @throws \Tymon\JWTAuth\Exceptions\JWTException
      * @throws \Exception
      */

@@ -22,7 +22,7 @@ class Categories extends Base
                 throw new Exception('listResource is required');
             }
 
-            $obCollection = $this->collection->tree();
+            $obCollection = $this->collection->active()->tree();
             return app($this->getListResource(), [$obCollection->collect()]);
         } catch (Exception $e) {
             trace_log($e);

@@ -1,6 +1,8 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use Cms\Classes\ComponentManager;
+use Cookie;
+use Crypt;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -9,7 +11,9 @@ use Kharanenka\Helper\Result;
 use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Facades\AuthHelper;
 use Lovata\Buddies\Models\User;
+use Lovata\OrdersShopaholic\Classes\Processor\CartProcessor;
 use Lovata\OrdersShopaholic\Components\UserAddress;
+use Lovata\OrdersShopaholic\Models\Cart;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -97,9 +101,31 @@ class Auth extends Controller
         return response()->json('token_invalidated');
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function signup()
     {
         try {
+            /** @var Cart $obCart */
+
+            // Load current cart
+            $iCartID = Cookie::get(CartProcessor::COOKIE_NAME);
+            $obCart = null;
+            if (!empty($iCartID) && !is_numeric($iCartID)) {
+                try {
+                    $iDecryptedCartID = Crypt::decryptString($iCartID);
+                    if (!empty($iDecryptedCartID)) {
+                        $iCartID = $iDecryptedCartID;
+                    }
+                } catch (\Exception $obException) {
+                }
+            }
+
+            if (!empty($iCartID)) {
+                $obCart = Cart::with('position')->find($iCartID);
+            }
+
             /** @var Registration $obComponent */
             $obComponent = ComponentManager::instance()->makeComponent(
                 Registration::class,
@@ -108,6 +134,12 @@ class Auth extends Controller
             );
             $obUserModel = $obComponent->registration(post());
             $user = ItemResource::make($obUserModel);
+
+            // If cart exists, update user_id property
+            if ($obCart && $obUserModel) {
+                $obCart->user_id = $obUserModel->id;
+                $obCart->save();
+            }
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 401);
         }
