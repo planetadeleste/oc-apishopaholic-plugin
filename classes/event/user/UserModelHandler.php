@@ -75,6 +75,6 @@ class UserModelHandler extends ModelHandler
      */
     protected function getItemClass()
     {
-        UserItem::class;
+        return UserItem::class;
     }
 }

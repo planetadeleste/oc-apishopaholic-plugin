@@ -160,11 +160,11 @@ trait ApiBaseTrait
             return $message;
         }
 
-        if (!RainLab\Translate\Models\Message::$locale) {
-            RainLab\Translate\Models\Message::setContext(RainLab\Translate\Classes\Translator::instance()->getLocale());
+        if (!\RainLab\Translate\Models\Message::$locale) {
+            \RainLab\Translate\Models\Message::setContext(\RainLab\Translate\Classes\Translator::instance()->getLocale());
         }
 
-        return RainLab\Translate\Models\Message::trans($message, $options);
+        return \RainLab\Translate\Models\Message::trans($message, $options);
     }
 
     protected function setResources()

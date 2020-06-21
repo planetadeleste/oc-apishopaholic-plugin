@@ -1,6 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use Cms\Classes\ComponentManager;
+use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
 use Lovata\OrdersShopaholic\Components\UserAddress;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
@@ -12,9 +13,24 @@ class Profile extends Base
         return User::class;
     }
 
+    /**
+     * @return \PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource
+     * @throws \Tymon\JWTAuth\Exceptions\JWTException
+     */
     public function index()
     {
         return ItemResource::make($this->currentUser());
+    }
+
+    /**
+     * @throws \Tymon\JWTAuth\Exceptions\JWTException
+     */
+    public function avatar()
+    {
+        $this->currentUser();
+        $sPath = $this->user->avatar ? $this->user->avatar->path : null;
+
+        return Result::setData(['avatar' => $sPath])->get();
     }
 
     /**
