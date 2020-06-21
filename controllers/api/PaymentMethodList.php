@@ -12,23 +12,10 @@ class PaymentMethodList extends Base
      */
     public function get()
     {
-        $obPaymentMethodList = $this->component()->make()->sort()->active();
+        /** @var PaymentMethodListComponent $obPaymentListComponent */
+        $obPaymentListComponent = $this->component(PaymentMethodListComponent::class);
+        $obPaymentMethodList = $obPaymentListComponent->make()->sort()->active();
 
         return Result::setData($obPaymentMethodList->toArray())->get();
-    }
-    /**
-     * @return PaymentMethodListComponent
-     * @throws \SystemException
-     * @throws \Exception
-     */
-    protected function component()
-    {
-        /** @var PaymentMethodListComponent $component */
-        $component = ComponentManager::instance()->makeComponent(PaymentMethodListComponent::class);
-        if (!$component) {
-            throw new \Exception('cart component not found');
-        }
-
-        return $component;
     }
 }

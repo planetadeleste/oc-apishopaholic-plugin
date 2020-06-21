@@ -1,23 +1,22 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
-use Cms\Classes\ComponentManager;
 use Cookie;
 use Crypt;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Input;
 use JWTAuth;
 use Kharanenka\Helper\Result;
 use Lovata\Buddies\Components\Registration;
+use Lovata\Buddies\Components\ResetPassword;
+use Lovata\Buddies\Components\RestorePassword;
 use Lovata\Buddies\Facades\AuthHelper;
-use Lovata\Buddies\Models\User;
 use Lovata\OrdersShopaholic\Classes\Processor\CartProcessor;
-use Lovata\OrdersShopaholic\Components\UserAddress;
 use Lovata\OrdersShopaholic\Models\Cart;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-class Auth extends Controller
+class Auth extends Base
 {
 
     /**
@@ -35,7 +34,7 @@ class Auth extends Controller
             }
         } catch (JWTException $e) {
             // something went wrong
-            return response()->json(['error' => 'could_not_create_token'], 500);
+            return response()->json(['error' => 'could_not_create_token'], 401);
         }
 
         /** @var \Lovata\Buddies\Models\User $userModel */
@@ -68,7 +67,7 @@ class Auth extends Controller
         } catch (Exception $e) {
             // something went wrong
             Result::setFalse()->setMessage('could_not_refresh_token');
-            return response()->json(Result::get(), 500);
+            return response()->json(Result::get(), 401);
         }
 
         // if no errors are encountered we can return a new JWT
@@ -90,11 +89,15 @@ class Auth extends Controller
         try {
             // Logout from session
             AuthHelper::logout();
+            if (!$token) {
+                Result::setFalse()->setMessage('could_not_invalidate_token');
+                return response()->json(Result::get(), 401);
+            }
             // invalidate the token
             JWTAuth::invalidate($token);
         } catch (Exception $e) {
             // something went wrong
-            return response()->json(['error' => 'could_not_invalidate_token'], 500);
+            return response()->json(['error' => 'could_not_invalidate_token'], 401);
         }
 
         // if no errors we can return a message to indicate that the token was invalidated
@@ -127,28 +130,79 @@ class Auth extends Controller
             }
 
             /** @var Registration $obComponent */
-            $obComponent = ComponentManager::instance()->makeComponent(
+            $obComponent = $this->component(
                 Registration::class,
                 null,
                 ['activation' => 'activation_on', 'force_login' => true]
             );
             $obUserModel = $obComponent->registration(post());
+            if (!$obUserModel) {
+                return response()->json(Result::get(), 401);
+            }
+
             $user = ItemResource::make($obUserModel);
 
             // If cart exists, update user_id property
-            if ($obCart && $obUserModel) {
+            if ($obCart) {
                 $obCart->user_id = $obUserModel->id;
                 $obCart->save();
             }
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
+            Result::setFalse()->setMessage($e->getMessage());
+            return response()->json(Result::get(), 401);
         }
 
         $token = JWTAuth::fromUser($obUserModel);
         $ttl = config('jwt.ttl');
         $expires_in = $ttl * 60;
-        $message = Result::message();
+        Result::setData(compact('token', 'user', 'expires_in'));
 
-        return response()->json(compact('token', 'user', 'expires_in', 'message'));
+        return response()->json(Result::get());
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function restorePassword()
+    {
+        try {
+            /** @var RestorePassword $obComponent */
+            $obComponent = $this->component(RestorePassword::class);
+            $obComponent->sendRestoreMail(Input::only(['email']));
+            return response()->json(Result::get());
+        } catch (Exception $e) {
+            Result::setFalse()->setMessage($e->getMessage());
+            return response()->json(Result::get(), 401);
+        }
+    }
+
+    public function resetPassword()
+    {
+        try {
+            /** @var ResetPassword $obComponent */
+            $obComponent = $this->component(ResetPassword::class, null, ['slug' => input('slug')]);
+            $obComponent->checkResetCode();
+            $obComponent->resetPassword(Input::only(['password', 'password_confirmation']));
+            return response()->json(Result::get());
+        } catch (Exception $e) {
+            Result::setFalse()->setMessage($e->getMessage());
+            return response()->json(Result::get(), 401);
+        }
+    }
+
+    public function checkResetCode()
+    {
+        try {
+            /** @var ResetPassword $obComponent */
+            $obComponent = $this->component(ResetPassword::class, null, ['slug' => input('slug')]);
+            if (!$obComponent->checkResetCode()) {
+                Result::setFalse();
+            }
+
+            return response()->json(Result::get());
+        } catch (Exception $e) {
+            Result::setFalse()->setMessage($e->getMessage());
+            return response()->json(Result::get(), 401);
+        }
     }
 }

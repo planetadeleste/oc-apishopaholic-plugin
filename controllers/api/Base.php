@@ -1,5 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
+use Cms\Classes\CmsObject;
+use Cms\Classes\ComponentManager;
 use Event;
 use Exception;
 use Illuminate\Routing\Controller;
@@ -43,6 +45,12 @@ class Base extends Controller
      */
     protected $data = [];
 
+    /** @var array */
+    public static $components = [];
+
+    /** @var int Items per page in pagination */
+    public $itemsPerPage = 10;
+
     public function __construct()
     {
         $this->data = input();
@@ -66,7 +74,7 @@ class Base extends Controller
              */
             Event::fire(Plugin::EVENT_API_EXTEND_INDEX, [$this, &$this->collection], true);
 
-            $obModelCollection = $this->collection->paginate();
+            $obModelCollection = $this->collection->paginate($this->itemsPerPage);
             return $this->getIndexResource()
                 ? app($this->getIndexResource(), [$obModelCollection])
                 : $obModelCollection;
@@ -360,5 +368,31 @@ class Base extends Controller
         }
 
         return $obCollection;
+    }
+
+    /**
+     * @param string    $sName
+     *
+     * @param CmsObject $cmsObject
+     * @param array     $properties
+     * @param bool      $isSoftComponent
+     *
+     * @return \Cms\Classes\ComponentBase
+     * @throws \SystemException
+     * @throws \Exception
+     */
+    protected function component($sName, $cmsObject = null, $properties = [], $isSoftComponent = false)
+    {
+        if (array_key_exists($sName, static::$components)) {
+            return static::$components[$sName];
+        }
+
+        $component = ComponentManager::instance()->makeComponent($sName, $cmsObject, $properties, $isSoftComponent);
+        if (!$component) {
+            throw new \Exception('component not found');
+        }
+
+        static::$components[$sName] = $component;
+        return $component;
     }
 }

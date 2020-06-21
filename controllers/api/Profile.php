@@ -3,7 +3,6 @@
 use Cms\Classes\ComponentManager;
 use Lovata\Buddies\Models\User;
 use Lovata\OrdersShopaholic\Components\UserAddress;
-use Lovata\Toolbox\Classes\Helper\UserHelper;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 
 class Profile extends Base
@@ -24,7 +23,7 @@ class Profile extends Base
      */
     public function addAddress()
     {
-        return $this->component()->onAdd();
+        return $this->component(UserAddress::class)->onAdd();
     }
 
     /**
@@ -33,7 +32,7 @@ class Profile extends Base
      */
     public function updateAddress()
     {
-        return $this->component()->onUpdate();
+        return $this->component(UserAddress::class)->onUpdate();
     }
 
     /**
@@ -43,7 +42,7 @@ class Profile extends Base
      */
     public function removeAddress()
     {
-        return $this->component()->onRemove();
+        return $this->component(UserAddress::class)->onRemove();
     }
 
     /**
@@ -59,20 +58,5 @@ class Profile extends Base
 
         $model->fill($data);
         return $model->save();
-    }
-
-    /**
-     * @return \Lovata\OrdersShopaholic\Components\UserAddress
-     * @throws \SystemException
-     */
-    protected function component()
-    {
-        /** @var UserAddress $component */
-        $component = ComponentManager::instance()->makeComponent(UserAddress::class);
-        if (!$component) {
-            throw new \Exception('component not found');
-        }
-
-        return $component;
     }
 }

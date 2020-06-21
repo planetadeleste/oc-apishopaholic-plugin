@@ -39,7 +39,7 @@ class Orders extends Base
     public function create()
     {
         /** @var MakeOrder $obComponent */
-        $obComponent = ComponentManager::instance()->makeComponent(MakeOrder::class);
+        $obComponent = $this->component(MakeOrder::class);
         $obComponent->onCreate();
         $arResponseData = Event::fire(Plugin::EVENT_API_ORDER_RESPONSE_DATA, [Result::data()]);
 

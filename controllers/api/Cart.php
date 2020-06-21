@@ -15,7 +15,7 @@ class Cart extends Base
      */
     public function getData()
     {
-        return $this->component()->onGetCartData();
+        return $this->cartComponent()->onGetCartData();
     }
 
     /**
@@ -25,7 +25,7 @@ class Cart extends Base
      */
     public function add()
     {
-        $response = $this->component()->onAdd();
+        $response = $this->cartComponent()->onAdd();
         if (!input('return_data')) {
             return $this->get();
         }
@@ -41,7 +41,7 @@ class Cart extends Base
      */
     public function update($id = null)
     {
-        $response = $this->component()->onUpdate();
+        $response = $this->cartComponent()->onUpdate();
         if (!input('return_data')) {
             return $this->get();
         }
@@ -55,7 +55,7 @@ class Cart extends Base
      */
     public function remove()
     {
-        $response = $this->component()->onRemove();
+        $response = $this->cartComponent()->onRemove();
         if (!input('return_data')) {
             return $this->get();
         }
@@ -73,7 +73,7 @@ class Cart extends Base
     public function get($iShippingTypeId = null)
     {
         $obShippingTypeItem = $iShippingTypeId ? ShippingTypeItem::make($iShippingTypeId) : null;
-        $obCartPositionCollection = $this->component()->get($obShippingTypeItem);
+        $obCartPositionCollection = $this->cartComponent()->get($obShippingTypeItem);
         $arCartData = [];
         if ($obCartPositionCollection->isNotEmpty()) {
             $arCartDataPositions = [];
@@ -110,15 +110,9 @@ class Cart extends Base
     /**
      * @return \Cms\Classes\ComponentBase|\Lovata\OrdersShopaholic\Components\Cart
      * @throws \SystemException
-     * @throws \Exception
      */
-    protected function component()
+    protected function cartComponent()
     {
-        $component = ComponentManager::instance()->makeComponent(CartComponent::class);
-        if (!$component) {
-            throw new \Exception('cart component not found');
-        }
-
-        return $component;
+        return $this->component(CartComponent::class);
     }
 }
