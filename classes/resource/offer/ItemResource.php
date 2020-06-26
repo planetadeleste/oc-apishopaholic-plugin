@@ -1,13 +1,12 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
 
-use Event;
-use Illuminate\Http\Resources\Json\Resource;
 use Lovata\Shopaholic\Classes\Helper\CurrencyHelper;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 
 /**
- * Class itemResource
+ * Class ItemResource
  *
  * @mixin \Lovata\Shopaholic\Classes\Item\OfferItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer
@@ -20,6 +19,8 @@ class ItemResource extends BaseResource
     public function getData()
     {
         return [
+            'preview_image'   => $this->preview_image ? $this->preview_image->getPath() : null,
+            'images'          => IndexCollectionImages::make(collect($this->images)),
             'price_value'     => (float)$this->price_value,
             'old_price_value' => (float)$this->old_price_value,
             'currency'        => CurrencyHelper::instance()->getDefault()->symbol,
@@ -28,21 +29,25 @@ class ItemResource extends BaseResource
                 300,
                 ['mode' => 'crop']
             ) : null,
-            'text' => $this->name,
-            'value' => $this->id,
+            'property'        => $this->formatProperty()
         ];
     }
 
     public function getDataKeys()
     {
         return [
+            'code',
+            'currency',
+            'currency_code',
             'id',
             'name',
-            'code',
+            'preview_image',
+            'preview_text',
             'price',
-            'old_price',
+            'price_value',
+            'product_id',
             'quantity',
-            'preview_text'
+            'thumbnail'
         ];
     }
 

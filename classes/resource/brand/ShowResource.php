@@ -1,12 +1,12 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Category;
+<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand;
 
 use PlanetaDelEste\ApiShopaholic\Plugin;
 
 /**
  * Class ShowResource
  *
- * @mixin \Lovata\Shopaholic\Classes\Item\CategoryItem
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Category
+ * @mixin \Lovata\Shopaholic\Classes\Item\BrandItem
+ * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand
  */
 class ShowResource extends ItemResource
 {
@@ -21,10 +21,9 @@ class ShowResource extends ItemResource
             'external_id',
             'preview_text',
             'description',
-            'parent_id',
-            'nest_left',
-            'nest_right',
-            'nest_depth',
+            'sort_order',
+            'created_at',
+            'updated_at',
             'images',
             'preview_image'
         ];

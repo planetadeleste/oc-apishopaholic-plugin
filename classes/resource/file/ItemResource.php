@@ -22,6 +22,18 @@ class ItemResource extends BaseResource
         ];
     }
 
+    public function getDataKeys()
+    {
+        return [
+            'thumb',
+            'path',
+            'file_name',
+            'ext',
+            'title',
+            'description',
+        ];
+    }
+
     protected function getEvent()
     {
         return null;

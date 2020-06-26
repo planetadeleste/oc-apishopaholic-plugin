@@ -35,12 +35,8 @@ Route::prefix('api/v1')
                 ->name('lang.')
                 ->group(plugins_path(Plugin::API_ROUTES.'lang.php'));
 
-            Route::apiResources(
-                [
-                    'categories' => 'Categories',
-                    'products'   => 'Products'
-                ]
-            );
+            Route::apiResource('categories', 'Categories', ['only' => ['index', 'show']]);
+            Route::apiResource('products', 'Products', ['only' => ['index', 'show']]);
 
             Route::group(
                 ['middleware' => GetUserFromToken::class],
@@ -50,8 +46,10 @@ Route::prefix('api/v1')
 
                     Route::apiResources(
                         [
-                            'profile' => 'Profile',
-                            'orders'  => 'Orders'
+                            'profile'    => 'Profile',
+                            'orders'     => 'Orders',
+                            'categories' => 'Categories',
+                            'products'   => 'Products'
                         ]
                     );
                 }

@@ -1,42 +1,37 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
 
-use Lovata\PropertiesShopaholic\Classes\Collection\PropertyCollection;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ItemResource as ItemResourceCategory;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
 use PlanetaDelEste\ApiShopaholic\Plugin;
-use System\Classes\PluginManager;
 
 /**
- * Class showResource
+ * Class ShowResource
  *
  * @mixin \Lovata\Shopaholic\Classes\Item\ProductItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Product
  */
 class ShowResource extends ItemResource
 {
-    /**
-     * @return array|void
-     */
-    public function getData()
+    public function getDataKeys()
     {
-        return parent::getData() + [
-                'active'        => $this->active,
-                'description'   => $this->description,
-                'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
-                'category'      => $this->category ? ItemResourceCategory::make($this->category) : null,
-                'images'        => IndexCollectionImages::make(collect($this->images)),
-                'property'      => $this->formatProperty()
-            ];
-    }
-
-    protected function formatProperty()
-    {
-        $arProperties = [];
-        if (PluginManager::instance()->exists('Lovata.PropertiesShopaholic')) {
-            $arProperties = $this->property->toSimpleArray();
-        }
-
-        return $arProperties;
+        return [
+            'active',
+            'brand_id',
+            'category_id',
+            'category_name',
+            'category',
+            'code',
+            'description',
+            'external_id',
+            'id',
+            'images',
+            'name',
+            'offers',
+            'preview_image',
+            'preview_text',
+            'property',
+            'secondary_thumb',
+            'slug',
+            'thumbnail',
+        ];
     }
 
     protected function getEvent()
@@ -44,3 +39,4 @@ class ShowResource extends ItemResource
         return Plugin::EVENT_SHOWRESOURCE_DATA;
     }
 }
+

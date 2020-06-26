@@ -1,6 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\User;
 
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Address\IndexCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\UserAddress\IndexCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 
@@ -33,7 +33,10 @@ class ItemResource extends BaseResource
             'phone',
             'phone_list',
             'socialite_token',
-            'property'
+            'property',
+            'avatar',
+            'groups',
+            'address',
         ];
     }
 

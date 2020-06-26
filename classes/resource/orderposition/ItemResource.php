@@ -1,6 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\OrderPosition;
 
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer\ItemResource as ItemResourceOffer;
 
 /**
  * Class ItemResource
@@ -24,7 +25,9 @@ class ItemResource extends BaseResource
      */
     public function getData()
     {
-        return [];
+        return [
+            'offer' => ItemResourceOffer::make($this->offer)
+        ];
     }
 
     public function getDataKeys()

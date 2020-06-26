@@ -1,0 +1,11 @@
+<?php namespace {{ studly_author }}\{{ studly_plugin }}\Classes\Resource\{{ studly_name }};
+
+/**
+ * Class ListCollection
+ *
+ * @package {{ studly_author }}\{{ studly_plugin }}\Classes\Resource\{{ studly_name }}
+ */
+class ListCollection extends IndexCollection
+{
+    public $collects = ItemResource::class;
+}

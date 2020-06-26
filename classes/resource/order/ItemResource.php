@@ -1,6 +1,8 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Order;
 
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\PaymentMethod\ItemResource as ItemResourcePaymentMethod;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Status\ItemResource as ItemResourceStatus;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 
 /**
@@ -11,28 +13,35 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  */
 class ItemResource extends BaseResource
 {
-
     /**
-     * @inheritDoc
-     */
-    protected function getEvent()
-    {
-        return Plugin::EVENT_ITEMRESOURCE_DATA;
-    }
-
-    /**
-     * @inheritDoc
+     * @return array|void
      */
     public function getData()
     {
-        return [];
+        return [
+            'shipping_price_value'                => (float)$this->shipping_price_value,
+            'old_shipping_price_value'            => (float)$this->old_shipping_price_value,
+            'discount_shipping_price_value'       => (float)$this->discount_shipping_price_value,
+            'total_price_value'                   => (float)$this->total_price_value,
+            'old_total_price_value'               => (float)$this->old_total_price_value,
+            'discount_total_price_value'          => (float)$this->discount_total_price_value,
+            'position_total_price_value'          => (float)$this->position_total_price_value,
+            'old_position_total_price_value'      => (float)$this->old_position_total_price_value,
+            'discount_position_total_price_value' => (float)$this->discount_position_total_price_value,
+            'status'                              => ItemResourceStatus::make($this->status),
+            'payment_method'                      => $this->payment_method
+                ? ItemResourcePaymentMethod::make($this->payment_method)
+                : null
+        ];
     }
 
-    /**
-     * @return array
-     */
     public function getDataKeys()
     {
         return ['id', 'order_number', 'currency_symbol', 'total_price'];
+    }
+
+    protected function getEvent()
+    {
+        return Plugin::EVENT_ITEMRESOURCE_DATA;
     }
 }

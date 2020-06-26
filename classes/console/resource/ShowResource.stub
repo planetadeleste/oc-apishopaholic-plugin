@@ -1,0 +1,28 @@
+<?php namespace {{ studly_author }}\{{ studly_plugin }}\Classes\Resource\{{ studly_name }};
+
+use PlanetaDelEste\ApiShopaholic\Plugin;
+
+/**
+ * Class ShowResource
+ *
+ * @mixin \{{ studly_expansion_author }}\{{ studly_expansion_plugin }}\Classes\Item\{{ studly_name }}Item
+ * @package {{ studly_author }}\{{ studly_plugin }}\Classes\Resource\{{ studly_name }}
+ */
+class ShowResource extends ItemResource
+{
+    public function getDataKeys()
+    {
+        return [
+{% for attr in attributes %}
+            '{{ attr }}'{% if not loop.last %},{% endif %}
+
+{% endfor %}
+        ];
+    }
+
+    protected function getEvent()
+    {
+        return Plugin::EVENT_SHOWRESOURCE_DATA;
+    }
+}
+

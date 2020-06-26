@@ -57,6 +57,7 @@ class Base extends Controller
         $this->setResources();
         $this->collection = $this->makeCollection();
         $this->collection = $this->applyFilters();
+
     }
 
     /**
@@ -85,7 +86,7 @@ class Base extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function list()
     {
@@ -340,7 +341,7 @@ class Base extends Controller
     protected function applyFilters()
     {
         if (!$this->collection) {
-            return null;
+            return $this->collection;
         }
 
         $data = $this->filters();
@@ -354,6 +355,9 @@ class Base extends Controller
                 $obCollection = $obCollection->filter($arFilters);
             }
             foreach ($arFilters as $sFilterName => $sFilterValue) {
+                if ($sFilterName == 'page') {
+                    continue;
+                }
                 if ($obCollection->methodExists($sFilterName)) {
                     $obCollection = call_user_func_array(
                         [$obCollection, $sFilterName],
@@ -362,6 +366,8 @@ class Base extends Controller
                 }
             }
         }
+
+        debug(['byFilters' => $obCollection->getIDList()]);
 
         if ($this->collection->methodExists('sort') && $arSort['column'] !== 'no') {
             $obCollection = $obCollection->sort($arSort['column'].'|'.$arSort['direction']);

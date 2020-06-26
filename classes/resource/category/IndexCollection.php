@@ -2,6 +2,11 @@
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
+/**
+ * Class IndexCollection
+ *
+ * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Category
+ */
 class IndexCollection extends ResourceCollection
 {
     public $collects = ShowResource::class;
@@ -9,5 +14,5 @@ class IndexCollection extends ResourceCollection
     public function toArray($request)
     {
         return $this->collection;
-    }
+}
 }

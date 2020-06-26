@@ -1,11 +1,11 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
+<?php namespace {{ studly_author }}\{{ studly_plugin }}\Classes\Resource\{{ studly_name }};
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
  * Class IndexCollection
  *
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer
+ * @package {{ studly_author }}\{{ studly_plugin }}\Classes\Resource\{{ studly_name }}
  */
 class IndexCollection extends ResourceCollection
 {

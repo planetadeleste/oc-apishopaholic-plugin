@@ -41,6 +41,7 @@ class ItemResource extends BaseResource
             'preview_text',
             'is_user_show',
             'user_status_id',
+            'color',
         ];
     }
 }

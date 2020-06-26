@@ -1,0 +1,44 @@
+<?php namespace {{ studly_author }}\{{ studly_plugin }}\Classes\Resource\{{ studly_name }};
+
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
+{% if preview_image %}
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
+{% endif %}
+use PlanetaDelEste\ApiShopaholic\Plugin;
+
+/**
+ * Class ItemResource
+ *
+ * @mixin \{{ studly_expansion_author }}\{{ studly_expansion_plugin }}\Classes\Item\{{ studly_name }}Item
+ * @package {{ studly_author }}\{{ studly_plugin }}\Classes\Resource\{{ studly_name }}
+ */
+class ItemResource extends BaseResource
+{
+    /**
+     * @return array|void
+     */
+    public function getData()
+    {
+        return [
+{% if preview_image  %}            'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
+{% endif %}
+{% if images %}            'images' => IndexCollectionImages::make(collect($this->images)),
+{% endif %}
+        ];
+    }
+
+    public function getDataKeys()
+    {
+        return [
+{% for attr in attributes %}
+            '{{ attr }}'{% if not loop.last %},{% endif %}
+
+{% endfor %}
+        ];
+    }
+
+    protected function getEvent()
+    {
+        return Plugin::EVENT_ITEMRESOURCE_DATA;
+    }
+}

@@ -19,18 +19,37 @@ abstract class BaseResource extends Resource
         $arDates = $this->getDates();
         $arData = $this->getData();
 
+        if (!empty($arData)) {
+            // Filter items by getDataKeys
+            $arData = array_intersect_key($arData, array_flip($arDataKeys));
+        }
+
         if (!empty($arDates) && $this->addDates) {
             $arData = $arData + $arDates;
         }
 
         if (!empty($arDataKeys)) {
             foreach ($arDataKeys as $sKey) {
+                if (array_key_exists($sKey, $arData)) {
+                    continue;
+                }
                 $arData[$sKey] = $this->{$sKey};
             }
         }
 
         if (is_string($this->getEvent())) {
-            Event::fire($this->getEvent(), [&$arData, $this]);
+            $arResponseData = Event::fire($this->getEvent(), [$arData, $this]);
+            if (!empty($arResponseData)) {
+                foreach ($arResponseData as $arResponseItem) {
+                    if (empty($arResponseItem) || !is_array($arResponseItem)) {
+                        continue;
+                    }
+
+                    foreach ($arResponseItem as $sKey => $sValue) {
+                        $arData[$sKey] = $sValue;
+                    }
+                }
+            }
         }
 
         return $arData;
@@ -47,6 +66,8 @@ abstract class BaseResource extends Resource
     abstract public function getData();
 
     /**
+     * Returns all used Item key attributes
+     *
      * @return array
      */
     public function getDataKeys()
@@ -54,6 +75,12 @@ abstract class BaseResource extends Resource
         return [];
     }
 
+
+    /**
+     * Get item dates in DateTimeString format
+     *
+     * @return array
+     */
     public function getDates()
     {
         return [

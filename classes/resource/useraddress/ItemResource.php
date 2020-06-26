@@ -1,4 +1,4 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Address;
+<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\UserAddress;
 
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
 use PlanetaDelEste\ApiShopaholic\Plugin;
@@ -7,30 +7,19 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  * Class ItemResource
  *
  * @mixin \Lovata\OrdersShopaholic\Classes\Item\UserAddressItem
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Address
+ * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\UserAddress
  */
 class ItemResource extends BaseResource
 {
-
     /**
-     * @inheritDoc
-     */
-    protected function getEvent()
-    {
-        return Plugin::EVENT_ITEMRESOURCE_DATA;
-    }
-
-    /**
-     * @return array
+     * @return array|void
      */
     public function getData()
     {
-        return [];
+        return [
+        ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getDataKeys()
     {
         return [
@@ -48,6 +37,13 @@ class ItemResource extends BaseResource
             'address1',
             'address2',
             'postcode',
+            'created_at',
+            'updated_at'
         ];
+    }
+
+    protected function getEvent()
+    {
+        return Plugin::EVENT_ITEMRESOURCE_DATA;
     }
 }
