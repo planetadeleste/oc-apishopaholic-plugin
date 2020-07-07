@@ -314,6 +314,8 @@ class Base extends Controller
             $json = json_decode($sort, true);
             if (!json_last_error()) {
                 $sort = $json;
+            } else {
+                $sort = ['column' => $sort];
             }
         }
         $sort = array_merge($sortDefault, $sort);
@@ -358,9 +360,10 @@ class Base extends Controller
                 if ($sFilterName == 'page') {
                     continue;
                 }
-                if ($obCollection->methodExists($sFilterName)) {
+                $sMethodName = camel_case($sFilterName);
+                if ($obCollection->methodExists($sMethodName)) {
                     $obCollection = call_user_func_array(
-                        [$obCollection, $sFilterName],
+                        [$obCollection, $sMethodName],
                         array_wrap($sFilterValue)
                     );
                 }

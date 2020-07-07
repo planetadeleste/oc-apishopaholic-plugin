@@ -44,14 +44,10 @@ Route::prefix('api/v1')
                     Route::prefix('orders')->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
                     Route::prefix('profile')->group(plugins_path(Plugin::API_ROUTES.'profile.php'));
 
-                    Route::apiResources(
-                        [
-                            'profile'    => 'Profile',
-                            'orders'     => 'Orders',
-                            'categories' => 'Categories',
-                            'products'   => 'Products'
-                        ]
-                    );
+                    Route::apiResource('products', 'Products', ['only' => ['store', 'update', 'destroy']]);
+                    Route::apiResource('profile', 'Profile', ['only' => ['store', 'update', 'destroy']]);
+                    Route::apiResource('orders', 'Orders', ['only' => ['store', 'update', 'destroy']]);
+                    Route::apiResource('categories', 'Categories', ['only' => ['store', 'update', 'destroy']]);
                 }
             );
         }
