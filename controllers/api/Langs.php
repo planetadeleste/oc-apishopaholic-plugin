@@ -1,6 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use DB;
+use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 use RainLab\Translate\Classes\Translator;
 use RainLab\Translate\Models\Message;
 

@@ -1,9 +1,9 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
 
 use Lovata\Shopaholic\Classes\Helper\CurrencyHelper;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
-use PlanetaDelEste\ApiShopaholic\Plugin;
+use PlanetaDelEste\ApiToolbox\Plugin;
+use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
 
 /**
  * Class ItemResource
@@ -11,7 +11,7 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  * @mixin \Lovata\Shopaholic\Classes\Item\OfferItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer
  */
-class ItemResource extends BaseResource
+class ItemResource extends Base
 {
     /**
      * @return array|void

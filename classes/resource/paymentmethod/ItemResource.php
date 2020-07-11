@@ -1,6 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\PaymentMethod;
 
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
+use PlanetaDelEste\ApiToolbox\Classes\Resource\Base as BaseResource;
 
 /**
  * Class ItemResource

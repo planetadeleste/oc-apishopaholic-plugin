@@ -1,8 +1,8 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Category;
 
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
-use PlanetaDelEste\ApiShopaholic\Plugin;
+use PlanetaDelEste\ApiToolbox\Plugin;
+use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
 
 /**
  * Class ItemResource
@@ -10,7 +10,7 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  * @mixin \Lovata\Shopaholic\Classes\Item\CategoryItem
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Category
  */
-class ItemResource extends BaseResource
+class ItemResource extends Base
 {
     /**
      * @return array|void

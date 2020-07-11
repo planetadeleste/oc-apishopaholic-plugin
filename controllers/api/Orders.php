@@ -1,6 +1,5 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
-use Cms\Classes\ComponentManager;
 use Event;
 use Exception;
 use Kharanenka\Helper\Result;
@@ -10,6 +9,7 @@ use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\IndexCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\ListCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\ShowResource;
 use PlanetaDelEste\ApiShopaholic\Plugin;
+use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 /**
  * Class Orders

@@ -1,6 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Category;
 
-use PlanetaDelEste\ApiShopaholic\Plugin;
+use PlanetaDelEste\ApiToolbox\Plugin;
 
 /**
  * Class ShowResource

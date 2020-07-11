@@ -1,10 +1,10 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
-use Cms\Classes\ComponentManager;
 use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
 use Lovata\OrdersShopaholic\Components\UserAddress;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
+use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 class Profile extends Base
 {

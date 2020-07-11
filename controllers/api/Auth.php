@@ -14,6 +14,7 @@ use Lovata\Buddies\Facades\AuthHelper;
 use Lovata\OrdersShopaholic\Classes\Processor\CartProcessor;
 use Lovata\OrdersShopaholic\Models\Cart;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
+use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class Auth extends Base

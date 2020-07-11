@@ -5,6 +5,7 @@ use Lovata\Shopaholic\Models\Category;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\IndexCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ListCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ShowResource;
+use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 /**
  * Class Categories

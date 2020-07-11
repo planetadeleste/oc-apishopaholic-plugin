@@ -1,6 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use Lovata\Shopaholic\Models\Product;
+use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 class Products extends Base
 {

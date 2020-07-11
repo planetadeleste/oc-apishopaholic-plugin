@@ -3,6 +3,7 @@
 use Cms\Classes\ComponentManager;
 use Kharanenka\Helper\Result;
 use Lovata\OrdersShopaholic\Components\PaymentMethodList as PaymentMethodListComponent;
+use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 class PaymentMethodList extends Base
 {

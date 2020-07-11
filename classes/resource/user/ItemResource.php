@@ -1,8 +1,8 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\User;
 
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\UserAddress\IndexCollection;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
-use PlanetaDelEste\ApiShopaholic\Plugin;
+use PlanetaDelEste\ApiToolbox\Classes\Resource\Base as BaseResource;
+use PlanetaDelEste\ApiToolbox\Plugin;
 
 /**
  * Class ItemResource

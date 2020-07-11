@@ -6,6 +6,7 @@ use Lovata\OrdersShopaholic\Classes\Item\ShippingTypeItem;
 use Lovata\OrdersShopaholic\Components\Cart as CartComponent;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer\ShowResource as ShowResourceOffer;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Product\ItemResource as ItemResourceProduct;
+use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 class Cart extends Base
 {

@@ -1,6 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\File;
 
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
+use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
 
 /**
  * Class ItemResource
@@ -8,7 +8,7 @@ use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
  * @mixin \System\Models\File
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\File
  */
-class ItemResource extends BaseResource
+class ItemResource extends Base
 {
     public function getData()
     {

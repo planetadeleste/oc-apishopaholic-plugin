@@ -1,9 +1,9 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Order;
 
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Base\BaseResource;
+use PlanetaDelEste\ApiToolbox\Classes\Resource\Base as BaseResource;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\PaymentMethod\ItemResource as ItemResourcePaymentMethod;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Status\ItemResource as ItemResourceStatus;
-use PlanetaDelEste\ApiShopaholic\Plugin;
+use PlanetaDelEste\ApiToolbox\Plugin;
 
 /**
  * Class ItemResource

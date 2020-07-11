@@ -1,7 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic;
 
 use Event;
-use PlanetaDelEste\ApiShopaholic\Classes\Console\CreateResource;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ApiShopaholicHandle;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ExtendElementCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Property\ExtendPropertyCollection;
@@ -13,16 +12,6 @@ use System\Classes\PluginBase;
  */
 class Plugin extends PluginBase
 {
-    const EVENT_SHOWRESOURCE_DATA = 'planetadeleste.apiShopaholic.showResourceData';
-    const EVENT_ITEMRESOURCE_DATA = 'planetadeleste.apiShopaholic.itemResourceData';
-    const EVENT_API_EXTEND_INDEX = 'planetadeleste.apiShopaholic.apiExtendIndex';
-    const EVENT_API_EXTEND_LIST = 'planetadeleste.apiShopaholic.apiExtendList';
-    const EVENT_API_EXTEND_SHOW = 'planetadeleste.apiShopaholic.apiExtendShow';
-    const EVENT_API_BEFORE_SHOW_COLLECT = 'planetadeleste.apiShopaholic.apiBeforeShowCollect';
-    const EVENT_API_EXTEND_STORE = 'planetadeleste.apiShopaholic.apiExtendStore';
-    const EVENT_API_EXTEND_UPDATE = 'planetadeleste.apiShopaholic.apiExtendUpdate';
-    const EVENT_API_EXTEND_DESTROY = 'planetadeleste.apiShopaholic.apiExtendDestroy';
-    const EVENT_API_ADD_COLLECTION = 'planetadeleste.apiShopaholic.apiAddCollection';
     const EVENT_API_ORDER_RESPONSE_DATA = 'planetadeleste.apiShopaholic.apiOrderResponseData';
     const EVENT_API_GATEWAY_IPN_RESPONSE = 'planetadeleste.apiShopaholic.apiGatewayIpnResponse';
     const API_ROUTES = '/planetadeleste/apishopaholic/routes/';
@@ -30,7 +19,8 @@ class Plugin extends PluginBase
     public $require = [
         'Lovata.OrdersShopaholic',
         'PlanetaDelEste.JWTAuth',
-        'PlanetaDelEste.BuddiesGroup'
+        'PlanetaDelEste.BuddiesGroup',
+        'PlanetaDelEste.ApiToolbox'
     ];
 
     /**
@@ -54,10 +44,5 @@ class Plugin extends PluginBase
         Event::subscribe(ExtendPropertyCollection::class);
         Event::subscribe(UserModelHandler::class);
         Event::subscribe(ApiShopaholicHandle::class);
-    }
-
-    public function register()
-    {
-        $this->registerConsoleCommand('apishopaholic:create:resource', CreateResource::class);
     }
 }
