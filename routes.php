@@ -49,6 +49,7 @@ Route::prefix('api/v1')
                     Route::apiResource('orders', 'Orders', ['only' => ['store', 'update', 'destroy']]);
                     Route::apiResource('categories', 'Categories', ['only' => ['store', 'update', 'destroy']]);
                     Route::apiResource('files', 'Files', ['only' => ['store', 'update', 'destroy']]);
+                    Route::apiResource('offers', 'Offers', ['only' => ['store', 'update', 'destroy']]);
                 }
             );
         }

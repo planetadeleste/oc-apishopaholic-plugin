@@ -45,6 +45,8 @@ class ItemResource extends Base
             'preview_text',
             'price',
             'price_value',
+            'old_price',
+            'old_price_value',
             'product_id',
             'quantity',
             'thumbnail'

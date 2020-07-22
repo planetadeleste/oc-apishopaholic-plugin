@@ -30,6 +30,8 @@ class ShowResource extends ItemResource
             'preview_text',
             'price',
             'price_value',
+            'old_price',
+            'old_price_value',
             'product_id',
             'property',
             'quantity',
