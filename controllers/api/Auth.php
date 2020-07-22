@@ -11,11 +11,9 @@ use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
 use Lovata\Buddies\Facades\AuthHelper;
-use Lovata\OrdersShopaholic\Classes\Processor\CartProcessor;
-use Lovata\OrdersShopaholic\Models\Cart;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use System\Classes\PluginManager;
 
 class Auth extends Base
 {
@@ -28,14 +26,8 @@ class Auth extends Base
     public function authenticate(Request $request)
     {
         $credentials = $request->only(['email', 'password']);
-        try {
-            // verify the credentials and create a token for the user
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
-            }
-        } catch (JWTException $e) {
-            // something went wrong
-            return response()->json(['error' => 'could_not_create_token'], 401);
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['error' => 'invalid_credentials'], 401);
         }
 
         /** @var \Lovata\Buddies\Models\User $userModel */
@@ -111,23 +103,28 @@ class Auth extends Base
     public function signup()
     {
         try {
-            /** @var Cart $obCart */
-
-            // Load current cart
-            $iCartID = Cookie::get(CartProcessor::COOKIE_NAME);
+            $bHasOrdersPlugin = PluginManager::instance()->hasPlugin('Lovata.OrdersShopaholic');
             $obCart = null;
-            if (!empty($iCartID) && !is_numeric($iCartID)) {
-                try {
-                    $iDecryptedCartID = Crypt::decryptString($iCartID);
-                    if (!empty($iDecryptedCartID)) {
-                        $iCartID = $iDecryptedCartID;
-                    }
-                } catch (\Exception $obException) {
-                }
-            }
 
-            if (!empty($iCartID)) {
-                $obCart = Cart::with('position')->find($iCartID);
+            // Check for OrdersShopaholic plugin
+            if($bHasOrdersPlugin) {
+                /** @var Lovata\OrdersShopaholic\Models\Cart $obCart */
+
+                // Load current cart
+                $iCartID = Cookie::get(Lovata\OrdersShopaholic\Classes\Processor\CartProcessor::COOKIE_NAME);
+                if (!empty($iCartID) && !is_numeric($iCartID)) {
+                    try {
+                        $iDecryptedCartID = Crypt::decryptString($iCartID);
+                        if (!empty($iDecryptedCartID)) {
+                            $iCartID = $iDecryptedCartID;
+                        }
+                    } catch (\Exception $obException) {
+                    }
+                }
+
+                if (!empty($iCartID)) {
+                    $obCart = Lovata\OrdersShopaholic\Models\Cart::with('position')->find($iCartID);
+                }
             }
 
             /** @var Registration $obComponent */
