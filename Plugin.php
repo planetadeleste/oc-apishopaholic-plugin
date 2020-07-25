@@ -2,6 +2,7 @@
 
 use Event;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ApiShopaholicHandle;
+use PlanetaDelEste\ApiShopaholic\Classes\Event\Category\ExtendCategoryCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ExtendElementCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Property\ExtendPropertyCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\User\UserModelHandler;
@@ -17,7 +18,7 @@ class Plugin extends PluginBase
     const API_ROUTES = '/planetadeleste/apishopaholic/routes/';
 
     public $require = [
-        'Lovata.OrdersShopaholic',
+        'Lovata.Shopaholic',
         'PlanetaDelEste.JWTAuth',
         'PlanetaDelEste.BuddiesGroup',
         'PlanetaDelEste.ApiToolbox'
@@ -42,6 +43,7 @@ class Plugin extends PluginBase
     {
         Event::subscribe(ExtendElementCollection::class);
         Event::subscribe(ExtendPropertyCollection::class);
+        Event::subscribe(ExtendCategoryCollection::class);
         Event::subscribe(UserModelHandler::class);
         Event::subscribe(ApiShopaholicHandle::class);
     }

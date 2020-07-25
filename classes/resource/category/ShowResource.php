@@ -1,7 +1,5 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Category;
 
-use PlanetaDelEste\ApiToolbox\Plugin;
-
 /**
  * Class ShowResource
  *
@@ -28,11 +26,6 @@ class ShowResource extends ItemResource
             'images',
             'preview_image'
         ];
-    }
-
-    protected function getEvent()
-    {
-        return Plugin::EVENT_SHOWRESOURCE_DATA;
     }
 }
 

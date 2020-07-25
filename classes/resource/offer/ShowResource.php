@@ -1,7 +1,5 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
 
-use PlanetaDelEste\ApiToolbox\Plugin;
-
 /**
  * Class ShowResource
  *
@@ -39,11 +37,6 @@ class ShowResource extends ItemResource
             'weight',
             'width',
         ];
-    }
-
-    protected function getEvent()
-    {
-        return Plugin::EVENT_SHOWRESOURCE_DATA;
     }
 }
 

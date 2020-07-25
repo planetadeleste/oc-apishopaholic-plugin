@@ -1,6 +1,5 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
-use Cms\Classes\ComponentManager;
 use Kharanenka\Helper\Result;
 use Lovata\OrdersShopaholic\Classes\Item\ShippingTypeItem;
 use Lovata\OrdersShopaholic\Components\Cart as CartComponent;

@@ -20,6 +20,7 @@ class ItemResource extends Base
         return [
             'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
             'images'        => IndexCollectionImages::make(collect($this->images)),
+            'active'        => (bool)$this->active
         ];
     }
 

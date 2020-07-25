@@ -1,7 +1,5 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\UserAddress;
 
-use PlanetaDelEste\ApiToolbox\Plugin;
-
 /**
  * Class ShowResource
  *
@@ -30,11 +28,6 @@ class ShowResource extends ItemResource
             'created_at',
             'updated_at'
         ];
-    }
-
-    protected function getEvent()
-    {
-        return Plugin::EVENT_SHOWRESOURCE_DATA;
     }
 }
 

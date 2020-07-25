@@ -2,10 +2,16 @@
 
 use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
-use Lovata\OrdersShopaholic\Components\UserAddress;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
+/**
+ * Class Profile
+ *
+ * @package PlanetaDelEste\ApiShopaholic\Controllers\Api
+ *
+ * @property User $obModel
+ */
 class Profile extends Base
 {
     public function getModelClass()
@@ -39,7 +45,11 @@ class Profile extends Base
      */
     public function addAddress()
     {
-        return $this->component(UserAddress::class)->onAdd();
+        if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
+            return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
+        }
+
+        return $this->component(Lovata\OrdersShopaholic\Components\UserAddress::class)->onAdd();
     }
 
     /**
@@ -48,7 +58,10 @@ class Profile extends Base
      */
     public function updateAddress()
     {
-        return $this->component(UserAddress::class)->onUpdate();
+        if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
+            return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
+        }
+        return $this->component(Lovata\OrdersShopaholic\Components\UserAddress::class)->onUpdate();
     }
 
     /**
@@ -58,21 +71,21 @@ class Profile extends Base
      */
     public function removeAddress()
     {
-        return $this->component(UserAddress::class)->onRemove();
+        if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
+            return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
+        }
+        return $this->component(Lovata\OrdersShopaholic\Components\UserAddress::class)->onRemove();
     }
 
     /**
-     * @param User  $model
-     * @param array $data
-     *
      * @return mixed
      */
-    protected function save($model, $data)
+    protected function save()
     {
-        $model->rules['password'] = 'required:create|between:8,255|confirmed';
-        $model->rules['password_confirmation'] = 'required_with:password|between:8,255';
+        $this->obModel->rules['password'] = 'required:create|between:8,255|confirmed';
+        $this->obModel->rules['password_confirmation'] = 'required_with:password|between:8,255';
 
-        $model->fill($data);
-        return $model->save();
+        $this->obModel->fill($this->data);
+        return $this->obModel->save();
     }
 }
