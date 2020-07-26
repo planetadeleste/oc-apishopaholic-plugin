@@ -2,6 +2,7 @@
 
 use Event;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ApiShopaholicHandle;
+use PlanetaDelEste\ApiShopaholic\Classes\Event\Category\CategoryModelHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Category\ExtendCategoryCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ExtendElementCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Property\ExtendPropertyCollection;
@@ -45,6 +46,7 @@ class Plugin extends PluginBase
         Event::subscribe(ExtendPropertyCollection::class);
         Event::subscribe(ExtendCategoryCollection::class);
         Event::subscribe(UserModelHandler::class);
+        Event::subscribe(CategoryModelHandler::class);
         Event::subscribe(ApiShopaholicHandle::class);
     }
 }

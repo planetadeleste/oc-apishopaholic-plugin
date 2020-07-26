@@ -15,9 +15,9 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 class Categories extends Base
 {
     /**
+     * @return \Illuminate\Http\JsonResponse|mixed
      * @api
      *
-     * @return \Illuminate\Http\JsonResponse|mixed
      */
     public function tree()
     {
@@ -48,25 +48,12 @@ class Categories extends Base
     public function save()
     {
         $this->obModel->fill($this->data);
+        $this->saveImages();
 
-        if (request()->hasFile('preview_image')) {
-            $obFile = request()->file('preview_image');
-            if ($obFile->isValid()) {
-                if ($this->obModel->preview_image) {
-                    $this->obModel->preview_image->delete();
-                }
-
-                $this->obModel->preview_image = $obFile;
-            }
-        }
-
-        if (request()->hasFile('images')) {
-            $arFiles = request()->file('images');
-            if (!empty($arFiles)) {
-                if ($this->obModel->images->count()) {
-                    $this->obModel->images->each(function ($obImage){ $obImage->delete(); });
-                }
-                $this->obModel->images = $arFiles;
+        if ($iParentId = array_get($this->data, 'parent_id')) {
+            $obCategory = Category::find($iParentId);
+            if ($obCategory) {
+                $this->obModel->parent()->associate($obCategory);
             }
         }
 
