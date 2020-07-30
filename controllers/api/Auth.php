@@ -13,7 +13,6 @@ use Lovata\Buddies\Components\RestorePassword;
 use Lovata\Buddies\Facades\AuthHelper;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
-use System\Classes\PluginManager;
 
 class Auth extends Base
 {
@@ -103,13 +102,12 @@ class Auth extends Base
     public function signup()
     {
         try {
-            $bHasOrdersPlugin = PluginManager::instance()->hasPlugin('Lovata.OrdersShopaholic');
             $obCart = null;
 
             // Check for OrdersShopaholic plugin
-            if($bHasOrdersPlugin) {
-                /** @var Lovata\OrdersShopaholic\Models\Cart $obCart */
+            if ($this->hasPlugin('Lovata.OrdersShopaholic')) {
 
+                /** @var Lovata\OrdersShopaholic\Models\Cart $obCart */
                 // Load current cart
                 $iCartID = Cookie::get(Lovata\OrdersShopaholic\Classes\Processor\CartProcessor::COOKIE_NAME);
                 if (!empty($iCartID) && !is_numeric($iCartID)) {

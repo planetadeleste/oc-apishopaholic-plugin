@@ -48,7 +48,7 @@ class Categories extends Base
     public function save()
     {
         $this->obModel->fill($this->data);
-        $this->saveImages();
+        $this->attachFiles();
 
         if ($iParentId = array_get($this->data, 'parent_id')) {
             $obCategory = Category::find($iParentId);
