@@ -16,9 +16,9 @@ class ItemResource extends BaseResource
     public function getData()
     {
         return [
-            'avatar' => $this->avatar ? $this->avatar->getPath() : null,
-            'groups' => $this->groups()->count() ? $this->groups()->lists('code') : [],
-            'address' => $this->address ? IndexCollection::make($this->address) : []
+            'avatar'  => $this->avatar ? $this->avatar->getPath() : null,
+            'groups'  => $this->groups ? $this->groups->lists('code') : [],
+            'address' => $this->address ? IndexCollection::make(collect($this->address)) : []
         ];
     }
 
@@ -32,11 +32,11 @@ class ItemResource extends BaseResource
             'middle_name',
             'phone',
             'phone_list',
-            'socialite_token',
             'property',
             'avatar',
             'groups',
             'address',
+            'is_activated'
         ];
     }
 

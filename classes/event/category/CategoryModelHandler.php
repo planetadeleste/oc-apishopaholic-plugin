@@ -1,5 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Event\Category;
 
+use Lovata\Shopaholic\Classes\Collection\CategoryCollection;
 use Lovata\Shopaholic\Classes\Item\CategoryItem;
 use Lovata\Toolbox\Classes\Event\ModelHandler;
 use Lovata\Shopaholic\Models\Category;
@@ -17,9 +18,16 @@ class CategoryModelHandler extends ModelHandler
     public function subscribe($obEvent)
     {
         parent::subscribe($obEvent);
+
         Category::extend(function ($obModel){
             $this->extendModel($obModel);
         });
+
+        CategoryCollection::extend(
+            function ($obCollection) {
+                $this->extendCollection($obCollection);
+            }
+        );
     }
 
     /**
@@ -28,6 +36,18 @@ class CategoryModelHandler extends ModelHandler
     protected function extendModel($obModel)
     {
         $obModel->casts['active'] = 'boolean';
+        $obModel->addCachedField('active');
+    }
+
+    /**
+     * @param CategoryCollection $obCollection
+     */
+    protected function extendCollection($obCollection)
+    {
+        $obCollection->addDynamicMethod('sort', function($sSort = CategoryListStore::SORT_CREATED_AT_ASC) use ($obCollection) {
+            $arResultIDList = CategoryListStore::instance()->sorting->get($sSort);
+            return $obCollection->intersect($arResultIDList);
+        });
     }
 
     /**

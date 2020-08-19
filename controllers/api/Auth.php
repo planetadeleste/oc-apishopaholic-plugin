@@ -11,7 +11,7 @@ use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
 use Lovata\Buddies\Facades\AuthHelper;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 class Auth extends Base
@@ -32,7 +32,7 @@ class Auth extends Base
         /** @var \Lovata\Buddies\Models\User $userModel */
         $userModel = JWTAuth::authenticate($token);
         AuthHelper::authenticate($credentials, true);
-        $user = $userModel ? ItemResource::make($userModel) : [];
+        $user = $userModel ? ItemResourceUser::make($userModel)->toArray(request()) : [];
         $ttl = config('jwt.ttl');
         $expires_in = $ttl * 60;
 
@@ -136,7 +136,7 @@ class Auth extends Base
                 return response()->json(Result::get(), 401);
             }
 
-            $user = ItemResource::make($obUserModel);
+            $user = ItemResourceUser::make($obUserModel)->toArray(request());
 
             // If cart exists, update user_id property
             if ($obCart) {

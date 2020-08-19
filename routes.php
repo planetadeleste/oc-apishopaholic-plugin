@@ -37,6 +37,7 @@ Route::prefix('api/v1')
 
             Route::apiResource('categories', 'Categories', ['only' => ['index', 'show']]);
             Route::apiResource('products', 'Products', ['only' => ['index', 'show']]);
+            Route::apiResource('groups', 'Groups', ['only' => ['index', 'show']]);
 
             Route::group(
                 ['middleware' => GetUserFromToken::class],
@@ -45,11 +46,13 @@ Route::prefix('api/v1')
                     Route::prefix('profile')->group(plugins_path(Plugin::API_ROUTES.'profile.php'));
 
                     Route::apiResource('products', 'Products', ['only' => ['store', 'update', 'destroy']]);
-                    Route::apiResource('profile', 'Profile', ['only' => ['store', 'update', 'destroy']]);
+                    Route::apiResource('profile', 'Profile');
+                    Route::apiResource('users', 'Users');
                     Route::apiResource('orders', 'Orders', ['only' => ['store', 'update', 'destroy']]);
                     Route::apiResource('categories', 'Categories', ['only' => ['store', 'update', 'destroy']]);
                     Route::apiResource('files', 'Files', ['only' => ['store', 'update', 'destroy']]);
                     Route::apiResource('offers', 'Offers', ['only' => ['store', 'update', 'destroy']]);
+                    Route::apiResource('groups', 'Groups', ['only' => ['store', 'update', 'destroy']]);
                 }
             );
         }

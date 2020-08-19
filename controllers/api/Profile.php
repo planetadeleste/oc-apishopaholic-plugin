@@ -2,7 +2,7 @@
 
 use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 /**
@@ -14,6 +14,8 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
  */
 class Profile extends Base
 {
+    protected $arFileList = ['attachOne' => 'avatar'];
+
     public function getModelClass()
     {
         return User::class;
@@ -25,7 +27,7 @@ class Profile extends Base
      */
     public function index()
     {
-        return ItemResource::make($this->currentUser());
+        return ItemResourceUser::make($this->currentUser());
     }
 
     /**
@@ -85,7 +87,14 @@ class Profile extends Base
         $this->obModel->rules['password'] = 'required:create|between:8,255|confirmed';
         $this->obModel->rules['password_confirmation'] = 'required_with:password|between:8,255';
 
+        if ($sAvatar = array_get($this->data, 'avatar')) {
+            if (is_string($sAvatar)) {
+                array_forget($this->data, 'avatar');
+            }
+        }
+
         $this->obModel->fill($this->data);
+        $this->attachFiles();
         return $this->obModel->save();
     }
 }

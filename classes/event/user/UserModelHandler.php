@@ -1,6 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Event\User;
 
 use Lovata\Buddies\Classes\Item\UserItem;
+use Lovata\Buddies\Models\Group;
 use Lovata\Buddies\Models\User;
 use Lovata\Toolbox\Classes\Event\ModelHandler;
 
@@ -8,6 +9,8 @@ use Lovata\Toolbox\Classes\Event\ModelHandler;
  * Class UserModelHandler
  *
  * @package PlanetaDelEste\ApiShopaholic\Classes\Event\User
+ *
+ * @property User $obElement
  */
 class UserModelHandler extends ModelHandler
 {
@@ -41,6 +44,7 @@ class UserModelHandler extends ModelHandler
      */
     protected function extendModel($obModel)
     {
+        $obModel->addCachedField('is_activated');
         $obModel->addDynamicMethod('scopeByGroup', function($obQuery, $code){
             /** @var \October\Rain\Database\Builder $obQuery */
             return $obQuery->whereHas(
@@ -60,6 +64,19 @@ class UserModelHandler extends ModelHandler
     protected function extendItem($obItem)
     {
 
+    }
+
+    protected function afterSave()
+    {
+        parent::afterSave();
+        if (!$this->obElement->groups->count()) {
+            $obGroup = Group::firstOrCreate(['code' => 'guest'],[
+                'name' => 'Guest',
+                'description' => 'Default group for guest users.'
+            ]);
+            $this->obElement->addGroup($obGroup);
+            $this->obElement->save();
+        }
     }
 
     /**

@@ -1,11 +1,11 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
+<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Group;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
  * Class IndexCollection
  *
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Product
+ * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Group
  */
 class IndexCollection extends ResourceCollection
 {

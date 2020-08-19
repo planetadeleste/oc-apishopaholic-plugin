@@ -1,5 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Event;
 
+use Lovata\Buddies\Models\Group;
+use Lovata\Buddies\Models\User;
 use Lovata\Shopaholic\Classes\Collection\BrandCollection;
 use Lovata\Shopaholic\Classes\Collection\CategoryCollection;
 use Lovata\Shopaholic\Classes\Collection\CurrencyCollection;
@@ -18,6 +20,8 @@ use Lovata\Shopaholic\Models\Tax;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ItemResource as ItemResourceCategory;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ListCollection;
 use PlanetaDelEste\ApiToolbox\Plugin;
+use PlanetaDelEste\BuddiesGroup\Classes\Collection\GroupCollection;
+use PlanetaDelEste\BuddiesGroup\Classes\Collection\UserCollection;
 use System\Classes\PluginManager;
 
 class ApiShopaholicHandle
@@ -73,7 +77,9 @@ class ApiShopaholicHandle
             Offer::class      => OfferCollection::class,
             Product::class    => ProductCollection::class,
             PromoBlock::class => PromoBlockCollection::class,
-            Tax::class        => TaxCollection::class
+            Tax::class        => TaxCollection::class,
+            User::class       => UserCollection::class,
+            Group::class      => GroupCollection::class
         ];
 
         if (PluginManager::instance()->hasPlugin('Lovata.OrdersShopaholic')) {
