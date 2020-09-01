@@ -26,7 +26,8 @@ class Auth extends Base
     {
         $credentials = $request->only(['email', 'password']);
         if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'invalid_credentials'], 401);
+            Result::setFalse()->setMessage('invalid_credentials');
+            return response()->json(Result::get(), 401);
         }
 
         /** @var \Lovata\Buddies\Models\User $userModel */
@@ -37,7 +38,8 @@ class Auth extends Base
         $expires_in = $ttl * 60;
 
         // if no errors are encountered we can return a JWT
-        return response()->json(compact('token', 'user', 'expires_in'));
+        Result::setTrue(compact('token', 'user', 'expires_in'));
+        return response()->json(Result::get());
     }
 
     /**
