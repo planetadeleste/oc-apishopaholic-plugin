@@ -95,7 +95,6 @@ class Profile extends Base
         }
 
         $this->obModel->fill($this->data);
-        $this->attachFiles();
-        return $this->obModel->save();
+        return $this->saveAndAttach();
     }
 }
