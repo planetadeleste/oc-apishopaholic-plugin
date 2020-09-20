@@ -24,7 +24,8 @@ class ShowResource extends ItemResource
             'nest_right',
             'nest_depth',
             'images',
-            'preview_image'
+            'preview_image',
+            'children'
         ];
     }
 }

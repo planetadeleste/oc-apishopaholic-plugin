@@ -20,7 +20,8 @@ class ItemResource extends Base
         return [
             'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
             'images'        => IndexCollectionImages::make(collect($this->images)),
-            'active'        => (bool)$this->active
+            'active'        => (bool)$this->active,
+            'children'      => ListCollection::make($this->children->collect())
         ];
     }
 
@@ -36,6 +37,7 @@ class ItemResource extends Base
             'preview_text',
             'parent_id',
             'preview_image',
+            'children'
         ];
     }
 
