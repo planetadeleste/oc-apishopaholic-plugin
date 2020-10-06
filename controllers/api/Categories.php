@@ -45,7 +45,7 @@ class Categories extends Base
      * @return bool
      * @throws \Exception
      */
-    public function save()
+    public function save(): bool
     {
         $this->obModel->fill($this->data);
 
@@ -59,7 +59,10 @@ class Categories extends Base
         return $this->saveAndAttach();
     }
 
-    public function getModelClass()
+    /**
+     * @return string
+     */
+    public function getModelClass(): string
     {
         return Category::class;
     }

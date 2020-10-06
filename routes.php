@@ -1,6 +1,7 @@
 <?php
 
 use PlanetaDelEste\ApiShopaholic\Plugin;
+use System\Classes\PluginManager;
 use Tymon\JWTAuth\Middleware\GetUserFromToken;
 
 Route::prefix('api/v1')
@@ -8,6 +9,7 @@ Route::prefix('api/v1')
     ->middleware('web')
     ->group(
         function () {
+            $bHasOrdersPlugin = PluginManager::instance()->hasPlugin('Lovata.OrdersShopaholic');
 
             Route::prefix('categories')
                 ->name('categories.')
@@ -17,13 +19,16 @@ Route::prefix('api/v1')
                 ->name('products.')
                 ->group(plugins_path(Plugin::API_ROUTES.'products.php'));
 
-            Route::prefix('cart')
-                ->name('cart.')
-                ->group(plugins_path(Plugin::API_ROUTES.'cart.php'));
+            // ORDERS
+            if ($bHasOrdersPlugin) {
+                Route::prefix('cart')
+                    ->name('cart.')
+                    ->group(plugins_path(Plugin::API_ROUTES.'cart.php'));
 
-            Route::prefix('orders')
-                ->name('orders.')
-                ->group(plugins_path(Plugin::API_ROUTES.'orders_public.php'));
+                Route::prefix('orders')
+                    ->name('orders.')
+                    ->group(plugins_path(Plugin::API_ROUTES.'orders_public.php'));
+            }
 
             // AUTHENTICATE
             Route::prefix('auth')
@@ -41,14 +46,17 @@ Route::prefix('api/v1')
 
             Route::group(
                 ['middleware' => GetUserFromToken::class],
-                function () {
-                    Route::prefix('orders')->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
+                function () use ($bHasOrdersPlugin) {
+                    if ($bHasOrdersPlugin) {
+                        Route::prefix('orders')->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
+                        Route::apiResource('orders', 'Orders', ['only' => ['store', 'update', 'destroy']]);
+                    }
+
                     Route::prefix('profile')->group(plugins_path(Plugin::API_ROUTES.'profile.php'));
+                    Route::apiResource('profile', 'Profile');
 
                     Route::apiResource('products', 'Products', ['only' => ['store', 'update', 'destroy']]);
-                    Route::apiResource('profile', 'Profile');
                     Route::apiResource('users', 'Users');
-                    Route::apiResource('orders', 'Orders', ['only' => ['store', 'update', 'destroy']]);
                     Route::apiResource('categories', 'Categories', ['only' => ['store', 'update', 'destroy']]);
                     Route::apiResource('files', 'Files', ['only' => ['store', 'update', 'destroy']]);
                     Route::apiResource('offers', 'Offers', ['only' => ['store', 'update', 'destroy']]);
