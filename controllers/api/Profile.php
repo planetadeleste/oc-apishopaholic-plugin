@@ -88,12 +88,6 @@ class Profile extends Base
         $this->obModel->rules['password_confirmation'] = 'required_with:password|between:8,255';
         array_forget($this->obModel->rules, 'avatar');
 
-        if ($sAvatar = array_get($this->data, 'avatar')) {
-            if (is_string($sAvatar)) {
-                array_forget($this->data, 'avatar');
-            }
-        }
-
         $this->obModel->fill($this->data);
         return $this->saveAndAttach();
     }
