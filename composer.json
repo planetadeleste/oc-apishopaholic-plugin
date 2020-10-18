@@ -1,0 +1,18 @@
+{
+    "name": "planetadeleste/oc-shopaholic-api",
+    "description": "RESTful API for Shopaholic Plugins",
+    "type": "october-plugin",
+    "license": "MIT",
+    "keywords": ["october", "shopaholic", "api"],
+    "authors": [
+        {
+            "name": "Alvaro Canepa",
+            "email": "bfpdevel@gmail.com",
+            "role": "creator"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "planetadeleste/oc-api-toolbox":"~1.0"
+    }
+}

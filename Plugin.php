@@ -19,7 +19,7 @@ class Plugin extends PluginBase
 
     public $require = [
         'Lovata.Shopaholic',
-        'PlanetaDelEste.JWTAuth',
+        'Lovata.Buddies',
         'PlanetaDelEste.BuddiesGroup',
         'PlanetaDelEste.ApiToolbox'
     ];
