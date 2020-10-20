@@ -1,5 +1,5 @@
 {
-    "name": "planetadeleste/oc-shopaholic-api",
+    "name": "planetadeleste/oc-apishopaholic-plugin",
     "description": "RESTful API for Shopaholic Plugins",
     "type": "october-plugin",
     "license": "MIT",
@@ -11,6 +11,11 @@
             "role": "creator"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "PlanetaDelEste\\ApiShopaholic\\": ""
+        }
+    },
     "require": {
         "php": ">=7.2",
         "planetadeleste/oc-api-toolbox":"~1.0"
