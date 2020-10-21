@@ -16,7 +16,7 @@ API Shopaholic has controllers/resources for this plugins, if they are installed
 ## Installation
 To install from the [repository](https://github.com/planetadeleste/oc-shopaholic-api), clone it into `plugins/planetadeleste/apishopaholic` and then run `composer update` from your project root in order to pull in the dependencies.
 
-To install it with **Composer**, run `composer require planetadeleste/oc-shopaholic-api` from your project root.
+To install it with **Composer**, run `composer require planetadeleste/oc-apishopaholic-plugin` from your project root.
 
 ## Documentation
 
