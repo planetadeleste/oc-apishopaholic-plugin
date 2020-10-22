@@ -82,7 +82,7 @@ class Profile extends Base
     /**
      * @return mixed
      */
-    protected function save()
+    protected function save(): bool
     {
         $this->obModel->rules['password'] = 'required:create|between:8,255|confirmed';
         $this->obModel->rules['password_confirmation'] = 'required_with:password|between:8,255';

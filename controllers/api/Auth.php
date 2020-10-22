@@ -31,7 +31,7 @@ class Auth extends Base
         }
 
         /** @var \Lovata\Buddies\Models\User $userModel */
-        $userModel = JWTAuth::authenticate($token);
+        $userModel = JWTAuth::setToken($token)->authenticate();
         AuthHelper::authenticate($credentials, true);
         $user = $userModel ? ItemResourceUser::make($userModel)->toArray(request()) : [];
         $ttl = config('jwt.ttl');
