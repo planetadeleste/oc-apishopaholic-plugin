@@ -49,11 +49,9 @@ class Auth extends Base
      */
     public function refresh(Request $request)
     {
-        $token = $request->get('token');
-
         try {
             // attempt to refresh the JWT
-            if (!$token = JWTAuth::refresh($token)) {
+            if (!$token = JWTAuth::refresh()) {
                 AuthHelper::logout();
                 Result::setFalse()->setMessage('could_not_refresh_token');
                 return response()->json(Result::get(), 401);
@@ -78,17 +76,12 @@ class Auth extends Base
      */
     public function invalidate(Request $request)
     {
-        $token = $request->get('token');
-
         try {
             // Logout from session
             AuthHelper::logout();
-            if (!$token) {
-                Result::setFalse()->setMessage('could_not_invalidate_token');
-                return response()->json(Result::get(), 401);
-            }
+
             // invalidate the token
-            JWTAuth::invalidate($token);
+            JWTAuth::invalidate();
         } catch (Exception $e) {
             // something went wrong
             return response()->json(['error' => 'could_not_invalidate_token'], 401);
