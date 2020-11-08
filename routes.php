@@ -38,6 +38,7 @@ Route::prefix('api/v1')
             Route::apiResource('categories', 'Categories', ['only' => ['index', 'show']]);
             Route::apiResource('products', 'Products', ['only' => ['index', 'show']]);
             Route::apiResource('groups', 'Groups', ['only' => ['index', 'show']]);
+            Route::apiResource('brands', 'Brands', ['only' => ['index', 'show']]);
 
             if ($bHasJWTAuthPlugin) {
                 // AUTHENTICATE
@@ -62,6 +63,7 @@ Route::prefix('api/v1')
                             Route::apiResource('files', 'Files', ['only' => ['store', 'update', 'destroy']]);
                             Route::apiResource('offers', 'Offers', ['only' => ['store', 'update', 'destroy']]);
                             Route::apiResource('groups', 'Groups', ['only' => ['store', 'update', 'destroy']]);
+                            Route::apiResource('brands', 'Brands', ['only' => ['store', 'update', 'destroy']]);
                         }
                     );
             }
