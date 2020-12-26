@@ -11,7 +11,7 @@ class PaymentMethodList extends Base
      * @return array
      * @throws \SystemException
      */
-    public function get()
+    public function get(): array
     {
         /** @var PaymentMethodListComponent $obPaymentListComponent */
         $obPaymentListComponent = $this->component(PaymentMethodListComponent::class);

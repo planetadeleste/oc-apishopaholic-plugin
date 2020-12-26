@@ -12,10 +12,13 @@ use PlanetaDelEste\BuddiesGroup\Classes\Store\GroupListStore;
  */
 class Groups extends Base
 {
-    public $sortColumn = 'name';
-
-    public function getModelClass()
+    public function getModelClass(): string
     {
         return Group::class;
+    }
+
+    public function getSortColumn(): string
+    {
+        return GroupListStore::SORT_NAME_ASC;
     }
 }

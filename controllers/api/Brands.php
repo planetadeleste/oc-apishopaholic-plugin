@@ -10,8 +10,13 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
  */
 class Brands extends Base
 {
-    public function getModelClass()
+    public function getModelClass(): string
     {
         return Brand::class;
+    }
+
+    public function getSortColumn(): ?string
+    {
+        return 'no';
     }
 }

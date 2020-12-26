@@ -16,24 +16,24 @@ class Profile extends Base
 {
     protected $arFileList = ['attachOne' => 'avatar'];
 
-    public function getModelClass()
+    public function getModelClass(): string
     {
         return User::class;
     }
 
     /**
      * @return \PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource
-     * @throws \Tymon\JWTAuth\Exceptions\JWTException
+     * @throws \Exception
      */
-    public function index()
+    public function index(): ItemResourceUser
     {
         return ItemResourceUser::make($this->currentUser());
     }
 
     /**
-     * @throws \Tymon\JWTAuth\Exceptions\JWTException
+     * @throws \Exception
      */
-    public function avatar()
+    public function avatar(): array
     {
         $this->currentUser();
         $sPath = $this->user->avatar ? $this->user->avatar->path : null;
@@ -45,25 +45,25 @@ class Profile extends Base
      * @return array
      * @throws \Exception
      */
-    public function addAddress()
+    public function addAddress(): array
     {
         if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
             return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
         }
 
-        return $this->component(Lovata\OrdersShopaholic\Components\UserAddress::class)->onAdd();
+        return $this->component(\Lovata\OrdersShopaholic\Components\UserAddress::class)->onAdd();
     }
 
     /**
      * @return array
      * @throws \SystemException
      */
-    public function updateAddress()
+    public function updateAddress(): array
     {
         if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
             return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
         }
-        return $this->component(Lovata\OrdersShopaholic\Components\UserAddress::class)->onUpdate();
+        return $this->component(\Lovata\OrdersShopaholic\Components\UserAddress::class)->onUpdate();
     }
 
     /**
@@ -71,12 +71,12 @@ class Profile extends Base
      * @throws \SystemException
      * @throws \Exception
      */
-    public function removeAddress()
+    public function removeAddress(): array
     {
         if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
             return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
         }
-        return $this->component(Lovata\OrdersShopaholic\Components\UserAddress::class)->onRemove();
+        return $this->component(\Lovata\OrdersShopaholic\Components\UserAddress::class)->onRemove();
     }
 
     /**

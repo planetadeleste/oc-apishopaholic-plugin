@@ -1,13 +1,14 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use DB;
+use Illuminate\Http\JsonResponse;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 use RainLab\Translate\Classes\Translator;
 use RainLab\Translate\Models\Message;
 
 class Langs extends Base
 {
-    public function lang($lang)
+    public function lang($lang): JsonResponse
     {
         $locale = Translator::instance();
         $locale->setLocale($lang);
@@ -24,7 +25,7 @@ class Langs extends Base
         return response()->json(compact('messages'));
     }
 
-    public function missing()
+    public function missing(): JsonResponse
     {
         $data = post();
         if ($lang = array_get($data, 'lang')) {

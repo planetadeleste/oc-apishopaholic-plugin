@@ -1,6 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 
+use Lovata\Shopaholic\Classes\Store\OfferListStore;
 use Lovata\Shopaholic\Models\Offer;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
@@ -11,8 +12,13 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
  */
 class Offers extends Base
 {
-    public function getModelClass()
+    public function getModelClass(): string
     {
         return Offer::class;
+    }
+
+    public function getSortColumn(): string
+    {
+        return OfferListStore::SORT_NEW;
     }
 }

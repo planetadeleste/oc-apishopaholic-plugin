@@ -2,6 +2,7 @@
 
 use Event;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Kharanenka\Helper\Result;
 use Lovata\OrdersShopaholic\Components\MakeOrder;
 use Lovata\OrdersShopaholic\Models\Order;
@@ -20,7 +21,7 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 class Orders extends Base
 {
     public $primaryKey = 'secret_key';
-    public function extendIndex()
+    public function extendIndex(): JsonResponse
     {
         try {
             $this->currentUser();
@@ -63,22 +64,22 @@ class Orders extends Base
         Event::fire(Plugin::EVENT_API_GATEWAY_IPN_RESPONSE, input());
     }
 
-    public function getModelClass()
+    public function getModelClass(): string
     {
         return Order::class;
     }
 
-    public function getIndexResource()
+    public function getIndexResource(): string
     {
         return IndexCollection::class;
     }
 
-    public function getListResource()
+    public function getListResource(): string
     {
         return ListCollection::class;
     }
 
-    public function getShowResource()
+    public function getShowResource(): string
     {
         return ShowResource::class;
     }
