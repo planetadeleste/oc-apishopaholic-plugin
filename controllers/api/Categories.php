@@ -19,7 +19,7 @@ class Categories extends Base
      * @api
      *
      */
-    public function tree()
+    public function tree(): \Illuminate\Http\JsonResponse
     {
         try {
             if (!$this->getListResource()) {

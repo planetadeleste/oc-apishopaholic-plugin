@@ -13,10 +13,13 @@ class Users extends Base
 {
     protected $arFileList = ['attachOne' => 'avatar'];
 
-    public $sortColumn = UserListStore::SORT_BY_LATEST;
-
-    public function getModelClass()
+    public function getModelClass(): string
     {
         return User::class;
+    }
+
+    public function getSortColumn(): ?string
+    {
+        return UserListStore::SORT_BY_LATEST;
     }
 }

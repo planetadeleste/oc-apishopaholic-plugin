@@ -13,7 +13,7 @@ class Cart extends Base
      * @return array
      * @throws \SystemException
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->cartComponent()->onGetCartData();
     }
@@ -23,7 +23,7 @@ class Cart extends Base
      * @throws \SystemException
      * @throws \Exception
      */
-    public function add()
+    public function add(): array
     {
         $response = $this->cartComponent()->onAdd();
         if (!input('return_data')) {
@@ -39,7 +39,7 @@ class Cart extends Base
      * @return array
      * @throws \SystemException
      */
-    public function update($id = null)
+    public function update($id = null): array
     {
         $response = $this->cartComponent()->onUpdate();
         if (!input('return_data')) {
@@ -53,7 +53,7 @@ class Cart extends Base
      * @return array|\Lovata\Toolbox\Classes\Item\ElementItem[]
      * @throws \SystemException
      */
-    public function remove()
+    public function remove(): array
     {
         $response = $this->cartComponent()->onRemove();
         if (!input('return_data')) {
@@ -70,7 +70,7 @@ class Cart extends Base
      * @throws \SystemException
      * @throws \Exception
      */
-    public function get($iShippingTypeId = null)
+    public function get($iShippingTypeId = null): array
     {
         $obShippingTypeItem = $iShippingTypeId ? ShippingTypeItem::make($iShippingTypeId) : null;
         $obCartPositionCollection = $this->cartComponent()->get($obShippingTypeItem);
