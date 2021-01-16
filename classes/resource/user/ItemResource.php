@@ -35,6 +35,7 @@ class ItemResource extends BaseResource
             'property',
             'avatar',
             'groups',
+            'role',
             'address',
             'is_activated'
         ];

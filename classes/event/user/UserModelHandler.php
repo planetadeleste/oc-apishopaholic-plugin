@@ -42,38 +42,75 @@ class UserModelHandler extends ModelHandler
     /**
      * @param User $obModel
      */
-    protected function extendModel($obModel)
+    protected function extendModel(User $obModel)
     {
         $obModel->addCachedField('is_activated');
-        $obModel->addDynamicMethod('scopeByGroup', function($obQuery, $code){
-            /** @var \October\Rain\Database\Builder $obQuery */
-            return $obQuery->whereHas(
-                'groups',
-                function ($query) use ($code) {
-                    $query->where('code', $code);
-                }
-            );
-        });
+        $obModel->addDynamicMethod(
+            'scopeByGroup',
+            function ($obQuery, $code) {
+                /** @var \October\Rain\Database\Builder $obQuery */
+                return $obQuery->whereHas(
+                    'groups',
+                    function ($query) use ($code) {
+                        $query->where('code', $code);
+                    }
+                );
+            }
+        );
 
-        $obModel->addDynamicMethod('scopeByAdmin', function($obQuery) {
-            /** @var \October\Rain\Database\Builder $obQuery */
-            return $obQuery->byGroup(static::GROUP_ADMIN);
-        });
+        $obModel->addDynamicMethod(
+            'scopeByAdmin',
+            function ($obQuery) {
+                /** @var \October\Rain\Database\Builder $obQuery */
+                return $obQuery->byGroup(static::GROUP_ADMIN);
+            }
+        );
+
+        $obModel->addDynamicMethod(
+            'getRoleAttribute',
+            function () use ($obModel) {
+                $arGroups = $obModel->groups()->lists('code');
+                $sCode = count($arGroups) == 1 ? $arGroups[0] : 'guest';
+                if (count($arGroups) > 1) {
+                    $arGroups = array_filter(
+                        $arGroups,
+                        function ($sCode) {
+                            return !in_array($sCode, ['registered', 'guest']);
+                        }
+                    );
+                    $sCode = array_first($arGroups);
+                }
+                return $sCode;
+            }
+        );
     }
 
-    protected function extendItem($obItem)
+    protected function extendItem(UserItem $obItem)
     {
-
+        $obItem->addDynamicMethod(
+            'getRoleAttribute',
+            function () use ($obItem) {
+                $sCode = $obItem->getObject()->role;
+                $obItem->setAttribute('role', $sCode);
+                return $sCode;
+            }
+        );
     }
 
     protected function afterSave()
     {
         parent::afterSave();
+        $this->obElement->purgeAttributes();
+        $this->obElement->password = null;
+
         if (!$this->obElement->groups->count()) {
-            $obGroup = Group::firstOrCreate(['code' => 'guest'],[
-                'name' => 'Guest',
-                'description' => 'Default group for guest users.'
-            ]);
+            $obGroup = Group::firstOrCreate(
+                ['code' => 'guest'],
+                [
+                    'name'        => 'Guest',
+                    'description' => 'Default group for guest users.'
+                ]
+            );
             $this->obElement->addGroup($obGroup);
             $this->obElement->save();
         }
@@ -82,7 +119,7 @@ class UserModelHandler extends ModelHandler
     /**
      * @inheritDoc
      */
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return User::class;
     }
@@ -90,7 +127,7 @@ class UserModelHandler extends ModelHandler
     /**
      * @inheritDoc
      */
-    protected function getItemClass()
+    protected function getItemClass(): string
     {
         return UserItem::class;
     }

@@ -5,7 +5,7 @@ use System\Classes\PluginManager;
 
 Route::prefix('api/v1')
     ->namespace('PlanetaDelEste\ApiShopaholic\Controllers\Api')
-    ->middleware('api')
+    ->middleware(['throttle:120,1', 'bindings'])
     ->group(
         function () {
             $bHasOrdersPlugin = PluginManager::instance()->hasPlugin('Lovata.OrdersShopaholic');

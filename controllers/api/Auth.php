@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Input;
 use JWTAuth;
 use Kharanenka\Helper\Result;
+use Lovata\Buddies\Classes\Item\UserItem;
 use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
@@ -33,7 +34,8 @@ class Auth extends Base
         /** @var \Lovata\Buddies\Models\User $userModel */
         $userModel = JWTAuth::setToken($token)->authenticate();
         AuthHelper::authenticate($credentials, true);
-        $user = $userModel ? ItemResourceUser::make($userModel)->toArray(request()) : [];
+        $obUserItem = UserItem::make($userModel->id);
+        $user = $userModel ? ItemResourceUser::make($obUserItem)->toArray(request()) : [];
         $ttl = config('jwt.ttl');
         $expires_in = $ttl * 60;
 

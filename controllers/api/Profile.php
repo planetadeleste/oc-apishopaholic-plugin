@@ -4,6 +4,7 @@ use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
+use PlanetaDelEste\ApiToolbox\Plugin;
 
 /**
  * Class Profile
@@ -15,6 +16,19 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 class Profile extends Base
 {
     protected $arFileList = ['attachOne' => 'avatar'];
+
+    public function init()
+    {
+        $this->bindEvent(
+            Plugin::EVENT_LOCAL_BEFORE_SAVE,
+            function(User $obModel, array &$arData) {
+                $obModel->rules['password'] = 'required:create|between:8,255|confirmed';
+                $obModel->rules['password_confirmation'] = 'required_with:password|between:8,255';
+                array_forget($obModel->rules, 'avatar');
+                array_forget($arData, 'phone_list');
+            }
+        );
+    }
 
     public function getModelClass(): string
     {
@@ -77,18 +91,5 @@ class Profile extends Base
             return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
         }
         return $this->component(\Lovata\OrdersShopaholic\Components\UserAddress::class)->onRemove();
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function save(): bool
-    {
-        $this->obModel->rules['password'] = 'required:create|between:8,255|confirmed';
-        $this->obModel->rules['password_confirmation'] = 'required_with:password|between:8,255';
-        array_forget($this->obModel->rules, 'avatar');
-
-        $this->obModel->fill($this->data);
-        return $this->saveAndAttach();
     }
 }
