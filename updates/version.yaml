@@ -6,9 +6,3 @@
     - Fix auth issues
 1.0.4:
     - Add Brands api controller
-1.0.5:
-    - Add role to User api attributes
-    - Return UserItem on authenticate data response
-    - Add before/after save events on Products and Users controllers
-    - Use custom throttle, bindings middleware instead of api on routes
-    - Add before save event on Profile controller

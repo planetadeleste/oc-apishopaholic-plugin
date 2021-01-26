@@ -11,6 +11,7 @@ class ShowResource extends ItemResource
     public function getDataKeys()
     {
         return [
+            'id',
             'currency_id',
             'discount_position_total_price',
             'discount_position_total_price_value',
@@ -18,7 +19,6 @@ class ShowResource extends ItemResource
             'discount_shipping_price_value',
             'discount_total_price',
             'discount_total_price_value',
-            'id',
             'old_position_total_price',
             'old_position_total_price_value',
             'old_shipping_price',

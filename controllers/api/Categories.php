@@ -15,11 +15,9 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 class Categories extends Base
 {
     /**
-     * @return \Illuminate\Http\JsonResponse|mixed
-     * @api
-     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\JsonResponse|mixed
      */
-    public function tree(): \Illuminate\Http\JsonResponse
+    public function tree()
     {
         try {
             if (!$this->getListResource()) {

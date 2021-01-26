@@ -18,7 +18,7 @@ class Users extends Base
     public function init()
     {
         $this->bindEvent(
-            Plugin::EVENT_LOCAL_BEFORE_SAVE,
+            Plugin::EVENT_LOCAL_AFTER_SAVE,
             function (User $obModel, $arData) {
                 $arGroups = array_get($arData, 'groups');
                 if (!empty($arGroups)) {
@@ -31,12 +31,7 @@ class Users extends Base
                     }
                     $obModel->groups()->sync($arUserGroupListID);
                 }
-            }
-        );
 
-        $this->bindEvent(
-            Plugin::EVENT_LOCAL_AFTER_SAVE,
-            function (User $obModel, $arData) {
                 if (array_get($arData, 'is_activated') && !$obModel->activated_at) {
                     $obModel->activate();
                     $obModel->save();
