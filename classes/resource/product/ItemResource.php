@@ -1,5 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
 
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand\ItemResource as ItemResourceBrand;
 use PlanetaDelEste\ApiToolbox\Classes\Resource\Base as BaseResource;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ItemResource as ItemResourceCategory;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
@@ -33,6 +34,7 @@ class ItemResource extends BaseResource
             'secondary_thumb' => $this->images
                 ? collect($this->images)->first()->getThumb(300, 300, ['mode' => 'crop'])
                 : null,
+            'brand' => $this->brand ? ItemResourceBrand::make($this->brand) : null
         ];
     }
 

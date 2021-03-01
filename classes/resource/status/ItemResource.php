@@ -15,7 +15,7 @@ class ItemResource extends BaseResource
     /**
      * @inheritDoc
      */
-    protected function getEvent()
+    protected function getEvent(): ?string
     {
         return Plugin::EVENT_ITEMRESOURCE_DATA;
     }
@@ -23,7 +23,7 @@ class ItemResource extends BaseResource
     /**
      * @inheritDoc
      */
-    public function getData()
+    public function getData(): array
     {
         /** @var \Lovata\OrdersShopaholic\Models\Status $obModel */
         $obModel = $this->getObject();
@@ -32,7 +32,7 @@ class ItemResource extends BaseResource
         ];
     }
 
-    public function getDataKeys()
+    public function getDataKeys(): array
     {
         return [
             'id',

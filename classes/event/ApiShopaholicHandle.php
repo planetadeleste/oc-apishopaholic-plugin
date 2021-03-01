@@ -17,6 +17,7 @@ use Lovata\Shopaholic\Models\Product;
 use Lovata\Shopaholic\Models\PromoBlock;
 use Lovata\Shopaholic\Models\Tax;
 
+use October\Rain\Events\Dispatcher;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ItemResource as ItemResourceCategory;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ListCollection;
 use PlanetaDelEste\ApiToolbox\Plugin;
@@ -26,10 +27,7 @@ use System\Classes\PluginManager;
 
 class ApiShopaholicHandle
 {
-    /**
-     * @param \October\Rain\Events\Dispatcher $obEvent
-     */
-    public function subscribe($obEvent)
+    public function subscribe(Dispatcher $obEvent)
     {
         $obEvent->listen(
             Plugin::EVENT_ITEMRESOURCE_DATA,
@@ -52,7 +50,7 @@ class ApiShopaholicHandle
      *
      * @return array
      */
-    protected function onExtendItem($arData, $obItemResource)
+    protected function onExtendItem(array $arData, $obItemResource): ?array
     {
         if ($obItemResource instanceof ItemResourceCategory) {
             if (input('filters.tree')) {
@@ -67,7 +65,7 @@ class ApiShopaholicHandle
         return null;
     }
 
-    protected function addCollections()
+    protected function addCollections(): array
     {
         // Main Shopaholic collections
         $arCollectionClasses = [
@@ -84,11 +82,13 @@ class ApiShopaholicHandle
 
         if (PluginManager::instance()->hasPlugin('Lovata.OrdersShopaholic')) {
             // OrderShopaholic plugin collections
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
             $arCollectionClasses += [
                 \Lovata\OrdersShopaholic\Models\CartPosition::class  => \Lovata\OrdersShopaholic\Classes\Collection\CartPositionCollection::class,
                 \Lovata\OrdersShopaholic\Models\Order::class         => \Lovata\OrdersShopaholic\Classes\Collection\OrderCollection::class,
                 \Lovata\OrdersShopaholic\Models\OrderPosition::class => \Lovata\OrdersShopaholic\Classes\Collection\OrderPositionCollection::class,
                 \Lovata\OrdersShopaholic\Models\PaymentMethod::class => \Lovata\OrdersShopaholic\Classes\Collection\PaymentMethodCollection::class,
+                \Lovata\OrdersShopaholic\Models\Status::class        => \Lovata\OrdersShopaholic\Classes\Collection\StatusCollection::class
             ];
         }
 

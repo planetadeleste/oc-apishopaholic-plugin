@@ -1,3 +1,3 @@
 <?php
 
-Route::post('create', 'Orders@create')->name('orders.create');
+Route::post('create', 'Orders@create')->name('create');

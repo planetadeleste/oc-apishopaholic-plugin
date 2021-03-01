@@ -8,6 +8,7 @@ use PlanetaDelEste\ApiShopaholic\Classes\Store\CategoryListStore;
 
 /**
  * Class CategoryModelHandler
+ *
  * @package PlanetaDelEste\ApiShopaholic\Classes\Event\Category
  */
 class CategoryModelHandler extends ModelHandler
@@ -19,9 +20,11 @@ class CategoryModelHandler extends ModelHandler
     {
         parent::subscribe($obEvent);
 
-        Category::extend(function ($obModel){
-            $this->extendModel($obModel);
-        });
+        Category::extend(
+            function ($obModel) {
+                $this->extendModel($obModel);
+            }
+        );
 
         CategoryCollection::extend(
             function ($obCollection) {
@@ -44,14 +47,18 @@ class CategoryModelHandler extends ModelHandler
      */
     protected function extendCollection($obCollection)
     {
-        $obCollection->addDynamicMethod('sort', function($sSort = CategoryListStore::SORT_CREATED_AT_ASC) use ($obCollection) {
-            $arResultIDList = CategoryListStore::instance()->sorting->get($sSort);
-            return $obCollection->intersect($arResultIDList);
-        });
+        $obCollection->addDynamicMethod(
+            'sort',
+            function ($sSort = CategoryListStore::SORT_CREATED_AT_ASC) use ($obCollection) {
+                $arResultIDList = CategoryListStore::instance()->sorting->get($sSort);
+                return $obCollection->intersect($arResultIDList);
+            }
+        );
     }
 
     /**
      * Get model class name
+     *
      * @return string
      */
     protected function getModelClass()
@@ -61,12 +68,14 @@ class CategoryModelHandler extends ModelHandler
 
     /**
      * Get item class name
+     *
      * @return string
      */
     protected function getItemClass()
     {
         return CategoryItem::class;
     }
+
     /**
      * After create event handler
      */

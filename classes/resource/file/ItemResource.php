@@ -17,14 +17,13 @@ class ItemResource extends Base
             'path'        => $this->getPath(),
             'file_name'   => $this->getFilename(),
             'ext'         => $this->getExtension(),
-            'title'       => $this->title,
-            'description' => $this->description
         ];
     }
 
     public function getDataKeys()
     {
         return [
+            'disk_name',
             'thumb',
             'path',
             'file_name',

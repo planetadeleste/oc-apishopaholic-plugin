@@ -35,6 +35,11 @@ Route::prefix('api/v1')
                 ->name('lang.')
                 ->group(plugins_path(Plugin::API_ROUTES.'lang.php'));
 
+            // FILES
+            Route::prefix('files')
+                ->name('files.')
+                ->group(plugins_path(Plugin::API_ROUTES.'files.php'));
+
             Route::apiResource('categories', 'Categories', ['only' => ['index', 'show']]);
             Route::apiResource('products', 'Products', ['only' => ['index', 'show']]);
             Route::apiResource('groups', 'Groups', ['only' => ['index', 'show']]);
@@ -50,11 +55,15 @@ Route::prefix('api/v1')
                     ->group(
                         function () use ($bHasOrdersPlugin) {
                             if ($bHasOrdersPlugin) {
-                                Route::prefix('orders')->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
+                                Route::prefix('orders')
+                                    ->name('orders.')
+                                    ->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
                                 Route::apiResource('orders', 'Orders', ['only' => ['store', 'update', 'destroy']]);
                             }
 
-                            Route::prefix('profile')->group(plugins_path(Plugin::API_ROUTES.'profile.php'));
+                            Route::prefix('profile')
+                                ->name('profile.')
+                                ->group(plugins_path(Plugin::API_ROUTES.'profile.php'));
                             Route::apiResource('profile', 'Profile');
 
                             Route::apiResource('products', 'Products', ['only' => ['store', 'update', 'destroy']]);
