@@ -10,7 +10,7 @@ use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
  */
 class ItemResource extends Base
 {
-    public function getData()
+    public function getData(): array
     {
         return [
             'thumb'       => $this->getThumb(300, 300, ['mode' => 'crop']),
@@ -20,7 +20,7 @@ class ItemResource extends Base
         ];
     }
 
-    public function getDataKeys()
+    public function getDataKeys(): array
     {
         return [
             'disk_name',

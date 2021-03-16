@@ -61,7 +61,7 @@ class CategoryModelHandler extends ModelHandler
      *
      * @return string
      */
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Category::class;
     }
@@ -71,7 +71,7 @@ class CategoryModelHandler extends ModelHandler
      *
      * @return string
      */
-    protected function getItemClass()
+    protected function getItemClass(): string
     {
         return CategoryItem::class;
     }

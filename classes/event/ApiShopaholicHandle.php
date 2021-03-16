@@ -27,6 +27,9 @@ use System\Classes\PluginManager;
 
 class ApiShopaholicHandle
 {
+    /**
+     * @param Dispatcher $obEvent
+     */
     public function subscribe(Dispatcher $obEvent)
     {
         $obEvent->listen(

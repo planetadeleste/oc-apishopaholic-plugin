@@ -21,13 +21,21 @@ Route::prefix('api/v1')
 
             // ORDERS
             if ($bHasOrdersPlugin) {
-                Route::prefix('cart')
-                    ->name('cart.')
-                    ->group(plugins_path(Plugin::API_ROUTES.'cart.php'));
+                // Add sessions and cookies for cart routes
+                Route::middleware(['web'])
+                    ->group(
+                        function () {
+                            Route::prefix('cart')
+                                ->name('cart.')
+                                ->group(plugins_path(Plugin::API_ROUTES.'cart.php'));
+                        }
+                    );
 
                 Route::prefix('orders')
                     ->name('orders.')
                     ->group(plugins_path(Plugin::API_ROUTES.'orders_public.php'));
+
+                Route::apiResource('paymentmethods', 'PaymentMethods', ['only' => ['index', 'show']]);
             }
 
             // TRANSLATE
@@ -73,6 +81,17 @@ Route::prefix('api/v1')
                             Route::apiResource('offers', 'Offers', ['only' => ['store', 'update', 'destroy']]);
                             Route::apiResource('groups', 'Groups', ['only' => ['store', 'update', 'destroy']]);
                             Route::apiResource('brands', 'Brands', ['only' => ['store', 'update', 'destroy']]);
+                            Route::apiResource(
+                                'paymentmethods',
+                                'PaymentMethods',
+                                [
+                                    'only' => [
+                                        'store',
+                                        'update',
+                                        'destroy'
+                                    ]
+                                ]
+                            );
                         }
                     );
             }

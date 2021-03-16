@@ -16,10 +16,7 @@ use System\Classes\PluginManager;
  */
 class ItemResource extends BaseResource
 {
-    /**
-     * @return array|void
-     */
-    public function getData()
+    public function getData(): array
     {
         return [
             'preview_image'   => $this->preview_image ? $this->preview_image->getPath() : null,
@@ -38,7 +35,7 @@ class ItemResource extends BaseResource
         ];
     }
 
-    public function getDataKeys()
+    public function getDataKeys(): array
     {
         return [
             'id',
@@ -54,7 +51,7 @@ class ItemResource extends BaseResource
         ];
     }
 
-    protected function getEvent()
+    protected function getEvent(): ?string
     {
         return Plugin::EVENT_ITEMRESOURCE_DATA;
     }
