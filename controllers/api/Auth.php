@@ -14,6 +14,7 @@ use Lovata\Buddies\Components\RestorePassword;
 use Lovata\Buddies\Facades\AuthHelper;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
+use PlanetaDelEste\JWTAuth\Models\User;
 
 class Auth extends Base
 {
@@ -96,7 +97,7 @@ class Auth extends Base
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function signup()
+    public function signup(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $obCart = null;
@@ -104,9 +105,9 @@ class Auth extends Base
             // Check for OrdersShopaholic plugin
             if ($this->hasPlugin('Lovata.OrdersShopaholic')) {
 
-                /** @var Lovata\OrdersShopaholic\Models\Cart $obCart */
+                /** @var \Lovata\OrdersShopaholic\Models\Cart $obCart */
                 // Load current cart
-                $iCartID = Cookie::get(Lovata\OrdersShopaholic\Classes\Processor\CartProcessor::COOKIE_NAME);
+                $iCartID = Cookie::get(\Lovata\OrdersShopaholic\Classes\Processor\CartProcessor::COOKIE_NAME);
                 if (!empty($iCartID) && !is_numeric($iCartID)) {
                     try {
                         $iDecryptedCartID = Crypt::decryptString($iCartID);
@@ -118,7 +119,7 @@ class Auth extends Base
                 }
 
                 if (!empty($iCartID)) {
-                    $obCart = Lovata\OrdersShopaholic\Models\Cart::with('position')->find($iCartID);
+                    $obCart = \Lovata\OrdersShopaholic\Models\Cart::with('position')->find($iCartID);
                 }
             }
 
@@ -128,7 +129,7 @@ class Auth extends Base
                 null,
                 ['activation' => 'activation_on', 'force_login' => true]
             );
-            $obUserModel = $obComponent->registration(post());
+            $obUserModel = $obComponent->registration($request->all());
             if (!$obUserModel) {
                 return response()->json(Result::get(), 401);
             }
@@ -145,7 +146,8 @@ class Auth extends Base
             return response()->json(Result::get(), 401);
         }
 
-        $token = JWTAuth::fromUser($obUserModel);
+        $obAuthUser = User::find($obUserModel->id);
+        $token = JWTAuth::fromUser($obAuthUser);
         $ttl = config('jwt.ttl');
         $expires_in = $ttl * 60;
         Result::setData(compact('token', 'user', 'expires_in'));

@@ -5,6 +5,7 @@ Route::get('csrf', '\PlanetaDelEste\ApiToolbox\Classes\Api\Base@csrfToken')->nam
 
 Route::post('login', 'Auth@authenticate')->name('login');
 Route::post('register', 'Auth@signup')->name('register');
+Route::post('signup', 'Auth@signup')->name('signup');
 
 Route::post('restore_password', 'Auth@restorePassword')->name('restore_password');
 Route::post('reset_password', 'Auth@resetPassword')->name('reset_password');
