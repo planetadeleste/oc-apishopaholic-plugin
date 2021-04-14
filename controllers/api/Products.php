@@ -30,11 +30,8 @@ class Products extends Base
             function (Product $obModel, array $arData) {
                 if ($arOffers = array_get($arData, 'offers')) {
                     foreach ($arOffers as $arOffer) {
-                        $iOfferID = array_get($arOffer, 'id');
-                        $obOffer = $iOfferID ? Offer::find($iOfferID) : new Offer();
-                        if (!$obOffer) {
-                            $obOffer = new Offer();
-                        }
+                        $iOfferID = array_get($arOffer, 'id', 0);
+                        $obOffer = Offer::findOrNew($iOfferID);
                         $obOffer->fill($arOffer);
                         if (!$iOfferID) {
                             $obModel->offer()->add($obOffer);
