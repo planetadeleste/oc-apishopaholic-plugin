@@ -63,10 +63,15 @@ Route::prefix('api/v1')
                     ->group(
                         function () use ($bHasOrdersPlugin) {
                             if ($bHasOrdersPlugin) {
-                                Route::prefix('orders')
-                                    ->name('orders.')
-                                    ->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
-                                Route::apiResource('orders', 'Orders', ['only' => ['store', 'update', 'destroy']]);
+                                Route::middleware(['web'])
+                                    ->group(
+                                        function () {
+                                            Route::prefix('orders')
+                                                ->name('orders.')
+                                                ->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
+                                            Route::apiResource('orders', 'Orders');
+                                        }
+                                    );
                             }
 
                             Route::prefix('profile')

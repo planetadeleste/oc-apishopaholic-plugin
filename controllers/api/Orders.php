@@ -21,7 +21,11 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 class Orders extends Base
 {
     public $primaryKey = 'secret_key';
-    public function extendIndex(): JsonResponse
+
+    /**
+     * @return \Illuminate\Http\JsonResponse|void
+     */
+    public function extendIndex()
     {
         try {
             $this->currentUser();

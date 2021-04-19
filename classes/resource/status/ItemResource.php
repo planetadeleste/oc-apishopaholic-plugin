@@ -28,7 +28,9 @@ class ItemResource extends BaseResource
         /** @var \Lovata\OrdersShopaholic\Models\Status $obModel */
         $obModel = $this->getObject();
         return [
-            'color' => $obModel ? $obModel->color : null
+            'color'         => $obModel ? $obModel->color : null,
+            'name'          => trans($this->name),
+            'name_for_user' => trans($this->name_for_user)
         ];
     }
 
