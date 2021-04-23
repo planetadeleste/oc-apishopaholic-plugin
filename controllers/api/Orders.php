@@ -2,7 +2,6 @@
 
 use Event;
 use Exception;
-use Illuminate\Http\JsonResponse;
 use Kharanenka\Helper\Result;
 use Lovata\OrdersShopaholic\Components\MakeOrder;
 use Lovata\OrdersShopaholic\Models\Order;
@@ -10,6 +9,7 @@ use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\IndexCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\ListCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Order\ShowResource;
 use PlanetaDelEste\ApiShopaholic\Plugin;
+use \PlanetaDelEste\ApiShopaholic\Classes\Resource\OrderPosition\IndexCollection as OrderPositionIndexCollection;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 /**
@@ -61,6 +61,29 @@ class Orders extends Base
         }
 
         return Result::get();
+    }
+
+    public function positions($sValue)
+    {
+        try {
+            $iOrderId = $this->getItemId($sValue);
+            if (!$iOrderId) {
+                throw new Exception(static::ALERT_RECORD_NOT_FOUND, 403);
+            }
+
+            /** @var \Lovata\OrdersShopaholic\Classes\Item\OrderItem $obOrderItem */
+            $obOrderItem = $this->getItem($iOrderId);
+            if ($obOrderItem) {
+                Result::setTrue();
+                Result::setData(OrderPositionIndexCollection::make($obOrderItem->order_position->collect()));
+            } else {
+                Result::setFalse();
+            }
+
+            return Result::get();
+        } catch (Exception $ex) {
+            return static::exceptionResult($ex);
+        }
     }
 
     public function ipn()
