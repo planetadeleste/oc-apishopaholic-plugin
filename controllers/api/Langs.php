@@ -13,14 +13,26 @@ class Langs extends Base
         $locale = Translator::instance();
         $locale->setLocale($lang);
 
-        $messages = Message::whereRaw("JSON_EXTRACT(`message_data`, '$.{$locale->getLocale()}') <> \"\"")
-            ->select(
-                [
-                    'code',
-                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(`message_data`, '$.{$locale->getLocale()}')) as `message`")
-                ]
-            )
-            ->lists('message', 'code');
+        if (config('database.default') == 'pgsql') {
+            $messages = Message::whereRaw("message_data::json->>'{$locale->getLocale()}' <> ''")
+                ->select(
+                    [
+                        'code',
+                        DB::raw("message_data::json->>'{$locale->getLocale()}' as message")
+                    ]
+                )
+                ->lists('message', 'code');
+        } else {
+            $messages = Message::whereRaw("JSON_EXTRACT(`message_data`, '$.{$locale->getLocale()}') <> \"\"")
+                ->select(
+                    [
+                        'code',
+                        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(`message_data`, '$.{$locale->getLocale()}')) as `message`")
+                    ]
+                )
+                ->lists('message', 'code');
+        }
+
 
         return response()->json(compact('messages'));
     }

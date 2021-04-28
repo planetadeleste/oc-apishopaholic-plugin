@@ -70,6 +70,17 @@ Route::prefix('api/v1')
                                                 ->name('orders.')
                                                 ->group(plugins_path(Plugin::API_ROUTES.'orders.php'));
                                             Route::apiResource('orders', 'Orders');
+                                            Route::apiResource(
+                                                'paymentmethods',
+                                                'PaymentMethods',
+                                                [
+                                                    'only' => [
+                                                        'store',
+                                                        'update',
+                                                        'destroy'
+                                                    ]
+                                                ]
+                                            );
                                         }
                                     );
                             }
@@ -78,7 +89,6 @@ Route::prefix('api/v1')
                                 ->name('profile.')
                                 ->group(plugins_path(Plugin::API_ROUTES.'profile.php'));
                             Route::apiResource('profile', 'Profile');
-
                             Route::apiResource('products', 'Products', ['only' => ['store', 'update', 'destroy']]);
                             Route::apiResource('users', 'Users');
                             Route::apiResource('categories', 'Categories', ['only' => ['store', 'update', 'destroy']]);
@@ -86,17 +96,6 @@ Route::prefix('api/v1')
                             Route::apiResource('offers', 'Offers', ['only' => ['store', 'update', 'destroy']]);
                             Route::apiResource('groups', 'Groups', ['only' => ['store', 'update', 'destroy']]);
                             Route::apiResource('brands', 'Brands', ['only' => ['store', 'update', 'destroy']]);
-                            Route::apiResource(
-                                'paymentmethods',
-                                'PaymentMethods',
-                                [
-                                    'only' => [
-                                        'store',
-                                        'update',
-                                        'destroy'
-                                    ]
-                                ]
-                            );
                         }
                     );
             }
