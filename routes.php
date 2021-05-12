@@ -10,13 +10,11 @@ Route::prefix('api/v1')
             $arRoutes = [
                 'auth',
                 'brands',
-                'cart',
                 'categories',
                 'files',
                 'groups',
                 'lang',
                 'offers',
-                'orders',
                 'products',
                 'profile',
                 'users',

@@ -23,7 +23,6 @@ use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ListCollection;
 use PlanetaDelEste\ApiToolbox\Plugin;
 use PlanetaDelEste\BuddiesGroup\Classes\Collection\GroupCollection;
 use PlanetaDelEste\BuddiesGroup\Classes\Collection\UserCollection;
-use System\Classes\PluginManager;
 
 class ApiShopaholicHandle
 {
@@ -71,7 +70,7 @@ class ApiShopaholicHandle
     protected function addCollections(): array
     {
         // Main Shopaholic collections
-        $arCollectionClasses = [
+        return [
             Brand::class      => BrandCollection::class,
             Category::class   => CategoryCollection::class,
             Currency::class   => CurrencyCollection::class,
@@ -82,19 +81,5 @@ class ApiShopaholicHandle
             User::class       => UserCollection::class,
             Group::class      => GroupCollection::class
         ];
-
-        if (PluginManager::instance()->hasPlugin('Lovata.OrdersShopaholic')) {
-            // OrderShopaholic plugin collections
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
-            $arCollectionClasses += [
-                \Lovata\OrdersShopaholic\Models\CartPosition::class  => \Lovata\OrdersShopaholic\Classes\Collection\CartPositionCollection::class,
-                \Lovata\OrdersShopaholic\Models\Order::class         => \Lovata\OrdersShopaholic\Classes\Collection\OrderCollection::class,
-                \Lovata\OrdersShopaholic\Models\OrderPosition::class => \Lovata\OrdersShopaholic\Classes\Collection\OrderPositionCollection::class,
-                \Lovata\OrdersShopaholic\Models\PaymentMethod::class => \Lovata\OrdersShopaholic\Classes\Collection\PaymentMethodCollection::class,
-                \Lovata\OrdersShopaholic\Models\Status::class        => \Lovata\OrdersShopaholic\Classes\Collection\StatusCollection::class
-            ];
-        }
-
-        return $arCollectionClasses;
     }
 }
