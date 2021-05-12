@@ -6,3 +6,44 @@
     - Fix auth issues
 1.0.4:
     - Add Brands api controller
+1.0.5:
+    - Add getSortColumn method
+1.0.6:
+    - Add getSortColumn method to Users controller
+1.0.7:
+    - Add role to User api attributes
+    - Return UserItem on authenticate data response
+    - Add before/after save events on Products and Users controllers
+    - Use custom throttle, bindings middleware instead of api on routes
+    - Add before save event on Profile controller
+1.0.8:
+    - Add role to User api attributes
+    - Return UserItem on authenticate data response
+    - Add before/after save events on Products and Users controllers
+    - Use custom throttle, bindings middleware instead of api on routes
+    - Add before save event on Profile controller
+1.0.9:
+    - Use "web" middleware on cart routes to get session data
+    - Add paymentmethods api resource
+    - Add file to api routes
+    - Add brand property to products response
+    - Add offers method to products controller
+1.0.10:
+    - New route "orders/{id}/position" to load order position items
+    - Add compatibility with postgresql
+    - Move payment methods routes inside of orders group
+    - Add web middleware to orders routes
+    - Remove options from Route::apiResource on orders routes
+    - Display status name using trans function
+    - Add try-catch block on Profile avatar/address methods
+    - Add address route to profile
+    - Add created_at and updated_at attributes to User model
+    - Set location data
+    - Add after signup and valid events
+    - Fix Auth signup
+    - Add PaymentMethods controller
+1.0.11:
+    - Organize routes
+1.0.12:
+    - Move orders elements to ApiOrdersShopaholic plugin
+
