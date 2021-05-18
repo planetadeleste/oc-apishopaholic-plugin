@@ -4,7 +4,6 @@ use Exception;
 use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\UserAddress\IndexCollection;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 use PlanetaDelEste\ApiToolbox\Plugin;
 
@@ -61,60 +60,5 @@ class Profile extends Base
         } catch (Exception $e) {
             return static::exceptionResult($e);
         }
-    }
-
-    /**
-     * Get current user addresses
-     *
-     * @return array|\Illuminate\Http\JsonResponse
-     */
-    public function address()
-    {
-        try {
-            $this->currentUser();
-            $arAddress = $this->user->address ? IndexCollection::make(collect($this->user->address)) : [];
-
-            return Result::setData($arAddress)->get();
-        } catch (Exception $e) {
-            return static::exceptionResult($e);
-        }
-    }
-
-    /**
-     * @return array
-     * @throws \Exception
-     */
-    public function addAddress(): array
-    {
-        if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
-            return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
-        }
-
-        return $this->component(\Lovata\OrdersShopaholic\Components\UserAddress::class)->onAdd();
-    }
-
-    /**
-     * @return array
-     * @throws \SystemException
-     */
-    public function updateAddress(): array
-    {
-        if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
-            return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
-        }
-        return $this->component(\Lovata\OrdersShopaholic\Components\UserAddress::class)->onUpdate();
-    }
-
-    /**
-     * @return array
-     * @throws \SystemException
-     * @throws \Exception
-     */
-    public function removeAddress(): array
-    {
-        if (!$this->hasPlugin('Lovata.OrdersShopaholic')) {
-            return Result::setFalse()->setMessage('Plugin Lovata.OrdersShopaholic not installed')->get();
-        }
-        return $this->component(\Lovata\OrdersShopaholic\Components\UserAddress::class)->onRemove();
     }
 }

@@ -20,6 +20,7 @@ use Lovata\Shopaholic\Models\Tax;
 use October\Rain\Events\Dispatcher;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ItemResource as ItemResourceCategory;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ListCollection;
+use PlanetaDelEste\ApiShopaholic\Plugin as PluginApiShopaholic;
 use PlanetaDelEste\ApiToolbox\Plugin;
 use PlanetaDelEste\BuddiesGroup\Classes\Collection\GroupCollection;
 use PlanetaDelEste\BuddiesGroup\Classes\Collection\UserCollection;
@@ -32,9 +33,9 @@ class ApiShopaholicHandle
     public function subscribe(Dispatcher $obEvent)
     {
         $obEvent->listen(
-            Plugin::EVENT_ITEMRESOURCE_DATA,
-            function ($arData, $obItemResource) {
-                return $this->onExtendItem($arData, $obItemResource);
+            PluginApiShopaholic::EVENT_ITEMRESOURCE_DATA.'.category',
+            function ($obItemResource, $arData) {
+                return $this->onExtendItem($obItemResource, $arData);
             }
         );
 
@@ -48,20 +49,18 @@ class ApiShopaholicHandle
 
     /**
      * @param array                                            $arData
-     * @param \PlanetaDelEste\ApiToolbox\Classes\Resource\Base $obItemResource
+     * @param ItemResourceCategory $obItemResource
      *
      * @return array
      */
-    protected function onExtendItem(array $arData, $obItemResource): ?array
+    protected function onExtendItem(ItemResourceCategory $obItemResource, array $arData): ?array
     {
-        if ($obItemResource instanceof ItemResourceCategory) {
-            if (input('filters.tree')) {
-                return [
-                    'children' => empty($obItemResource->children_id_list)
-                        ? []
-                        : ListCollection::make($obItemResource->children->collect())
-                ];
-            }
+        if (input('filters.tree')) {
+            return [
+                'children' => empty($obItemResource->children_id_list)
+                    ? []
+                    : ListCollection::make($obItemResource->children->collect())
+            ];
         }
 
         return null;

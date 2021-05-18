@@ -5,7 +5,7 @@ use PlanetaDelEste\ApiToolbox\Classes\Resource\Base as BaseResource;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ItemResource as ItemResourceCategory;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer\IndexCollection as IndexCollectionOffer;
-use PlanetaDelEste\ApiToolbox\Plugin;
+use PlanetaDelEste\ApiShopaholic\Plugin;
 use System\Classes\PluginManager;
 
 /**
@@ -53,7 +53,7 @@ class ItemResource extends BaseResource
 
     protected function getEvent(): ?string
     {
-        return Plugin::EVENT_ITEMRESOURCE_DATA;
+        return Plugin::EVENT_ITEMRESOURCE_DATA.'.product';
     }
 
     protected function formatProperty()

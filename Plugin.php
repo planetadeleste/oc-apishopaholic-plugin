@@ -16,6 +16,7 @@ class Plugin extends PluginBase
 {
     const EVENT_API_ORDER_RESPONSE_DATA = 'planetadeleste.apiShopaholic.apiOrderResponseData';
     const EVENT_API_GATEWAY_IPN_RESPONSE = 'planetadeleste.apiShopaholic.apiGatewayIpnResponse';
+    const EVENT_ITEMRESOURCE_DATA = 'planetadeleste.apiShopaholic.itemResourceData';
     const API_ROUTES = '/planetadeleste/apishopaholic/routes/';
 
     public $require = [

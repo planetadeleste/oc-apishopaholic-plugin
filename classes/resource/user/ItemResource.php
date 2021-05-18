@@ -1,8 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\User;
 
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\UserAddress\IndexCollection;
 use PlanetaDelEste\ApiToolbox\Classes\Resource\Base as BaseResource;
-use PlanetaDelEste\ApiToolbox\Plugin;
+use PlanetaDelEste\ApiShopaholic\Plugin;
 
 /**
  * Class ItemResource
@@ -18,7 +17,6 @@ class ItemResource extends BaseResource
         return [
             'avatar'  => $this->avatar ? $this->avatar->getPath() : null,
             'groups'  => $this->groups ? $this->groups->lists('code') : [],
-            'address' => $this->address ? IndexCollection::make(collect($this->address)) : []
         ];
     }
 
@@ -43,6 +41,6 @@ class ItemResource extends BaseResource
 
     protected function getEvent()
     {
-        return Plugin::EVENT_ITEMRESOURCE_DATA;
+        return Plugin::EVENT_ITEMRESOURCE_DATA.'.user';
     }
 }

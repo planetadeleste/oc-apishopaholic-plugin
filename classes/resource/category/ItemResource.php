@@ -1,7 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Category;
 
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
-use PlanetaDelEste\ApiToolbox\Plugin;
+use PlanetaDelEste\ApiShopaholic\Plugin;
 use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
 
 /**
@@ -43,6 +43,6 @@ class ItemResource extends Base
 
     protected function getEvent()
     {
-        return Plugin::EVENT_ITEMRESOURCE_DATA;
+        return Plugin::EVENT_ITEMRESOURCE_DATA.'.category';
     }
 }

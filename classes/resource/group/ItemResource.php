@@ -1,7 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Group;
 
 use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
-use PlanetaDelEste\ApiToolbox\Plugin;
+use PlanetaDelEste\ApiShopaholic\Plugin;
 
 /**
  * Class ItemResource
@@ -34,6 +34,6 @@ class ItemResource extends Base
 
     protected function getEvent()
     {
-        return Plugin::EVENT_ITEMRESOURCE_DATA;
+        return Plugin::EVENT_ITEMRESOURCE_DATA.'.group';
     }
 }

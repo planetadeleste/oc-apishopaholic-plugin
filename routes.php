@@ -1,6 +1,4 @@
-<?php
-
-use PlanetaDelEste\ApiShopaholic\Plugin;
+<?php use PlanetaDelEste\ApiShopaholic\Plugin;
 
 Route::prefix('api/v1')
     ->namespace('PlanetaDelEste\ApiShopaholic\Controllers\Api')
