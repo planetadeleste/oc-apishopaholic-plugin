@@ -51,7 +51,15 @@ class CategoryModelHandler extends ModelHandler
             'sort',
             function ($sSort = CategoryListStore::SORT_CREATED_AT_ASC) use ($obCollection) {
                 $arResultIDList = CategoryListStore::instance()->sorting->get($sSort);
-                return $obCollection->intersect($arResultIDList);
+                return $obCollection->applySorting($arResultIDList);
+            }
+        );
+
+        $obCollection->addDynamicMethod(
+            'root',
+            function () use ($obCollection) {
+                $arResultIDList = CategoryListStore::instance()->root->get();
+                return $obCollection->applySorting($arResultIDList);
             }
         );
     }

@@ -15,8 +15,9 @@ class ItemResource extends BaseResource
     public function getData()
     {
         return [
-            'avatar'  => $this->avatar ? $this->avatar->getPath() : null,
-            'groups'  => $this->groups ? $this->groups->lists('code') : [],
+            'avatar'   => $this->avatar ? $this->avatar->getPath() : null,
+            'groups'   => $this->groups ? $this->groups->lists('code') : [],
+            'property' => empty($this->property) ? [] : $this->property
         ];
     }
 
