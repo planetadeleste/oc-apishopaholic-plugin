@@ -1,5 +1,6 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
+use Lovata\Shopaholic\Classes\Collection\OfferCollection;
 use Lovata\Shopaholic\Classes\Store\ProductListStore;
 use Lovata\Shopaholic\Models\Offer;
 use Lovata\Shopaholic\Models\Product;
@@ -58,9 +59,17 @@ class Products extends Base
      */
     public function offers(int $iProductID): IndexCollection
     {
-        /** @var \Lovata\Shopaholic\Classes\Item\ProductItem $obProductItem */
-        $obProductItem = $this->getItem($iProductID);
-        return IndexCollection::make($obProductItem->offer->collect());
+        if ($this->isBackend()) {
+            /** @var Product $obProduct */
+            $obProduct = Product::find($iProductID);
+            $obOfferCollection = OfferCollection::make($obProduct->offer()->lists('id'))->collect();
+        } else {
+            /** @var \Lovata\Shopaholic\Classes\Item\ProductItem $obProductItem */
+            $obProductItem = $this->getItem($iProductID);
+            $obOfferCollection = $obProductItem->offer->collect();
+        }
+
+        return IndexCollection::make($obOfferCollection);
     }
 
     public function getModelClass(): string
