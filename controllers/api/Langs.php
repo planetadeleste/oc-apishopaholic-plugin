@@ -39,7 +39,8 @@ class Langs extends Base
 
     public function missing(): JsonResponse
     {
-        $data = post();
+        $data = input();
+
         if ($lang = array_get($data, 'lang')) {
             $locale = Translator::instance();
             if ($lang != $locale->getLocale()) {
@@ -47,7 +48,7 @@ class Langs extends Base
             }
         }
 
-        $message = static::tr(array_get($data, 'message'));
+        $message = static::tr(array_get($data, 'message'), [], $lang);
         return response()->json(compact('message'));
     }
 }
