@@ -9,6 +9,7 @@ Route::prefix('api/v1')
                 'auth',
                 'brands',
                 'categories',
+                'currencies',
                 'files',
                 'groups',
                 'lang',
