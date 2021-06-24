@@ -12,6 +12,6 @@ class RootListStore extends AbstractStoreWithoutParam
      */
     protected function getIDListFromDB(): array
     {
-        return Category::active()->whereNull('parent_id')->orWhere('parent_id', '0')->lists('id');
+        return Category::whereNull('parent_id')->orWhere('parent_id', '0')->lists('id');
     }
 }

@@ -90,6 +90,8 @@ class CategoryModelHandler extends ModelHandler
     protected function afterCreate()
     {
         parent::afterCreate();
+        $this->clearItemCache();
+        $this->clearCache();
     }
 
     /**
@@ -98,7 +100,7 @@ class CategoryModelHandler extends ModelHandler
     protected function afterSave()
     {
         parent::afterSave();
-        $this->clearStoreCache();
+        $this->clearCache();
     }
 
     /**
@@ -107,12 +109,17 @@ class CategoryModelHandler extends ModelHandler
     protected function afterDelete()
     {
         parent::afterDelete();
-        $this->clearStoreCache();
+        $this->clearCache();
     }
 
-    protected function clearStoreCache()
+    protected function clearCache()
     {
-        CategoryListStore::instance()->sorting->clear(CategoryListStore::SORT_CREATED_AT_ASC);
-        CategoryListStore::instance()->sorting->clear(CategoryListStore::SORT_CREATED_AT_DESC);
+//        !TODO: Find a better way to clear cache on all categories and now only current level
+        \Artisan::call('cache:clear');
+//        CategoryListStore::instance()->sorting->clear(CategoryListStore::SORT_CREATED_AT_ASC);
+//        CategoryListStore::instance()->sorting->clear(CategoryListStore::SORT_CREATED_AT_DESC);
+//        CategoryListStore::instance()->root->clear();
+//        \Lovata\Shopaholic\Classes\Store\CategoryListStore::instance()->active->clear();
+//        \Lovata\Shopaholic\Classes\Store\CategoryListStore::instance()->top_level->clear();
     }
 }

@@ -17,7 +17,8 @@ class ItemResource extends Base
     public function getData(): array
     {
         return [
-            'active' => (bool)$this->getObject()->active
+            'active' => (bool)$this->getObject()->active,
+            'external_id' => (int)$this->getObject()->external_id,
         ];
     }
 
@@ -25,6 +26,7 @@ class ItemResource extends Base
     {
         return [
             'id',
+            'external_id',
             'active',
             'is_default',
             'name',
