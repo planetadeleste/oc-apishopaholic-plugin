@@ -24,6 +24,8 @@ class Categories extends Base
                 throw new Exception('listResource is required');
             }
 
+            $this->fireSystemEvent('planetadeleste.apishopaholic.categories.extendTree', [&$this->collection], false);
+
             if (!$this->isBackend()) {
                 $this->collection->active();
             }
