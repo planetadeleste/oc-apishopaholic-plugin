@@ -114,12 +114,7 @@ class CategoryModelHandler extends ModelHandler
 
     protected function clearCache()
     {
-//        !TODO: Find a better way to clear cache on all categories and now only current level
-        \Artisan::call('cache:clear');
-//        CategoryListStore::instance()->sorting->clear(CategoryListStore::SORT_CREATED_AT_ASC);
-//        CategoryListStore::instance()->sorting->clear(CategoryListStore::SORT_CREATED_AT_DESC);
-//        CategoryListStore::instance()->root->clear();
-//        \Lovata\Shopaholic\Classes\Store\CategoryListStore::instance()->active->clear();
-//        \Lovata\Shopaholic\Classes\Store\CategoryListStore::instance()->top_level->clear();
+        \Lovata\Shopaholic\Classes\Store\CategoryListStore::instance()->active->clear();
+        CategoryListStore::instance()->root->clear();
     }
 }
