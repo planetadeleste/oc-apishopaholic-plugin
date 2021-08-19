@@ -1,4 +1,11 @@
 <?php
+Route::prefix('brands')
+    ->name('brands.')
+    ->group(
+        function () {
+            Route::get('list', 'Brands@list')->name('list');
+        }
+    );
 Route::apiResource('brands', 'Brands', ['only' => ['index', 'show']]);
 
 if (has_jwtauth_plugin()) {
