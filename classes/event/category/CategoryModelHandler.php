@@ -114,7 +114,13 @@ class CategoryModelHandler extends ModelHandler
 
     protected function clearCache()
     {
-        \Lovata\Shopaholic\Classes\Store\CategoryListStore::instance()->active->clear();
+        //Clear parent item cache
+        if (!empty($this->obElement->parent_id)) {
+            CategoryItem::clearCache($this->obElement->parent_id);
+        }
+
         CategoryListStore::instance()->root->clear();
+        CategoryListStore::instance()->sorting->clear(CategoryListStore::SORT_CREATED_AT_ASC);
+        CategoryListStore::instance()->sorting->clear(CategoryListStore::SORT_CREATED_AT_DESC);
     }
 }
