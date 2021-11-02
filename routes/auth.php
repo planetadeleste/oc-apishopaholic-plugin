@@ -13,7 +13,7 @@ if (has_jwtauth_plugin()) {
 
                 Route::post('restore_password', 'Auth@restorePassword')->name('restore_password');
                 Route::post('reset_password', 'Auth@resetPassword')->name('reset_password');
-                Route::get('check_reset_code', 'Auth@checkResetCode')->name('check_reset_code');
+                Route::get('check_reset_code/{slug}', 'Auth@checkResetCode')->name('check_reset_code');
 
                 Route::middleware(['jwt.auth'])->group(
                     function () {

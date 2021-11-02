@@ -196,11 +196,11 @@ class Auth extends Base
         }
     }
 
-    public function checkResetCode()
+    public function checkResetCode(string $sSlug)
     {
         try {
             /** @var ResetPassword $obComponent */
-            $obComponent = $this->component(ResetPassword::class, null, ['slug' => input('slug')]);
+            $obComponent = $this->component(ResetPassword::class, null, ['slug' => $sSlug]);
             if (!$obComponent->checkResetCode()) {
                 Result::setFalse();
             }
