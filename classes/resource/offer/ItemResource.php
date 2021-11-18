@@ -16,7 +16,7 @@ class ItemResource extends Base
     /**
      * @return array|void
      */
-    public function getData()
+    public function getData(): array
     {
         return [
             'preview_image'   => $this->preview_image ? $this->preview_image->getPath() : null,
@@ -33,7 +33,7 @@ class ItemResource extends Base
         ];
     }
 
-    public function getDataKeys()
+    public function getDataKeys(): array
     {
         return [
             'code',
@@ -53,7 +53,7 @@ class ItemResource extends Base
         ];
     }
 
-    protected function getEvent()
+    protected function getEvent(): string
     {
         return Plugin::EVENT_ITEMRESOURCE_DATA.'.offer';
     }

@@ -12,7 +12,7 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  */
 class ItemResource extends BaseResource
 {
-    public function getData()
+    public function getData(): array
     {
         return [
             'avatar'   => $this->avatar ? $this->avatar->getPath() : null,
@@ -21,7 +21,7 @@ class ItemResource extends BaseResource
         ];
     }
 
-    public function getDataKeys()
+    public function getDataKeys(): array
     {
         return [
             'id',
@@ -40,7 +40,7 @@ class ItemResource extends BaseResource
         ];
     }
 
-    protected function getEvent()
+    protected function getEvent(): string
     {
         return Plugin::EVENT_ITEMRESOURCE_DATA.'.user';
     }
