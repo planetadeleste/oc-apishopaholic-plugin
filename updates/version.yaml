@@ -1,34 +1,34 @@
-1.0.1:
+v1.0.1:
     - First version of ApiShopaholic
-1.0.2:
+v1.0.2:
     - Move traits and base classes to PlanetaDelEste.ApiToolbox plugin
-1.0.3:
+v1.0.3:
     - Fix auth issues
-1.0.4:
+v1.0.4:
     - Add Brands api controller
-1.0.5:
+v1.0.5:
     - Add getSortColumn method
-1.0.6:
+v1.0.6:
     - Add getSortColumn method to Users controller
-1.0.7:
+v1.0.7:
     - Add role to User api attributes
     - Return UserItem on authenticate data response
     - Add before/after save events on Products and Users controllers
     - Use custom throttle, bindings middleware instead of api on routes
     - Add before save event on Profile controller
-1.0.8:
+v1.0.8:
     - Add role to User api attributes
     - Return UserItem on authenticate data response
     - Add before/after save events on Products and Users controllers
     - Use custom throttle, bindings middleware instead of api on routes
     - Add before save event on Profile controller
-1.0.9:
+v1.0.9:
     - Use "web" middleware on cart routes to get session data
     - Add paymentmethods api resource
     - Add file to api routes
     - Add brand property to products response
     - Add offers method to products controller
-1.0.10:
+v1.0.10:
     - New route "orders/{id}/position" to load order position items
     - Add compatibility with postgresql
     - Move payment methods routes inside of orders group
@@ -42,10 +42,38 @@
     - Add after signup and valid events
     - Fix Auth signup
     - Add PaymentMethods controller
-1.0.11:
+v1.0.11:
     - Organize routes
-1.0.12:
+v1.0.12:
     - Move orders elements to ApiOrdersShopaholic plugin
-1.0.13:
+v1.0.13:
     - Move UserAddress to ApiOrdersShopaholic package
     - Rename resources event
+v1.0.14:
+    - New root method on CategoryCollection
+    - Fix User property api resource
+v1.0.15:
+    - Fix loading offers on backend
+    - Remove unused consts
+v1.0.16:
+    - Fix storing missing langs
+v1.0.17:
+    - Add currencies
+v1.0.18:
+    - Try to clear category cache on create, save, delete
+    - Add external_id property on ItemResource
+    - Remove active method on RootListStore
+    - Set active method only if request hasn't from backend
+v1.0.19:
+    - New event on Categories tree
+v1.0.20:
+    - Add list route
+    - Clear category cache after create, update or delete
+v1.0.21:
+    - Fix clearing cache on child items
+v1.0.22:
+    - Fix check_reset_code route
+v1.0.23:
+    - Set resource returns type
+v1.0.24:
+    - Fix return declaration

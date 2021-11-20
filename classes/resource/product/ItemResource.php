@@ -56,7 +56,7 @@ class ItemResource extends BaseResource
         return Plugin::EVENT_ITEMRESOURCE_DATA.'.product';
     }
 
-    protected function formatProperty()
+    protected function formatProperty(): array
     {
         $arProperties = [];
         if (PluginManager::instance()->exists('Lovata.PropertiesShopaholic')) {

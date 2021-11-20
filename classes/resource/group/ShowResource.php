@@ -10,7 +10,7 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  */
 class ShowResource extends ItemResource
 {
-    public function getDataKeys()
+    public function getDataKeys(): array
     {
         return [
             'id',

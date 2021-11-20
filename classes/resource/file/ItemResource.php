@@ -33,7 +33,7 @@ class ItemResource extends Base
         ];
     }
 
-    protected function getEvent()
+    protected function getEvent():? string
     {
         return null;
     }
