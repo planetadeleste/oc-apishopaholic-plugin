@@ -77,3 +77,5 @@ v1.0.23:
     - Set resource returns type
 v1.0.24:
     - Fix return declaration
+v1.0.25:
+    - Fix authenticate with inactive users

@@ -3,6 +3,7 @@
 use Cookie;
 use Crypt;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Input;
 use JWTAuth;
@@ -26,7 +27,7 @@ class Auth extends Base
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function authenticate(Request $request)
+    public function authenticate(Request $request): JsonResponse
     {
         $credentials = $request->only(['email', 'password']);
         if (!$token = JWTAuth::attempt($credentials)) {
@@ -35,10 +36,14 @@ class Auth extends Base
         }
 
         /** @var \Lovata\Buddies\Models\User $userModel */
-        $userModel = JWTAuth::setToken($token)->authenticate();
-        AuthHelper::authenticate($credentials, true);
+        JWTAuth::setToken($token)->authenticate();
+        $userModel = AuthHelper::authenticate($credentials, true);
+        if (!$userModel) {
+            return response()->json(Result::get());
+        }
+
         $obUserItem = UserItem::make($userModel->id);
-        $user = $userModel ? ItemResourceUser::make($obUserItem)->toArray(request()) : [];
+        $user = ItemResourceUser::make($obUserItem)->toArray(request());
         $ttl = config('jwt.ttl');
         $expires_in = $ttl * 60;
 
@@ -52,7 +57,7 @@ class Auth extends Base
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh(Request $request)
+    public function refresh(Request $request): JsonResponse
     {
         try {
             // attempt to refresh the JWT
@@ -79,7 +84,7 @@ class Auth extends Base
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function invalidate(Request $request)
+    public function invalidate(Request $request): JsonResponse
     {
         try {
             // Logout from session
@@ -101,7 +106,7 @@ class Auth extends Base
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function signup(Request $request): \Illuminate\Http\JsonResponse
+    public function signup(Request $request): JsonResponse
     {
         try {
             $obCart = null;
@@ -116,7 +121,7 @@ class Auth extends Base
                 /** @var \Lovata\OrdersShopaholic\Models\Cart $obCart */
 
                 // Load current cart
-                $iCartID = Cookie::get(\Lovata\OrdersShopaholic\Classes\Processor\CartProcessor::COOKIE_NAME);
+                $iCartID = Cookie::get(CartProcessor::COOKIE_NAME);
                 if (!empty($iCartID) && !is_numeric($iCartID)) {
                     try {
                         $iDecryptedCartID = Crypt::decryptString($iCartID);
@@ -128,7 +133,7 @@ class Auth extends Base
                 }
 
                 if (!empty($iCartID)) {
-                    $obCart = \Lovata\OrdersShopaholic\Models\Cart::with('position')->find($iCartID);
+                    $obCart = Cart::with('position')->find($iCartID);
                 }
             }
 
@@ -169,7 +174,7 @@ class Auth extends Base
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function restorePassword()
+    public function restorePassword(): JsonResponse
     {
         try {
             /** @var RestorePassword $obComponent */
@@ -182,7 +187,7 @@ class Auth extends Base
         }
     }
 
-    public function resetPassword()
+    public function resetPassword(): JsonResponse
     {
         try {
             /** @var ResetPassword $obComponent */
@@ -196,7 +201,7 @@ class Auth extends Base
         }
     }
 
-    public function checkResetCode(string $sSlug)
+    public function checkResetCode(string $sSlug): JsonResponse
     {
         try {
             /** @var ResetPassword $obComponent */
