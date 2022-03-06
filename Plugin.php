@@ -15,6 +15,8 @@ use System\Classes\PluginBase;
 class Plugin extends PluginBase
 {
     const EVENT_ITEMRESOURCE_DATA = 'planetadeleste.apishopaholic.resource.itemData';
+    const EVENT_LOCALE_BEFORE_CHANGE = 'planetadeleste.apishopaholic.locale.beforeChange';
+    const EVENT_LOCALE_AFTER_CHANGE = 'planetadeleste.apishopaholic.locale.afterChange';
     const API_ROUTES = '/planetadeleste/apishopaholic/routes/';
 
     public $require = [
