@@ -32,7 +32,7 @@ class Users extends Base
                     $obModel->groups()->sync($arUserGroupListID);
                 }
 
-                if (array_get($arData, 'is_activated') && !$obModel->activated_at) {
+                if (array_get($arData, 'is_activated')) {
                     $obModel->activate();
                     $obModel->save();
                 } elseif ($obModel->is_activated) {

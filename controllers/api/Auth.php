@@ -21,6 +21,7 @@ class Auth extends Base
 {
     public const EVENT_API_AFTER_SIGNUP = 'planetadeleste.apiShopaholic.afterSignup';
     public const EVENT_API_SIGNUP_VALID = 'planetadeleste.apiShopaholic.validateSignup';
+    public const EVENT_API_AFTER_REFRESH = 'planetadeleste.apiShopaholic.afterRefresh';
 
     /**
      * @param Request $request
@@ -75,6 +76,8 @@ class Auth extends Base
         // if no errors are encountered we can return a new JWT
         $ttl = config('jwt.ttl');
         $expires_in = $ttl * 60;
+
+        $this->fireSystemEvent(self::EVENT_API_AFTER_REFRESH, [$expires_in, $token]);
         Result::setTrue(compact('token', 'expires_in'));
         return response()->json(Result::get());
     }
