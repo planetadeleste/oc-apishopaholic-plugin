@@ -19,6 +19,7 @@ class ItemResource extends BaseResource
     public function getData(): array
     {
         return [
+            'active'          => (bool)$this->active,
             'preview_image'   => $this->preview_image ? $this->preview_image->getPath() : null,
             'images'          => IndexCollectionImages::make(collect($this->images)),
             'category'        => $this->category ? ItemResourceCategory::make($this->category) : null,
@@ -31,7 +32,7 @@ class ItemResource extends BaseResource
             'secondary_thumb' => $this->images
                 ? collect($this->images)->first()->getThumb(300, 300, ['mode' => 'crop'])
                 : null,
-            'brand' => $this->brand ? ItemResourceBrand::make($this->brand) : null
+            'brand'           => $this->brand ? ItemResourceBrand::make($this->brand) : null
         ];
     }
 
@@ -42,6 +43,7 @@ class ItemResource extends BaseResource
             'name',
             'code',
             'slug',
+            'active',
             'category_id',
             'preview_text',
             'thumbnail',

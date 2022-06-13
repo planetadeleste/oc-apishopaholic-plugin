@@ -79,3 +79,11 @@ v1.0.24:
     - Fix return declaration
 v1.0.25:
     - Fix authenticate with inactive users
+v1.0.26:
+    - New langs|locale routes
+    - Improve changing locale method
+v1.0.27:
+    - Fix issue saving users unset is_activated attribute
+    - New event after refresh api session
+v1.0.28:
+    - Cast active property as boolean

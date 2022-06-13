@@ -19,6 +19,7 @@ class ItemResource extends Base
     public function getData(): array
     {
         return [
+            'active'          => (bool)$this->active,
             'preview_image'   => $this->preview_image ? $this->preview_image->getPath() : null,
             'images'          => IndexCollectionImages::make(collect($this->images)),
             'price_value'     => (float)$this->price_value,
@@ -41,6 +42,7 @@ class ItemResource extends Base
             'currency_code',
             'id',
             'name',
+            'active',
             'preview_image',
             'preview_text',
             'price',
