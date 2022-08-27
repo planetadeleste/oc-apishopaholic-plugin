@@ -16,6 +16,7 @@ Route::prefix('api/v1')
                 'offers',
                 'products',
                 'profile',
+                'taxes',
                 'users',
             ];
 

@@ -87,3 +87,5 @@ v1.0.27:
     - New event after refresh api session
 v1.0.28:
     - Cast active property as boolean
+v1.0.29:
+    - Add taxes to api
