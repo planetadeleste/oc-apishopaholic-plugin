@@ -89,3 +89,5 @@ v1.0.28:
     - Cast active property as boolean
 v1.0.29:
     - Add taxes to api
+v1.0.30:
+    - 'Fix Declaration of getModelClass() must be compatible with Base::getModelClass()'
