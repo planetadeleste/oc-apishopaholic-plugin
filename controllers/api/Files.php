@@ -51,7 +51,7 @@ class Files extends Base
         return Result::setTrue(['path' => $obImage->getCachedImagePath(true)])->get();
     }
 
-    public function getModelClass()
+    public function getModelClass(): string
     {
         return File::class;
     }
