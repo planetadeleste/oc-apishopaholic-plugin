@@ -15,7 +15,7 @@ class Users extends Base
 {
     protected $arFileList = ['attachOne' => 'avatar'];
 
-    public function init()
+    public function init(): void
     {
         $this->bindEvent(
             Plugin::EVENT_LOCAL_AFTER_SAVE,

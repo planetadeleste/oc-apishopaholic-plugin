@@ -91,3 +91,5 @@ v1.0.29:
     - Add taxes to api
 v1.0.30:
     - 'Fix Declaration of getModelClass() must be compatible with Base::getModelClass()'
+v1.0.31:
+    - 'Fix Declaration of init() must be compatible with Base::init()'

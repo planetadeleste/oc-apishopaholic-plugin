@@ -10,7 +10,7 @@ use PlanetaDelEste\ApiToolbox\Plugin;
 
 class Products extends Base
 {
-    public function init()
+    public function init(): void
     {
         $this->bindEvent(
             Plugin::EVENT_LOCAL_BEFORE_SAVE,
