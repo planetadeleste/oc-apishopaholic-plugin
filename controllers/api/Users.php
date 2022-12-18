@@ -2,6 +2,8 @@
 
 use Lovata\Buddies\Models\Group;
 use Lovata\Buddies\Models\User;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\IndexCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ShowResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 use PlanetaDelEste\ApiToolbox\Plugin;
 use PlanetaDelEste\BuddiesGroup\Classes\Store\UserListStore;
@@ -52,5 +54,20 @@ class Users extends Base
     public function getSortColumn(): ?string
     {
         return UserListStore::SORT_BY_LATEST;
+    }
+
+    public function getShowResource(): string
+    {
+        return ShowResource::class;
+    }
+
+    public function getListResource(): string
+    {
+        return IndexCollection::class;
+    }
+
+    public function getIndexResource(): string
+    {
+        return IndexCollection::class;
     }
 }
