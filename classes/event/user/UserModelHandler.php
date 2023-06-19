@@ -1,9 +1,14 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Event\User;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Classes\Event\User;
 
 use Lovata\Buddies\Classes\Item\UserItem;
 use Lovata\Buddies\Models\Group;
 use Lovata\Buddies\Models\User;
 use Lovata\Toolbox\Classes\Event\ModelHandler;
+use PlanetaDelEste\ApiShopaholic\Classes\Store\UserListStore;
+use PlanetaDelEste\ApiShopaholic\Models\LoggedUser;
+use PlanetaDelEste\BuddiesGroup\Classes\Collection\UserCollection;
 
 /**
  * Class UserModelHandler
@@ -14,8 +19,8 @@ use Lovata\Toolbox\Classes\Event\ModelHandler;
  */
 class UserModelHandler extends ModelHandler
 {
-    const GROUP_ADMIN = 'admin';
-    const GROUP_MANAGER = 'manager';
+    public const GROUP_ADMIN   = 'admin';
+    public const GROUP_MANAGER = 'manager';
 
     /**
      * Add listeners
@@ -37,6 +42,10 @@ class UserModelHandler extends ModelHandler
                 $this->extendItem($obItem);
             }
         );
+
+        UserCollection::extend(function ($obCollection) {
+            $this->extendCollection($obCollection);
+        });
     }
 
     /**
@@ -44,7 +53,7 @@ class UserModelHandler extends ModelHandler
      */
     protected function extendModel(User $obModel)
     {
-        $obModel->addCachedField(['is_activated', 'created_at', 'updated_at']);
+        $obModel->addCachedField(['is_activated', 'created_at', 'updated_at', 'last_login']);
         $obModel->addDynamicMethod(
             'scopeByGroup',
             function ($obQuery, $code) {
@@ -70,7 +79,7 @@ class UserModelHandler extends ModelHandler
             'getRoleAttribute',
             function () use ($obModel) {
                 $arGroups = $obModel->groups()->lists('code');
-                $sCode = count($arGroups) == 1 ? $arGroups[0] : 'guest';
+                $sCode    = count($arGroups) == 1 ? $arGroups[0] : 'guest';
                 if (count($arGroups) > 1) {
                     $arGroups = array_filter(
                         $arGroups,
@@ -78,11 +87,16 @@ class UserModelHandler extends ModelHandler
                             return !in_array($sCode, ['registered', 'guest']);
                         }
                     );
-                    $sCode = array_first($arGroups);
+                    $sCode    = array_first($arGroups);
                 }
                 return $sCode;
             }
         );
+
+        $obModel->addDynamicMethod('getLastActivityAtAttribute', function () use ($obModel) {
+            $obLoggedUser = LoggedUser::getByUser($obModel->id)->latest('last_activity_at')->first();
+            return $obLoggedUser ? $obLoggedUser->last_activity_at : null;
+        });
     }
 
     protected function extendItem(UserItem $obItem)
@@ -95,6 +109,22 @@ class UserModelHandler extends ModelHandler
                 return $sCode;
             }
         );
+
+        $obItem->addDynamicMethod('getLastActivityAtAttribute', function () use ($obItem) {
+            $obDate = $obItem->getObject()->last_activity_at;
+            $obItem->setAttribute('last_activity_at', $obDate);
+
+            return $obDate;
+        });
+    }
+
+    protected function extendCollection(UserCollection $obCollection)
+    {
+        $obCollection->addDynamicMethod('logged', function () use ($obCollection) {
+            $arResultIdList = UserListStore::instance()->logged->get();
+
+            return $obCollection->intersect($arResultIdList);
+        });
     }
 
     protected function afterSave()

@@ -95,3 +95,6 @@ v1.0.31:
     - 'Fix Declaration of init() must be compatible with Base::init()'
 v1.0.32:
     - 'Add users list route'
+v1.0.33:
+    - 'Register user logged activity'
+    - v1.0.33/create_table_loggedusers.php

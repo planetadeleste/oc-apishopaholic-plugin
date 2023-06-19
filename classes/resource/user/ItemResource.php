@@ -1,4 +1,6 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\User;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\User;
 
 use PlanetaDelEste\ApiToolbox\Classes\Resource\Base as BaseResource;
 use PlanetaDelEste\ApiShopaholic\Plugin;
@@ -12,12 +14,14 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  */
 class ItemResource extends BaseResource
 {
+    public array $arDates = ['created_at', 'updated_at', 'last_login', 'last_activity_at'];
+
     public function getData(): array
     {
         return [
             'avatar'   => $this->avatar ? $this->avatar->getPath() : null,
             'groups'   => $this->groups ? $this->groups->lists('code') : [],
-            'property' => empty($this->property) ? [] : $this->property
+            'property' => empty($this->property) ? [] : $this->property,
         ];
     }
 
@@ -36,12 +40,13 @@ class ItemResource extends BaseResource
             'groups',
             'role',
             'address',
-            'is_activated'
+            'is_activated',
+            'last_activity_at',
         ];
     }
 
     protected function getEvent(): string
     {
-        return Plugin::EVENT_ITEMRESOURCE_DATA.'.user';
+        return Plugin::EVENT_ITEMRESOURCE_DATA . '.user';
     }
 }
