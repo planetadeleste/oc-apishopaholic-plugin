@@ -1,7 +1,11 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
+<?php
+namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Lovata\Shopaholic\Classes\Collection\CategoryCollection;
 use Lovata\Shopaholic\Models\Category;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ListCollection;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 
 /**
@@ -9,15 +13,15 @@ use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
  *
  * @package PlanetaDelEste\ApiShopaholic\Controllers\Api
  *
- * @property \Lovata\Shopaholic\Classes\Collection\CategoryCollection $collection
- * @property Category                                                 $obModel
+ * @property CategoryCollection $collection
+ * @property Category           $obModel
  */
 class Categories extends Base
 {
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\JsonResponse|mixed
+     * @return ListCollection|JsonResponse
      */
-    public function tree()
+    public function tree(): ListCollection|JsonResponse
     {
         try {
             if (!$this->getListResource()) {
@@ -31,23 +35,19 @@ class Categories extends Base
             }
 
             $obCollection = $this->collection->root();
-            return app($this->getListResource(), [$obCollection->collect()]);
+
+            return new ListCollection($obCollection->collect());
         } catch (Exception $e) {
             trace_log($e);
             return response()->json(['error' => $e->getMessage()], 403);
         }
     }
 
-    public function extendIndex()
-    {
-        $this->collection->sort();
-    }
-
     /**
      * Save current model
      *
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function save(): bool
     {

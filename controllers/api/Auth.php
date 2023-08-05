@@ -1,21 +1,30 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
+<?php
 
+namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
+
+use ApplicationException;
 use Cookie;
 use Crypt;
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Input;
 use JWTAuth;
 use Kharanenka\Helper\Result;
-use Lovata\Buddies\Classes\Item\UserItem;
 use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
 use Lovata\Buddies\Facades\AuthHelper;
+use Lovata\Buddies\Models\User;
+use Lovata\OrdersShopaholic\Models\Cart;
+use October\Rain\Argon\Argon;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
-use PlanetaDelEste\JWTAuth\Models\User;
+use PlanetaDelEste\ApiToolbox\Classes\Helper\ApiHelper;
+use ReaZzon\JWTAuth\Classes\Contracts\UserPluginResolver;
+use ReaZzon\JWTAuth\Classes\Dto\TokenDto;
+use ReaZzon\JWTAuth\Classes\Guards\JWTGuard;
 
 class Auth extends Base
 {
@@ -24,68 +33,80 @@ class Auth extends Base
     public const EVENT_API_AFTER_REFRESH = 'planetadeleste.apiShopaholic.afterRefresh';
 
     /**
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @var UserPluginResolver
      */
-    public function authenticate(Request $request): JsonResponse
+    protected UserPluginResolver $userPluginResolver;
+
+    /**
+     * @var JWTGuard
+     */
+    protected JWTGuard $JWTGuard;
+
+    /**
+     * @param UserPluginResolver $userPluginResolver
+     */
+    public function __construct(UserPluginResolver $userPluginResolver)
     {
-        $credentials = $request->only(['email', 'password']);
-        if (!$token = JWTAuth::attempt($credentials)) {
-            Result::setFalse()->setMessage('invalid_credentials');
-            return response()->json(Result::get(), 401);
-        }
+        $this->userPluginResolver = $userPluginResolver;
+        $this->JWTGuard           = app('JWTGuard');
 
-        /** @var \Lovata\Buddies\Models\User $userModel */
-        JWTAuth::setToken($token)->authenticate();
-        $userModel = AuthHelper::authenticate($credentials, true);
-        if (!$userModel) {
-            return response()->json(Result::get());
-        }
-
-        $obUserItem = UserItem::make($userModel->id);
-        $user = ItemResourceUser::make($obUserItem)->toArray(request());
-        $ttl = config('jwt.ttl');
-        $expires_in = $ttl * 60;
-
-        // if no errors are encountered we can return a JWT
-        Result::setTrue(compact('token', 'user', 'expires_in'));
-        return response()->json(Result::get());
+        parent::__construct();
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     */
+    public function authenticate(Request $request): JsonResponse
+    {
+        try {
+            $credentials = $request->only(['email', 'password']);
+            $user        = $this->userPluginResolver
+                ->getProvider()
+                ->authenticate($credentials);
+
+            if (empty($user)) {
+                throw new ApplicationException('invalid_credentials');
+            }
+
+            $sToken = $this->JWTGuard->login($user);
+            $tokenDto = $this->getTokenDto($sToken, $user);
+            $arResult = $tokenDto->toArray() + ['expires_in' => $tokenDto->expires];
+
+            return response()->json(Result::setTrue($arResult)->get());
+        } catch (Exception $e) {
+            return static::exceptionResult($e);
+        }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function refresh(Request $request): JsonResponse
     {
         try {
-            // attempt to refresh the JWT
-            if (!$token = JWTAuth::refresh()) {
-                AuthHelper::logout();
-                Result::setFalse()->setMessage('could_not_refresh_token');
-                return response()->json(Result::get(), 401);
-            }
+            $tokenRefreshed = $this->JWTGuard->refresh(true);
+            $this->JWTGuard->setToken($tokenRefreshed);
+
+            $tokenDto = $this->getTokenDto($tokenRefreshed);
+            $arResult = $tokenDto->toArray() + ['expires_in' => $tokenDto->expires];
+            $this->fireSystemEvent(self::EVENT_API_AFTER_REFRESH, [$tokenDto->expires, $tokenDto->token]);
+
+            return response()->json(Result::setTrue($arResult)->get());
         } catch (Exception $e) {
             // something went wrong
             Result::setFalse()->setMessage('could_not_refresh_token');
             return response()->json(Result::get(), 401);
         }
-
-        // if no errors are encountered we can return a new JWT
-        $ttl = config('jwt.ttl');
-        $expires_in = $ttl * 60;
-
-        $this->fireSystemEvent(self::EVENT_API_AFTER_REFRESH, [$expires_in, $token]);
-        Result::setTrue(compact('token', 'expires_in'));
-        return response()->json(Result::get());
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function invalidate(Request $request): JsonResponse
     {
@@ -94,7 +115,7 @@ class Auth extends Base
             AuthHelper::logout();
 
             // invalidate the token
-            JWTAuth::invalidate();
+            $this->JWTGuard->invalidate();
         } catch (Exception $e) {
             // something went wrong
             return response()->json(['error' => 'could_not_invalidate_token'], 401);
@@ -105,9 +126,9 @@ class Auth extends Base
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function signup(Request $request): JsonResponse
     {
@@ -121,7 +142,7 @@ class Auth extends Base
 
             // Check for OrdersShopaholic plugin
             if ($this->hasPlugin('Lovata.OrdersShopaholic')) {
-                /** @var \Lovata\OrdersShopaholic\Models\Cart $obCart */
+                /** @var Cart $obCart */
 
                 // Load current cart
                 $iCartID = Cookie::get(CartProcessor::COOKIE_NAME);
@@ -131,7 +152,7 @@ class Auth extends Base
                         if (!empty($iDecryptedCartID)) {
                             $iCartID = $iDecryptedCartID;
                         }
-                    } catch (\Exception $obException) {
+                    } catch (Exception $obException) {
                     }
                 }
 
@@ -164,8 +185,8 @@ class Auth extends Base
         }
 
         $obAuthUser = User::find($obUserModel->id);
-        $token = JWTAuth::fromUser($obAuthUser);
-        $ttl = config('jwt.ttl');
+        $token      = JWTAuth::fromUser($obAuthUser);
+        $ttl        = config('jwt.ttl');
         $expires_in = $ttl * 60;
         Result::setData(compact('token', 'user', 'expires_in'));
 
@@ -175,7 +196,7 @@ class Auth extends Base
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function restorePassword(): JsonResponse
     {
@@ -218,5 +239,24 @@ class Auth extends Base
             Result::setFalse()->setMessage($e->getMessage());
             return response()->json(Result::get(), 401);
         }
+    }
+
+    /**
+     * @param string               $sToken
+     * @param Authenticatable|null $obUser
+     * @return TokenDto
+     * @throws Exception
+     */
+    protected function getTokenDto(string $sToken, Authenticatable $obUser = null): TokenDto
+    {
+        if (!$obUser) {
+            $obUser = $this->JWTGuard->user();
+        }
+
+        return new TokenDto([
+            'token'   => $sToken,
+            'expires' => Argon::createFromTimestamp($this->JWTGuard->getPayload()->get('exp'), ApiHelper::tz()),
+            'user'    => $obUser,
+        ]);
     }
 }

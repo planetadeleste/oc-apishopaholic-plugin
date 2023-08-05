@@ -16,7 +16,7 @@ use PlanetaDelEste\ApiToolbox\Plugin;
  */
 class Profile extends Base
 {
-    protected $arFileList = ['attachOne' => 'avatar'];
+    protected array $arFileList = ['attachOne' => 'avatar'];
 
     public function init(): void
     {

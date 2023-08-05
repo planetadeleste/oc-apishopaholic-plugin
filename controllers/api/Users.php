@@ -15,7 +15,7 @@ use PlanetaDelEste\BuddiesGroup\Classes\Store\UserListStore;
  */
 class Users extends Base
 {
-    protected $arFileList = ['attachOne' => 'avatar'];
+    protected array $arFileList = ['attachOne' => 'avatar'];
 
     public function init(): void
     {

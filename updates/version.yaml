@@ -98,3 +98,6 @@ v1.0.32:
 v1.0.33:
     - 'Register user logged activity'
     - v1.0.33/create_table_loggedusers.php
+v2.0.0:
+    - 'Use ReaZzon.JWTAuth plugin'
+    - 'Prepare for OC 3'

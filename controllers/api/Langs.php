@@ -1,12 +1,11 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
-use DB;
 use Illuminate\Http\JsonResponse;
 use Kharanenka\Helper\Result;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
+use RainLab\Translate\Classes\Locale;
 use RainLab\Translate\Classes\Translator;
-use RainLab\Translate\Models\Locale;
 use RainLab\Translate\Models\Message;
 
 class Langs extends Base
@@ -40,26 +39,7 @@ class Langs extends Base
                 $this->fireSystemEvent(Plugin::EVENT_LOCALE_AFTER_CHANGE, [$lang], false);
             }
 
-            if (config('database.default') === 'pgsql') {
-                $messages = Message::whereRaw("message_data::json->>'{$sLocale}' <> ''")
-                    ->select(
-                        [
-                            'code',
-                            DB::raw("message_data::json->>'{$sLocale}' as message")
-                        ]
-                    )
-                    ->lists('message', 'code');
-            } else {
-                $messages = Message::whereRaw("JSON_EXTRACT(`message_data`, '$.{$sLocale}') <> \"\"")
-                    ->select(
-                        [
-                            'code',
-                            DB::raw("JSON_UNQUOTE(JSON_EXTRACT(`message_data`, '$.{$sLocale}')) as `message`")
-                        ]
-                    )
-                    ->lists('message', 'code');
-            }
-
+            $messages = (new Message())->findMessages($sLocale);
 
             return response()->json(compact('messages'));
         } catch (\Exception $ex) {
