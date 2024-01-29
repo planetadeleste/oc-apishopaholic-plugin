@@ -53,7 +53,7 @@ class UserModelHandler extends ModelHandler
      */
     protected function extendModel(User $obModel)
     {
-        $obModel->addCachedField(['is_activated', 'created_at', 'updated_at', 'last_login']);
+        $obModel->addCachedField(['is_activated', 'created_at', 'updated_at', 'last_login', 'role']);
         $obModel->addDynamicMethod(
             'scopeByGroup',
             function ($obQuery, $code) {

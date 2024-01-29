@@ -1,4 +1,6 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
 
 use Lovata\Shopaholic\Classes\Helper\CurrencyHelper;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
@@ -20,17 +22,16 @@ class ItemResource extends Base
     {
         return [
             'active'          => (bool)$this->active,
-            'preview_image'   => $this->preview_image ? $this->preview_image->getPath() : null,
+            'preview_image'   => $this->preview_image?->getPath(),
             'images'          => IndexCollectionImages::make(collect($this->images)),
             'price_value'     => (float)$this->price_value,
             'old_price_value' => (float)$this->old_price_value,
             'currency'        => CurrencyHelper::instance()->getDefault()->symbol,
-            'thumbnail'       => $this->preview_image ? $this->preview_image->getThumb(
+            'thumbnail'       => $this->preview_image?->getThumb(
                 300,
                 300,
                 ['mode' => 'crop']
-            ) : null,
-            'property'        => $this->formatProperty()
+            ),
         ];
     }
 
@@ -51,12 +52,14 @@ class ItemResource extends Base
             'old_price_value',
             'product_id',
             'quantity',
-            'thumbnail'
+            'thumbnail',
+            'created_at',
+            'updated_at',
         ];
     }
 
     protected function getEvent(): string
     {
-        return Plugin::EVENT_ITEMRESOURCE_DATA.'.offer';
+        return Plugin::EVENT_ITEMRESOURCE_DATA . '.offer';
     }
 }

@@ -4,11 +4,14 @@ namespace PlanetaDelEste\ApiShopaholic;
 
 use Event;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Session\Middleware\StartSession;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ApiShopaholicHandle;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Brand\BrandModelHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Category\CategoryModelHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\ExtendElementCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\LoggedUser\LoggedUserModelHandler;
+use PlanetaDelEste\ApiShopaholic\Classes\Event\PriceType\ExtendPriceTypeColumnsHandler;
+use PlanetaDelEste\ApiShopaholic\Classes\Event\PriceType\ExtendPriceTypeFieldsHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Property\ExtendPropertyCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Tax\TaxModelHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\User\UserModelHandler;
@@ -51,19 +54,22 @@ class Plugin extends PluginBase
     {
         $this->subscribeEvents();
         $this->app[Kernel::class]->pushMiddleware(RefreshLoggedUserMiddleware::class);
+        $this->app[Kernel::class]->pushMiddleware(StartSession::class);
     }
 
     protected function subscribeEvents(): void
     {
         $arEvents = [
-            ExtendElementCollection::class,
-            ExtendPropertyCollection::class,
-            UserModelHandler::class,
-            CategoryModelHandler::class,
-            BrandModelHandler::class,
             ApiShopaholicHandle::class,
-            TaxModelHandler::class,
+            BrandModelHandler::class,
+            CategoryModelHandler::class,
+            ExtendElementCollection::class,
+            ExtendPriceTypeColumnsHandler::class,
+            ExtendPriceTypeFieldsHandler::class,
+            ExtendPropertyCollection::class,
             LoggedUserModelHandler::class,
+            TaxModelHandler::class,
+            UserModelHandler::class,
         ];
         array_walk($arEvents, [Event::class, 'subscribe']);
     }

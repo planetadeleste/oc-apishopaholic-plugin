@@ -1,6 +1,7 @@
 <?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
@@ -37,20 +38,20 @@ class Profile extends Base
     }
 
     /**
-     * @return \PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource
-     * @throws \Exception
+     * @return ItemResourceUser
+     * @throws Exception
      */
-    public function index(): ItemResourceUser
-    {
-        return ItemResourceUser::make($this->currentUser());
-    }
+//    public function index(): ItemResourceUser
+//    {
+//        return ItemResourceUser::make($this->currentUser());
+//    }
 
     /**
      * Get current user avatar path
      *
-     * @return array|\Illuminate\Http\JsonResponse
+     * @return array|JsonResponse
      */
-    public function avatar()
+    public function avatar(): JsonResponse|array
     {
         try {
             $this->currentUser();

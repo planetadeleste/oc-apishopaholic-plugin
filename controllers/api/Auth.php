@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Input;
 use JWTAuth;
 use Kharanenka\Helper\Result;
+use Lovata\Buddies\Classes\Item\UserItem;
 use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
@@ -19,7 +20,7 @@ use Lovata\Buddies\Facades\AuthHelper;
 use Lovata\Buddies\Models\User;
 use Lovata\OrdersShopaholic\Models\Cart;
 use October\Rain\Argon\Argon;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 use PlanetaDelEste\ApiToolbox\Classes\Helper\ApiHelper;
 use ReaZzon\JWTAuth\Classes\Contracts\UserPluginResolver;
@@ -73,6 +74,9 @@ class Auth extends Base
             $sToken = $this->JWTGuard->login($user);
             $tokenDto = $this->getTokenDto($sToken, $user);
             $arResult = $tokenDto->toArray() + ['expires_in' => $tokenDto->expires];
+            $obUser = $arResult['user'];
+            $obUserItem = UserItem::make($obUser->id);
+            array_set($arResult, 'user', ItemResource::make($obUserItem));
 
             return response()->json(Result::setTrue($arResult)->get());
         } catch (Exception $e) {

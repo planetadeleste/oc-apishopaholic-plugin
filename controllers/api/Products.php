@@ -1,4 +1,6 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use Lovata\Shopaholic\Classes\Collection\OfferCollection;
 use Lovata\Shopaholic\Classes\Store\ProductListStore;
@@ -20,25 +22,37 @@ class Products extends Base
                     array_forget($arData, 'brand_id');
                 }
 
-                if (array_get($arData, 'offers') && $obModel->exists) {
-                    array_forget($arData, 'offers');
-                }
+                //                if (array_get($arData, 'offers') && $obModel->exists) {
+                //                    array_forget($arData, 'offers');
+                //                }
             }
         );
 
         $this->bindEvent(
             Plugin::EVENT_LOCAL_AFTER_SAVE,
             function (Product $obModel, array $arData) {
+                $arOldOfferIdList = $obModel->offer()->lists('id');
+                $arNewOfferIdList = [];
+
                 if ($arOffers = array_get($arData, 'offers')) {
                     foreach ($arOffers as $arOffer) {
                         $iOfferID = array_get($arOffer, 'id', 0);
-                        $obOffer = Offer::findOrNew($iOfferID);
+                        $obOffer  = Offer::findOrNew($iOfferID);
                         $obOffer->fill($arOffer);
                         if (!$iOfferID) {
                             $obModel->offer()->add($obOffer);
                         } else {
                             $obOffer->save();
                         }
+
+                        $arNewOfferIdList[] = $obOffer->id;
+                    }
+                }
+
+                if (!empty($arOldOfferIdList)) {
+                    $arDeleteOfferIdList = array_diff($arOldOfferIdList, $arNewOfferIdList);
+                    foreach ($arDeleteOfferIdList as $iOfferID) {
+                        $obModel->offer()->find($iOfferID)->delete();
                     }
                 }
             }
@@ -61,11 +75,11 @@ class Products extends Base
     {
         if ($this->isBackend()) {
             /** @var Product $obProduct */
-            $obProduct = Product::find($iProductID);
+            $obProduct         = Product::find($iProductID);
             $obOfferCollection = OfferCollection::make($obProduct->offer()->lists('id'))->collect();
         } else {
             /** @var \Lovata\Shopaholic\Classes\Item\ProductItem $obProductItem */
-            $obProductItem = $this->getItem($iProductID);
+            $obProductItem     = $this->getItem($iProductID);
             $obOfferCollection = $obProductItem->offer->collect();
         }
 
