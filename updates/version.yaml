@@ -107,3 +107,5 @@ v2.0.1:
     - 'Add StartSession middleware'
     - 'Extend price type field and columns'
     - 'Return user item resource on api auth'
+v2.0.2:
+    - 'Update composer.json requires'

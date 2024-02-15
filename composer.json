@@ -17,7 +17,7 @@
         }
     },
     "require": {
-        "php": ">=7.2",
-        "planetadeleste/oc-apitoolbox-plugin":"^1.0"
+        "php": ">=8.0.2",
+        "planetadeleste/oc-apitoolbox-plugin":"^2.0"
     }
 }
