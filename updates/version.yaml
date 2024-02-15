@@ -101,3 +101,9 @@ v1.0.33:
 v2.0.0:
     - 'Use ReaZzon.JWTAuth plugin'
     - 'Prepare for OC 3'
+v2.0.1:
+    - 'Fix storing/updating product offers'
+    - 'Made improvements on item resources'
+    - 'Add StartSession middleware'
+    - 'Extend price type field and columns'
+    - 'Return user item resource on api auth'
