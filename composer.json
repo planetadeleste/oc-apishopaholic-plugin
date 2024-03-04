@@ -18,6 +18,6 @@
     },
     "require": {
         "php": ">=8.0.2",
-        "planetadeleste/oc-apitoolbox-plugin":"^2.0"
+        "planetadeleste/oc-apitoolbox-plugin":"@dev"
     }
 }
