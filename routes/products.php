@@ -1,4 +1,5 @@
 <?php
+
 Route::prefix('products')
     ->name('products.')
     ->group(
@@ -13,6 +14,13 @@ if (has_jwtauth_plugin()) {
     Route::middleware(['jwt.auth'])
         ->group(
             function () {
+                Route::prefix('products')
+                    ->name('products.')
+                    ->group(
+                        function () {
+                            Route::post('upload/{id}', 'Products@attach')->name('upload');
+                        }
+                    );
                 Route::apiResource('products', 'Products', ['only' => ['store', 'update', 'destroy']]);
             }
         );

@@ -1,4 +1,5 @@
 <?php
+
 Route::prefix('categories')
     ->name('categories.')
     ->group(
@@ -13,6 +14,13 @@ if (has_jwtauth_plugin()) {
     Route::middleware(['jwt.auth'])
         ->group(
             function () {
+                Route::prefix('categories')
+                    ->name('categories.')
+                    ->group(
+                        function () {
+                            Route::post('upload/{id}', 'Categories@attach')->name('upload');
+                        }
+                    );
                 Route::apiResource('categories', 'Categories', ['only' => ['store', 'update', 'destroy']]);
             }
         );

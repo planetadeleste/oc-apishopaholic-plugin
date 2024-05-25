@@ -14,6 +14,10 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  */
 class ItemResource extends BaseResource
 {
+    protected $casts = [
+        'is_superuser' => 'boolean',
+        'is_activated' => 'boolean',
+    ];
     public array $arDates = ['created_at', 'updated_at', 'last_login', 'last_activity_at'];
 
     public function getData(): array
@@ -41,6 +45,7 @@ class ItemResource extends BaseResource
             'role',
             'address',
             'is_activated',
+            'is_superuser',
             'last_activity_at',
         ];
     }

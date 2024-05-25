@@ -10,17 +10,21 @@ class RefreshLoggedUserMiddleware
 {
     public function handle(Request $request, \Closure $next)
     {
-        if (AuthHelper::check() && ($obUser = AuthHelper::user())) {
-            cache()->remember("user.activity.{$obUser->id}", 30, function () use ($obUser) {
-                /** @var LoggedUser $obLoggedUser */
-                $obLoggedUser                   = LoggedUser::firstOrNew(['user_id' => $obUser->id]);
-                $obLoggedUser->last_activity_at = $obLoggedUser->freshTimestamp();
-                $obLoggedUser->forceSave();
+        try {
+            if (AuthHelper::check() && ($obUser = AuthHelper::user())) {
+                cache()->remember("user.activity.{$obUser->id}", 30, function () use ($obUser) {
+                    /** @var LoggedUser $obLoggedUser */
+                    $obLoggedUser                   = LoggedUser::firstOrNew(['user_id' => $obUser->id]);
+                    $obLoggedUser->last_activity_at = $obLoggedUser->freshTimestamp();
+                    $obLoggedUser->forceSave();
 
-                return $obLoggedUser->last_activity_at->toDateTimeString();
-            });
+                    return $obLoggedUser->last_activity_at->toDateTimeString();
+                });
+            }
+        } catch (\Exception $e) {
+            trace_log($e);
+        } finally {
+            return $next($request);
         }
-
-        return $next($request);
     }
 }

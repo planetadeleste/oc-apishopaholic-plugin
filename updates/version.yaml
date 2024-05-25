@@ -109,3 +109,7 @@ v2.0.1:
     - 'Return user item resource on api auth'
 v2.0.2:
     - 'Update composer.json requires'
+v2.0.3:
+    - 'Cast properties on user resource'
+    - 'Return user item resource on auth refresh'
+    - 'Add upload routes'

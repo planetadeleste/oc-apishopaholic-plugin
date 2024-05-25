@@ -7,6 +7,7 @@ if (has_jwtauth_plugin()) {
                     ->name('profile.')
                     ->group(
                         function () {
+                            Route::post('upload/{id}', 'Profile@attach')->name('upload');
                             Route::get('avatar', 'Profile@avatar')->name('avatar');
                         }
                     );

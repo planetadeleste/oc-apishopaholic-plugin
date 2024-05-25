@@ -97,6 +97,9 @@ class Auth extends Base
 
             $tokenDto = $this->getTokenDto($tokenRefreshed);
             $arResult = $tokenDto->toArray() + ['expires_in' => $tokenDto->expires];
+            $obUser = $arResult['user'];
+            $obUserItem = UserItem::make($obUser->id);
+            array_set($arResult, 'user', ItemResource::make($obUserItem));
             $this->fireSystemEvent(self::EVENT_API_AFTER_REFRESH, [$tokenDto->expires, $tokenDto->token]);
 
             return response()->json(Result::setTrue($arResult)->get());
