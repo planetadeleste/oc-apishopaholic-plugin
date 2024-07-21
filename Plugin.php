@@ -23,10 +23,10 @@ use System\Classes\PluginBase;
  */
 class Plugin extends PluginBase
 {
-    public const EVENT_ITEMRESOURCE_DATA    = 'planetadeleste.apishopaholic.resource.itemData';
-    public const EVENT_LOCALE_BEFORE_CHANGE = 'planetadeleste.apishopaholic.locale.beforeChange';
-    public const EVENT_LOCALE_AFTER_CHANGE  = 'planetadeleste.apishopaholic.locale.afterChange';
-    public const API_ROUTES                 = '/planetadeleste/apishopaholic/routes/';
+    public const string EVENT_ITEMRESOURCE_DATA    = 'planetadeleste.apishopaholic.resource.itemData';
+    public const string EVENT_LOCALE_BEFORE_CHANGE = 'planetadeleste.apishopaholic.locale.beforeChange';
+    public const string EVENT_LOCALE_AFTER_CHANGE  = 'planetadeleste.apishopaholic.locale.afterChange';
+    public const string API_ROUTES                 = '/planetadeleste/apishopaholic/routes/';
 
     public $require = [
         'Lovata.Shopaholic',

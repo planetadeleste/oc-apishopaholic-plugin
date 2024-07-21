@@ -113,3 +113,5 @@ v2.0.3:
     - 'Cast properties on user resource'
     - 'Return user item resource on auth refresh'
     - 'Add upload routes'
+v2.0.4:
+    - 'Lint code'

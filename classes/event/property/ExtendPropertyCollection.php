@@ -1,36 +1,44 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Event\Property;
+<?php
 
+namespace PlanetaDelEste\ApiShopaholic\Classes\Event\Property;
 
+use Lovata\PropertiesShopaholic\Classes\Collection\PropertyCollection;
+use Lovata\PropertiesShopaholic\Classes\Item\PropertyItem;
 use System\Classes\PluginManager;
 
 class ExtendPropertyCollection
 {
-    public function subscribe()
+    /**
+     * @return void
+     */
+    public function subscribe(): void
     {
-        if (PluginManager::instance()->exists('Lovata.PropertiesShopaholic')) {
-            \Lovata\PropertiesShopaholic\Classes\Collection\PropertyCollection::extend(
-                function ($obCollection) {
-                    $this->addToSimpleArrayMethods($obCollection);
-                }
-            );
+        if (!PluginManager::instance()->exists('Lovata.PropertiesShopaholic')) {
+            return;
         }
+
+        PropertyCollection::extend(
+            function ($obCollection): void {
+                $this->addToSimpleArrayMethods($obCollection);
+            }
+        );
     }
 
     /**
-     * @param \Lovata\PropertiesShopaholic\Classes\Collection\PropertyCollection $obCollection
+     * @param PropertyCollection $obCollection
      */
-    protected function addToSimpleArrayMethods($obCollection)
+    protected function addToSimpleArrayMethods(PropertyCollection $obCollection): void
     {
         $obCollection->addDynamicMethod(
             'toSimpleArray',
-            function () use ($obCollection) {
+            static function () use ($obCollection) {
                 $arProperties = [];
 
                 if ($obCollection->isEmpty()) {
                     return $arProperties;
                 }
 
-                /** @var \Lovata\PropertiesShopaholic\Classes\Item\PropertyItem $obProperty */
+                /** @var PropertyItem $obProperty */
                 foreach ($obCollection->all() as $obProperty) {
                     if (!$obProperty->hasValue()) {
                         continue;

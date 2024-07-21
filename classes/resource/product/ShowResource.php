@@ -1,9 +1,15 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
+
+
+use Lovata\Shopaholic\Classes\Item\ProductItem;
 
 /**
  * Class ShowResource
  *
- * @mixin \Lovata\Shopaholic\Classes\Item\ProductItem
+ * @mixin ProductItem
+ *
  * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Product
  */
 class ShowResource extends ItemResource
@@ -33,4 +39,3 @@ class ShowResource extends ItemResource
         ];
     }
 }
-
