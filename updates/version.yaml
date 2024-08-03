@@ -115,3 +115,5 @@ v2.0.3:
     - 'Add upload routes'
 v2.0.4:
     - 'Lint code'
+v2.0.5:
+    - 'Add phone_list property as array'

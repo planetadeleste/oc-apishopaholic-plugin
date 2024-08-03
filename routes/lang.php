@@ -1,20 +1,28 @@
 <?php
 
+use October\Rain\Support\Arr;
+use RainLab\Translate\Models\Message;
+
 Route::prefix('lang')
     ->name('lang.')
     ->group(
-        function () {
+        static function (): void {
             Route::get('langs', 'Langs@langs');
             Route::get('locale', 'Langs@locale');
             Route::get('{lang?}', 'Langs@lang');
             Route::post('tr', 'Langs@missing');
 
-            Route::get('yaml/{locale?}/{dump?}', function (string $locale = 'es', bool $dump = false) {
-                $arLangs = [];
-                $obMessage =  \RainLab\Translate\Models\Message::where('locale', $locale)->first();
+            Route::get('yaml/{locale?}/{dump?}/{undot?}', static function (string $locale = 'es', bool $dump = false, bool $undot = false) {
+                $arLangs   = [];
+                $obMessage = Message::where('locale', $locale)->first();
+
                 if ($obMessage) {
                     $arLangs = $obMessage->data;
                     ksort($arLangs);
+                }
+
+                if ($undot) {
+                    $arLangs = Arr::undot($arLangs);
                 }
 
                 if ($dump) {
