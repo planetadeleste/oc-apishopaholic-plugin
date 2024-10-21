@@ -98,3 +98,5 @@ v1.0.32:
 v1.0.33:
     - 'Register user logged activity'
     - v1.0.33/create_table_loggedusers.php
+v1.0.34:
+    - 'Fix undefined getObject() issue'

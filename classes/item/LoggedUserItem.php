@@ -11,7 +11,7 @@ use PlanetaDelEste\ApiShopaholic\Models\LoggedUser;
 /**
  * Class LoggedUserItem
  *
- * @package PlanetaDelEste\ApiShopaholic\Classes\Item
+ * @package PlanetaDelEste\ApiShopaholic\Classes\ItemRef
  *
  * @property integer  $id
  * @property integer  $user_id

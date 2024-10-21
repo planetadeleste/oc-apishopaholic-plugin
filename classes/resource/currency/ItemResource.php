@@ -1,13 +1,15 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency;
+<?php
 
-use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency;
+
+use Lovata\Shopaholic\Classes\Item\CurrencyItem;
 use PlanetaDelEste\ApiShopaholic\Plugin;
+use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
 
 /**
  * Class ItemResource
  *
- * @mixin \Lovata\Shopaholic\Classes\Item\CurrencyItem
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency
+ * @mixin CurrencyItem
  */
 class ItemResource extends Base
 {
@@ -17,11 +19,14 @@ class ItemResource extends Base
     public function getData(): array
     {
         return [
-            'active' => (bool)$this->getObject()->active,
-            'external_id' => (int)$this->getObject()->external_id,
+            'active'      => (bool) $this->active,
+            'external_id' => (int) $this->external_id,
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public function getDataKeys(): array
     {
         return [
@@ -36,6 +41,9 @@ class ItemResource extends Base
         ];
     }
 
+    /**
+     * @return string
+     */
     protected function getEvent(): string
     {
         // Paste below code in PlanetaDelEste\ApiShopaholic\Plugin class
