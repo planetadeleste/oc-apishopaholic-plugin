@@ -100,3 +100,5 @@ v1.0.33:
     - v1.0.33/create_table_loggedusers.php
 v1.0.34:
     - 'Fix undefined getObject() issue'
+v1.0.35:
+    - 'Use function on resource data'
