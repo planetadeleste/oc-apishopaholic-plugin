@@ -33,7 +33,7 @@ class ItemResource extends BaseResource
             'thumbnail'       => fn() => $this->preview_image
                 ? $this->preview_image->getThumb(300, 300, ['mode' => 'crop'])
                 : null,
-            'secondary_thumb' => fn() => $this->images
+            'secondary_thumb' => fn() => $this->images && $this->images->isNotEmpty()
                 ? collect($this->images)->first()->getThumb(300, 300, ['mode' => 'crop'])
                 : null,
             'brand'           => fn() => $this->brand ? ItemResourceBrand::make($this->brand) : null

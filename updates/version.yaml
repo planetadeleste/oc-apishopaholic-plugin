@@ -102,3 +102,5 @@ v1.0.34:
     - 'Fix undefined getObject() issue'
 v1.0.35:
     - 'Use function on resource data'
+v1.0.36:
+    - 'Override api index to optimize a compact view'
