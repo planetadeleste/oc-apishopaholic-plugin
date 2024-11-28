@@ -73,7 +73,7 @@ class Auth extends Base
 
             $sToken = $this->JWTGuard->login($user);
             $tokenDto = $this->getTokenDto($sToken, $user);
-            $arResult = $tokenDto->toArray() + ['expires_in' => $tokenDto->expires];
+            $arResult = $tokenDto->toArray() + ['expires_in' => now()->diffInSeconds($tokenDto->expires)];
             $obUser = $arResult['user'];
             $obUserItem = UserItem::make($obUser->id);
             array_set($arResult, 'user', ItemResource::make($obUserItem));

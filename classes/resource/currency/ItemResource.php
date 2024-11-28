@@ -11,15 +11,17 @@ use PlanetaDelEste\ApiShopaholic\Plugin;
  */
 class ItemResource extends Base
 {
+    protected $casts = [
+        'active' => 'bool',
+        'external_id' => 'int'
+    ];
+
     /**
      * @return array|void
      */
     public function getData(): array
     {
-        return [
-            'active' => (bool)$this->getObject()->active,
-            'external_id' => (int)$this->getObject()->external_id,
-        ];
+        return [];
     }
 
     public function getDataKeys(): array
