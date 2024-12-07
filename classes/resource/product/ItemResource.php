@@ -20,24 +20,34 @@ use System\Classes\PluginManager;
  */
 class ItemResource extends BaseResource
 {
+    /**
+     * @var array<string>
+     */
+    protected $casts = ['active' => 'bool'];
+
+    /**
+     * @return array<\Closure>
+     */
     public function getData(): array
     {
         return [
-            'active'          => (bool) $this->active,
-            'preview_image'   => $this->preview_image?->getPath(),
-            'images'          => IndexCollectionImages::make(collect($this->images)),
-            'category'        => ($this->category && $this->category_id) ? ItemResourceCategory::make($this->category) : null,
-            'property'        => $this->formatProperty(),
-            'category_name'   => $this->category?->name,
-            'offers'          => $this->offer->isNotEmpty() ? IndexCollectionOffer::make($this->offer->collect()) : [],
-            'thumbnail'       => $this->preview_image?->getThumb(300, 300, ['mode' => 'crop']),
-            'secondary_thumb' => $this->images
+            'preview_image'   => fn() => $this->preview_image?->getPath(),
+            'images'          => fn() => IndexCollectionImages::make(collect($this->images)),
+            'category'        => fn() => ($this->category && $this->category_id) ? ItemResourceCategory::make($this->category) : null,
+            'property'        => fn() => $this->formatProperty(),
+            'category_name'   => fn() => $this->category?->name,
+            'offers'          => fn() => $this->offer->isNotEmpty() ? IndexCollectionOffer::make($this->offer->collect()) : [],
+            'thumbnail'       => fn() => $this->preview_image?->getThumb(300, 300, ['mode' => 'crop']),
+            'secondary_thumb' => fn() => count($this->images)
                 ? collect($this->images)->first()->getThumb(300, 300, ['mode' => 'crop'])
                 : null,
-            'brand'           => ($this->brand && $this->brand_id) ? ItemResourceBrand::make($this->brand) : null
+            'brand'           => fn() => ($this->brand && $this->brand_id) ? ItemResourceBrand::make($this->brand) : null
         ];
     }
 
+    /**
+     * @return array<string>
+     */
     public function getDataKeys(): array
     {
         return [
@@ -56,17 +66,32 @@ class ItemResource extends BaseResource
         ];
     }
 
+    public function getColumns(): array
+    {
+        if (input('filters.response', 'full') === 'compact') {
+            return ['id', 'active', 'category_id', 'code', 'name', 'slug'];
+        }
+
+        return [];
+    }
+
+    /**
+     * @return string|null
+     */
     protected function getEvent(): ?string
     {
         return Plugin::EVENT_ITEMRESOURCE_DATA.'.product';
     }
 
+    /**
+     * @return array
+     */
     protected function formatProperty(): array
     {
         $arProperties = [];
 
         if (PluginManager::instance()->exists('Lovata.PropertiesShopaholic')) {
-            $arProperties = $this->property->toSimpleArray();
+            $arProperties = is_array($this->property) ? $this->property : $this->property->toSimpleArray();
         }
 
         return $arProperties;
