@@ -12,6 +12,7 @@ use PlanetaDelEste\ApiShopaholic\Classes\Event\ExtendElementCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\LoggedUser\LoggedUserModelHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\PriceType\ExtendPriceTypeColumnsHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\PriceType\ExtendPriceTypeFieldsHandler;
+use PlanetaDelEste\ApiShopaholic\Classes\Event\Product\ProductModelHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Property\ExtendPropertyCollection;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\Tax\TaxModelHandler;
 use PlanetaDelEste\ApiShopaholic\Classes\Event\User\UserModelHandler;
@@ -28,6 +29,9 @@ class Plugin extends PluginBase
     public const string EVENT_LOCALE_AFTER_CHANGE  = 'planetadeleste.apishopaholic.locale.afterChange';
     public const string API_ROUTES                 = '/planetadeleste/apishopaholic/routes/';
 
+    /**
+     * @var array<string>
+     */
     public $require = [
         'Lovata.Shopaholic',
         'Lovata.Buddies',
@@ -50,6 +54,9 @@ class Plugin extends PluginBase
         ];
     }
 
+    /**
+     * @return void
+     */
     public function boot(): void
     {
         $this->subscribeEvents();
@@ -57,6 +64,9 @@ class Plugin extends PluginBase
         $this->app[Kernel::class]->pushMiddleware(StartSession::class);
     }
 
+    /**
+     * @return void
+     */
     protected function subscribeEvents(): void
     {
         $arEvents = [
@@ -68,6 +78,7 @@ class Plugin extends PluginBase
             ExtendPriceTypeFieldsHandler::class,
             ExtendPropertyCollection::class,
             LoggedUserModelHandler::class,
+            ProductModelHandler::class,
             TaxModelHandler::class,
             UserModelHandler::class,
         ];

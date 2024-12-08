@@ -1,5 +1,8 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand;
+<?php
 
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand;
+
+use Lovata\Shopaholic\Classes\Item\BrandItem;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
 use PlanetaDelEste\ApiShopaholic\Plugin;
 use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
@@ -7,23 +10,29 @@ use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
 /**
  * Class ItemResource
  *
- * @mixin \Lovata\Shopaholic\Classes\Item\BrandItem
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand
+ * @mixin BrandItem
  */
-class ItemResource extends Base
+class BrandItemResource extends Base
 {
     /**
-     * @return array|void
+     * @var array<string>
+     */
+    protected $casts = ['active' => 'bool'];
+
+    /**
+     * @return array
      */
     public function getData(): array
     {
         return [
-            'preview_image' => $this->preview_image ? $this->preview_image->getPath() : null,
-            'images'        => IndexCollectionImages::make(collect($this->images)),
-            'active'        => (bool)$this->active
+            'preview_image' => fn() => $this->preview_image?->getPath(),
+            'images'        => fn() => IndexCollectionImages::make(collect($this->images)),
         ];
     }
 
+    /**
+     * @return array<string>
+     */
     public function getDataKeys(): array
     {
         return [

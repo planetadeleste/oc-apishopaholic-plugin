@@ -3,7 +3,7 @@
 namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
 
 use Lovata\Shopaholic\Classes\Item\ProductItem;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand\ItemResource as ItemResourceBrand;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand\BrandItemResource as ItemResourceBrand;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Category\ItemResource as ItemResourceCategory;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\File\IndexCollection as IndexCollectionImages;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer\IndexCollection as IndexCollectionOffer;

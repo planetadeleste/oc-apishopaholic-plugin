@@ -1,13 +1,19 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand;
+
+use Lovata\Shopaholic\Classes\Item\BrandItem;
 
 /**
  * Class ShowResource
  *
- * @mixin \Lovata\Shopaholic\Classes\Item\BrandItem
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Brand
+ * @mixin BrandItem
  */
-class ShowResource extends ItemResource
+class BrandShowResource extends BrandItemResource
 {
+    /**
+     * @return string[]
+     */
     public function getDataKeys(): array
     {
         return [
