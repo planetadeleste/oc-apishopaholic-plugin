@@ -120,4 +120,6 @@ v2.0.5:
 v2.0.6:
     - 'Rename api resource classes'
     - 'Add product model handler event'
+v2.0.7:
+    - 'Exclude columns on compact response filter'
 

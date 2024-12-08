@@ -26,6 +26,28 @@ class ItemResource extends BaseResource
     protected $casts = ['active' => 'bool'];
 
     /**
+     * @return void
+     */
+    public function init(): void
+    {
+        if (input('filters.response', 'full') !== 'compact') {
+            return;
+        }
+
+        $this->without([
+            'brand_id',
+            'preview_text',
+            'thumbnail',
+            'secondary_thumb',
+            'offers',
+            'category_name',
+            'property_array',
+            'created_at',
+            'updated_at',
+        ]);
+    }
+
+    /**
      * @return array<\Closure>
      */
     public function getData(): array
