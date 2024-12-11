@@ -29,8 +29,8 @@ use ReaZzon\JWTAuth\Classes\Guards\JWTGuard;
 
 class Auth extends Base
 {
-    public const EVENT_API_AFTER_SIGNUP = 'planetadeleste.apiShopaholic.afterSignup';
-    public const EVENT_API_SIGNUP_VALID = 'planetadeleste.apiShopaholic.validateSignup';
+    public const EVENT_API_AFTER_SIGNUP  = 'planetadeleste.apiShopaholic.afterSignup';
+    public const EVENT_API_SIGNUP_VALID  = 'planetadeleste.apiShopaholic.validateSignup';
     public const EVENT_API_AFTER_REFRESH = 'planetadeleste.apiShopaholic.afterRefresh';
 
     /**
@@ -71,10 +71,10 @@ class Auth extends Base
                 throw new ApplicationException('invalid_credentials');
             }
 
-            $sToken = $this->JWTGuard->login($user);
-            $tokenDto = $this->getTokenDto($sToken, $user);
-            $arResult = $tokenDto->toArray() + ['expires_in' => now()->diffInSeconds($tokenDto->expires)];
-            $obUser = $arResult['user'];
+            $sToken     = $this->JWTGuard->login($user);
+            $tokenDto   = $this->getTokenDto($sToken, $user);
+            $arResult   = $tokenDto->toArray() + ['expires_in' => now()->diffInSeconds($tokenDto->expires)];
+            $obUser     = $arResult['user'];
             $obUserItem = UserItem::make($obUser->id);
             array_set($arResult, 'user', ItemResource::make($obUserItem));
 
@@ -95,9 +95,9 @@ class Auth extends Base
             $tokenRefreshed = $this->JWTGuard->refresh(true);
             $this->JWTGuard->setToken($tokenRefreshed);
 
-            $tokenDto = $this->getTokenDto($tokenRefreshed);
-            $arResult = $tokenDto->toArray() + ['expires_in' => $tokenDto->expires];
-            $obUser = $arResult['user'];
+            $tokenDto   = $this->getTokenDto($tokenRefreshed);
+            $arResult   = $tokenDto->toArray() + ['expires_in' => now()->diffInSeconds($tokenDto->expires)];
+            $obUser     = $arResult['user'];
             $obUserItem = UserItem::make($obUser->id);
             array_set($arResult, 'user', ItemResource::make($obUserItem));
             $this->fireSystemEvent(self::EVENT_API_AFTER_REFRESH, [$tokenDto->expires, $tokenDto->token]);
@@ -106,6 +106,7 @@ class Auth extends Base
         } catch (Exception $e) {
             // something went wrong
             Result::setFalse()->setMessage('could_not_refresh_token');
+
             return response()->json(Result::get(), 401);
         }
     }
@@ -143,6 +144,7 @@ class Auth extends Base
             $obCart = null;
 
             $this->fireSystemEvent(self::EVENT_API_SIGNUP_VALID, [$request->all()]);
+
             if (!Result::status()) {
                 return response()->json(Result::get(), 401);
             }
@@ -153,9 +155,11 @@ class Auth extends Base
 
                 // Load current cart
                 $iCartID = Cookie::get(CartProcessor::COOKIE_NAME);
+
                 if (!empty($iCartID) && !is_numeric($iCartID)) {
                     try {
                         $iDecryptedCartID = Crypt::decryptString($iCartID);
+
                         if (!empty($iDecryptedCartID)) {
                             $iCartID = $iDecryptedCartID;
                         }
@@ -175,6 +179,7 @@ class Auth extends Base
                 ['activation' => 'activation_on', 'force_login' => true]
             );
             $obUserModel = $obComponent->registration($request->all());
+
             if (!$obUserModel) {
                 return response()->json(Result::get(), 401);
             }
@@ -188,6 +193,7 @@ class Auth extends Base
             }
         } catch (Exception $e) {
             Result::setFalse()->setMessage($e->getMessage());
+
             return response()->json(Result::get(), 401);
         }
 
@@ -211,9 +217,11 @@ class Auth extends Base
             /** @var RestorePassword $obComponent */
             $obComponent = $this->component(RestorePassword::class);
             $obComponent->sendRestoreMail(Input::only(['email']));
+
             return response()->json(Result::get());
         } catch (Exception $e) {
             Result::setFalse()->setMessage($e->getMessage());
+
             return response()->json(Result::get(), 401);
         }
     }
@@ -225,9 +233,11 @@ class Auth extends Base
             $obComponent = $this->component(ResetPassword::class, null, ['slug' => input('slug')]);
             $obComponent->checkResetCode();
             $obComponent->resetPassword(Input::only(['password', 'password_confirmation']));
+
             return response()->json(Result::get());
         } catch (Exception $e) {
             Result::setFalse()->setMessage($e->getMessage());
+
             return response()->json(Result::get(), 401);
         }
     }
@@ -237,6 +247,7 @@ class Auth extends Base
         try {
             /** @var ResetPassword $obComponent */
             $obComponent = $this->component(ResetPassword::class, null, ['slug' => $sSlug]);
+
             if (!$obComponent->checkResetCode()) {
                 Result::setFalse();
             }
@@ -244,6 +255,7 @@ class Auth extends Base
             return response()->json(Result::get());
         } catch (Exception $e) {
             Result::setFalse()->setMessage($e->getMessage());
+
             return response()->json(Result::get(), 401);
         }
     }
@@ -251,10 +263,12 @@ class Auth extends Base
     /**
      * @param string               $sToken
      * @param Authenticatable|null $obUser
+     *
      * @return TokenDto
+     *
      * @throws Exception
      */
-    protected function getTokenDto(string $sToken, Authenticatable $obUser = null): TokenDto
+    protected function getTokenDto(string $sToken, ?Authenticatable $obUser = null): TokenDto
     {
         if (!$obUser) {
             $obUser = $this->JWTGuard->user();

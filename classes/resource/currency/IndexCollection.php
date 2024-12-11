@@ -1,18 +1,13 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency;
+<?php
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency;
+
 
 /**
  * Class IndexCollection
  *
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency
+ * @deprecated Use CurrencyIndexCollection instead
  */
-class IndexCollection extends ResourceCollection
+class IndexCollection extends CurrencyIndexCollection
 {
-    public $collects = ShowResource::class;
-
-    public function toArray($request)
-    {
-        return $this->collection;
-    }
 }

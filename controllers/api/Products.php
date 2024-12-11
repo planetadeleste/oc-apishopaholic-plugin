@@ -7,6 +7,9 @@ use Lovata\Shopaholic\Classes\Store\ProductListStore;
 use Lovata\Shopaholic\Models\Offer;
 use Lovata\Shopaholic\Models\Product;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer\IndexCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Product\ProductIndexCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Product\ProductListCollection;
+use PlanetaDelEste\ApiShopaholic\Classes\Resource\Product\ProductShowResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 use PlanetaDelEste\ApiToolbox\Plugin;
 
@@ -86,13 +89,43 @@ class Products extends Base
         return IndexCollection::make($obOfferCollection);
     }
 
+    /**
+     * @return string
+     */
     public function getModelClass(): string
     {
         return Product::class;
     }
 
+    /**
+     * @return string
+     */
     public function getSortColumn(): string
     {
         return ProductListStore::SORT_NEW;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIndexResource(): ?string
+    {
+        return ProductIndexCollection::class;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getShowResource(): ?string
+    {
+        return ProductShowResource::class;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getListResource(): ?string
+    {
+        return ProductListCollection::class;
     }
 }

@@ -1,18 +1,12 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
+<?php
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
 
 /**
  * Class IndexCollection
  *
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Product
+ * @deprecated Use ProductIndexCollection instead
  */
-class IndexCollection extends ResourceCollection
+class IndexCollection extends ProductIndexCollection
 {
-    public $collects = ShowResource::class;
-
-    public function toArray($request)
-    {
-        return $this->collection;
-    }
 }

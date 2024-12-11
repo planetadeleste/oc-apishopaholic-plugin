@@ -1,11 +1,12 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency;
 
 /**
  * Class ListCollection
  *
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Currency
+ * @deprecated Use CurrencyListCollection instead
  */
-class ListCollection extends IndexCollection
+class ListCollection extends CurrencyListCollection
 {
-    public $collects = ItemResource::class;
 }

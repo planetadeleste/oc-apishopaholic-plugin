@@ -1,11 +1,12 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Product;
 
 /**
  * Class ListCollection
  *
- * @package PlanetaDelEste\ApiShopaholic\Classes\Resource\Product
+ * @deprecated Use ProductListCollection instead
  */
-class ListCollection extends IndexCollection
+class ListCollection extends ProductListCollection
 {
-    public $collects = ItemResource::class;
 }
