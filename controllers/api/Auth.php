@@ -18,7 +18,6 @@ use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
 use Lovata\Buddies\Facades\AuthHelper;
 use Lovata\Buddies\Models\User;
-use Lovata\OrdersShopaholic\Models\Cart;
 use October\Rain\Argon\Argon;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
@@ -96,7 +95,7 @@ class Auth extends Base
             $this->JWTGuard->setToken($tokenRefreshed);
 
             $tokenDto   = $this->getTokenDto($tokenRefreshed);
-            $arResult   = $tokenDto->toArray() + ['expires_in' => now()->diffInSeconds($tokenDto->expires)];
+            $arResult   = $tokenDto->toArray() + ['expires_in' => $tokenDto->expires];
             $obUser     = $arResult['user'];
             $obUserItem = UserItem::make($obUser->id);
             array_set($arResult, 'user', ItemResource::make($obUserItem));
@@ -142,7 +141,6 @@ class Auth extends Base
     {
         try {
             $obCart = null;
-
             $this->fireSystemEvent(self::EVENT_API_SIGNUP_VALID, [$request->all()]);
 
             if (!Result::status()) {
@@ -151,10 +149,8 @@ class Auth extends Base
 
             // Check for OrdersShopaholic plugin
             if ($this->hasPlugin('Lovata.OrdersShopaholic')) {
-                /** @var Cart $obCart */
-
                 // Load current cart
-                $iCartID = Cookie::get(CartProcessor::COOKIE_NAME);
+                $iCartID = Cookie::get(\Lovata\OrdersShopaholic\Classes\Processor\CartProcessor::COOKIE_NAME);
 
                 if (!empty($iCartID) && !is_numeric($iCartID)) {
                     try {
@@ -168,7 +164,8 @@ class Auth extends Base
                 }
 
                 if (!empty($iCartID)) {
-                    $obCart = Cart::with('position')->find($iCartID);
+                    /** @var \Lovata\OrdersShopaholic\Models\Cart | null $obCart */
+                    $obCart = \Lovata\OrdersShopaholic\Models\Cart::with('position')->find($iCartID);
                 }
             }
 
@@ -184,7 +181,7 @@ class Auth extends Base
                 return response()->json(Result::get(), 401);
             }
 
-            $user = ItemResourceUser::make($obUserModel)->toArray(request());
+            $user = ItemResource::make($obUserModel)->toArray(request());
 
             // If cart exists, update user_id property
             if ($obCart) {
