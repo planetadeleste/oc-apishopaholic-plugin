@@ -18,9 +18,7 @@ class ProductBasicResource extends ProductItemResource
             'slug',
             'active',
             'category_id',
-            'secondary_thumb',
             'created_at',
-            'updated_at',
         ];
     }
 
