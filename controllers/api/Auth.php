@@ -10,20 +10,18 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Input;
-use JWTAuth;
 use Kharanenka\Helper\Result;
-use Lovata\Buddies\Classes\Item\UserItem;
 use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
-use Lovata\Buddies\Facades\AuthHelper;
 use Lovata\Buddies\Models\User;
-use October\Rain\Argon\Argon;
+use Lovata\OrdersShopaholic\Classes\Processor\CartProcessor;
+use Lovata\OrdersShopaholic\Models\Cart;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
-use PlanetaDelEste\ApiToolbox\Classes\Helper\ApiHelper;
+use PlanetaDelEste\ApiToolbox\classes\Dto\TokenDto;
+use PlanetaDelEste\ApiToolbox\Classes\Helper\AuthHelper;
 use ReaZzon\JWTAuth\Classes\Contracts\UserPluginResolver;
-use ReaZzon\JWTAuth\Classes\Dto\TokenDto;
 use ReaZzon\JWTAuth\Classes\Guards\JWTGuard;
 
 class Auth extends Base
@@ -70,12 +68,7 @@ class Auth extends Base
                 throw new ApplicationException('invalid_credentials');
             }
 
-            $sToken     = $this->JWTGuard->login($user);
-            $tokenDto   = $this->getTokenDto($sToken, $user);
-            $arResult   = $tokenDto->toArray() + ['expires_in' => now()->diffInSeconds($tokenDto->expires)];
-            $obUser     = $arResult['user'];
-            $obUserItem = UserItem::make($obUser->id);
-            array_set($arResult, 'user', ItemResource::make($obUserItem));
+            $arResult = AuthHelper::loginAndReturnResult($user);
 
             return response()->json(Result::setTrue($arResult)->get());
         } catch (Exception $e) {
@@ -93,17 +86,12 @@ class Auth extends Base
         try {
             $tokenRefreshed = $this->JWTGuard->refresh(true);
             $this->JWTGuard->setToken($tokenRefreshed);
-
-            $tokenDto   = $this->getTokenDto($tokenRefreshed);
-            $arResult   = $tokenDto->toArray() + ['expires_in' => $tokenDto->expires];
-            $obUser     = $arResult['user'];
-            $obUserItem = UserItem::make($obUser->id);
-            array_set($arResult, 'user', ItemResource::make($obUserItem));
-            $this->fireSystemEvent(self::EVENT_API_AFTER_REFRESH, [$tokenDto->expires, $tokenDto->token]);
+            $arResult = AuthHelper::dtoData($tokenRefreshed);
+            $this->fireSystemEvent(self::EVENT_API_AFTER_REFRESH, [$arResult['expires'], $arResult['token']]);
 
             return response()->json(Result::setTrue($arResult)->get());
         } catch (Exception $e) {
-            // something went wrong
+            // Something went wrong
             Result::setFalse()->setMessage('could_not_refresh_token');
 
             return response()->json(Result::get(), 401);
@@ -150,7 +138,7 @@ class Auth extends Base
             // Check for OrdersShopaholic plugin
             if ($this->hasPlugin('Lovata.OrdersShopaholic')) {
                 // Load current cart
-                $iCartID = Cookie::get(\Lovata\OrdersShopaholic\Classes\Processor\CartProcessor::COOKIE_NAME);
+                $iCartID = Cookie::get(CartProcessor::COOKIE_NAME);
 
                 if (!empty($iCartID) && !is_numeric($iCartID)) {
                     try {
@@ -159,13 +147,14 @@ class Auth extends Base
                         if (!empty($iDecryptedCartID)) {
                             $iCartID = $iDecryptedCartID;
                         }
-                    } catch (Exception $obException) {
+                    } catch (Exception) {
+                        // Do nothing here
                     }
                 }
 
                 if (!empty($iCartID)) {
-                    /** @var \Lovata\OrdersShopaholic\Models\Cart | null $obCart */
-                    $obCart = \Lovata\OrdersShopaholic\Models\Cart::with('position')->find($iCartID);
+                    /** @var Cart | null $obCart */
+                    $obCart = Cart::with('position')->find($iCartID);
                 }
             }
 
@@ -195,7 +184,7 @@ class Auth extends Base
         }
 
         $obAuthUser = User::find($obUserModel->id);
-        $token      = JWTAuth::fromUser($obAuthUser);
+        $token      = AuthHelper::jwt()->fromUser($obAuthUser);
         $ttl        = config('jwt.ttl');
         $expires_in = $ttl * 60;
         Result::setData(compact('token', 'user', 'expires_in'));
@@ -267,14 +256,6 @@ class Auth extends Base
      */
     protected function getTokenDto(string $sToken, ?Authenticatable $obUser = null): TokenDto
     {
-        if (!$obUser) {
-            $obUser = $this->JWTGuard->user();
-        }
-
-        return new TokenDto([
-            'token'   => $sToken,
-            'expires' => Argon::createFromTimestamp($this->JWTGuard->getPayload()->get('exp'), ApiHelper::tz()),
-            'user'    => $obUser,
-        ]);
+        return AuthHelper::getTokenDto($sToken, $obUser);
     }
 }
