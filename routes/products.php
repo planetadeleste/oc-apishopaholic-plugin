@@ -19,6 +19,7 @@ if (has_jwtauth_plugin()) {
                     ->group(
                         function () {
                             Route::post('upload/{id}', 'Products@attach')->name('upload');
+                            Route::post('detach/{id}', 'Products@detach')->name('detach');
                         }
                     );
                 Route::apiResource('products', 'Products', ['only' => ['store', 'update', 'destroy']]);

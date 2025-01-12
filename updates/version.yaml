@@ -127,4 +127,5 @@ v2.0.8:
     - 'Fix auth expires_in property'
     - 'Add resource classes in controllers'
     - 'New ProductBasicResource class'
-
+v2.0.9:
+    - 'Add detach route'
