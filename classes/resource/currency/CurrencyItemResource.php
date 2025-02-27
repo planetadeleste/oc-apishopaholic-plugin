@@ -15,6 +15,7 @@ class CurrencyItemResource extends Base
 {
     protected $casts = [
         'active'      => 'bool',
+        'is_default'  => 'bool',
         'external_id' => 'int'
     ];
 
