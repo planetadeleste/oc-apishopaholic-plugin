@@ -13,8 +13,12 @@ use PlanetaDelEste\ApiToolbox\Classes\Resource\Base;
  */
 class CurrencyItemResource extends Base
 {
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'active'      => 'bool',
+        'is_default'  => 'bool',
         'external_id' => 'int'
     ];
 

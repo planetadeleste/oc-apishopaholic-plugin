@@ -18,7 +18,7 @@ class ItemResource extends BaseResource
     /**
      * @var array<string>
      */
-    public array $arDates = ['created_at', 'updated_at', 'last_login', 'last_activity_at'];
+    public array $arDates = ['created_at', 'updated_at', 'last_login', 'last_activity_at', 'activated_at'];
 
     /**
      * @var array<string>
@@ -62,6 +62,7 @@ class ItemResource extends BaseResource
             'is_activated',
             'is_superuser',
             'last_activity_at',
+            'activated_at',
         ];
     }
 
