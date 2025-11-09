@@ -11,16 +11,16 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Input;
 use Kharanenka\Helper\Result;
+use Lovata\Buddies\Classes\Item\UserItem;
 use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
-use Lovata\Buddies\Models\User;
 use Lovata\OrdersShopaholic\Classes\Processor\CartProcessor;
 use Lovata\OrdersShopaholic\Models\Cart;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
-use PlanetaDelEste\ApiToolbox\classes\Dto\TokenDto;
 use PlanetaDelEste\ApiToolbox\Classes\Helper\AuthHelper;
+use PlanetaDelEste\ApiToolbox\classes\Dto\TokenDto;
 use ReaZzon\JWTAuth\Classes\Contracts\UserPluginResolver;
 use ReaZzon\JWTAuth\Classes\Guards\JWTGuard;
 
@@ -55,6 +55,8 @@ class Auth extends Base
      * @param Request $request
      *
      * @return JsonResponse
+     *
+     * @throws ApplicationException
      */
     public function authenticate(Request $request): JsonResponse
     {
@@ -77,11 +79,9 @@ class Auth extends Base
     }
 
     /**
-     * @param Request $request
-     *
      * @return JsonResponse
      */
-    public function refresh(Request $request): JsonResponse
+    public function refresh(): JsonResponse
     {
         try {
             $tokenRefreshed = $this->JWTGuard->refresh(true);
@@ -99,24 +99,18 @@ class Auth extends Base
     }
 
     /**
-     * @param Request $request
-     *
      * @return JsonResponse
      */
-    public function invalidate(Request $request): JsonResponse
+    public function invalidate(): JsonResponse
     {
         try {
             // Logout from session
             AuthHelper::logout();
-
-            // invalidate the token
             $this->JWTGuard->invalidate();
         } catch (Exception $e) {
-            // something went wrong
             return response()->json(['error' => 'could_not_invalidate_token'], 401);
         }
 
-        // if no errors we can return a message to indicate that the token was invalidated
         return response()->json('token_invalidated');
     }
 
@@ -170,7 +164,8 @@ class Auth extends Base
                 return response()->json(Result::get(), 401);
             }
 
-            $user = ItemResource::make($obUserModel)->toArray(request());
+            $obUserItem = UserItem::make($obUserModel->id);
+            $user       = ItemResource::make($obUserItem)->toArray(request());
 
             // If cart exists, update user_id property
             if ($obCart) {
@@ -183,15 +178,13 @@ class Auth extends Base
             return response()->json(Result::get(), 401);
         }
 
-        $obAuthUser = User::find($obUserModel->id);
-        $token      = AuthHelper::jwt()->fromUser($obAuthUser);
-        $ttl        = config('jwt.ttl');
-        $expires_in = $ttl * 60;
-        Result::setData(compact('token', 'user', 'expires_in'));
+        // $obAuthUser = User::find($obUserModel->id);
+        $arResult         = AuthHelper::loginAndReturnResult($obUserModel);
+        $arResult['user'] = $user;
 
-        $this->fireSystemEvent(self::EVENT_API_AFTER_SIGNUP, [$obUserModel, $token]);
+        $this->fireSystemEvent(self::EVENT_API_AFTER_SIGNUP, [$obUserModel, &$arResult]);
 
-        return response()->json(Result::get());
+        return response()->json(Result::setTrue($arResult)->get());
     }
 
     /**
