@@ -2,7 +2,7 @@
 
 Route::prefix('api/v1')
     ->namespace('PlanetaDelEste\ApiShopaholic\Controllers\Api')
-    ->middleware(['throttle:120,1', 'bindings'])
+    ->middleware(['throttle:120,1'])
     ->group(
         function () {
             $arRoutes = [
