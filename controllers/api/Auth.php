@@ -19,16 +19,16 @@ use Lovata\OrdersShopaholic\Classes\Processor\CartProcessor;
 use Lovata\OrdersShopaholic\Models\Cart;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
+use PlanetaDelEste\ApiToolbox\Classes\Dto\TokenDto;
 use PlanetaDelEste\ApiToolbox\Classes\Helper\AuthHelper;
-use PlanetaDelEste\ApiToolbox\classes\Dto\TokenDto;
 use ReaZzon\JWTAuth\Classes\Contracts\UserPluginResolver;
 use ReaZzon\JWTAuth\Classes\Guards\JWTGuard;
 
 class Auth extends Base
 {
-    public const EVENT_API_AFTER_SIGNUP  = 'planetadeleste.apiShopaholic.afterSignup';
-    public const EVENT_API_SIGNUP_VALID  = 'planetadeleste.apiShopaholic.validateSignup';
-    public const EVENT_API_AFTER_REFRESH = 'planetadeleste.apiShopaholic.afterRefresh';
+    public const string EVENT_API_AFTER_SIGNUP  = 'planetadeleste.apiShopaholic.afterSignup';
+    public const string EVENT_API_SIGNUP_VALID  = 'planetadeleste.apiShopaholic.validateSignup';
+    public const string EVENT_API_AFTER_REFRESH = 'planetadeleste.apiShopaholic.afterRefresh';
 
     /**
      * @var UserPluginResolver
@@ -82,6 +82,7 @@ class Auth extends Base
      * @return JsonResponse
      */
     public function refresh(): JsonResponse
+    public function refresh(): JsonResponse
     {
         try {
             $tokenRefreshed = $this->JWTGuard->refresh(true);
@@ -102,15 +103,20 @@ class Auth extends Base
      * @return JsonResponse
      */
     public function invalidate(): JsonResponse
+    public function invalidate(): JsonResponse
     {
         try {
             // Logout from session
             AuthHelper::logout();
+
+            // Invalidate the token
             $this->JWTGuard->invalidate();
         } catch (Exception $e) {
-            return response()->json(['error' => 'could_not_invalidate_token'], 401);
+            // Prevent errors during token invalidation
+            return response()->json('token_invalidated');
         }
 
+        // Return a message to indicate that the token was invalidated
         return response()->json('token_invalidated');
     }
 
@@ -178,9 +184,11 @@ class Auth extends Base
             return response()->json(Result::get(), 401);
         }
 
-        // $obAuthUser = User::find($obUserModel->id);
-        $arResult         = AuthHelper::loginAndReturnResult($obUserModel);
-        $arResult['user'] = $user;
+        $obAuthUser = User::find($obUserModel->id);
+        $token      = AuthHelper::jwt()->fromUser($obAuthUser);
+        $ttl        = AuthHelper::jwt()->getTTL();
+        $expires_in = $ttl * 60;
+        Result::setData(compact('token', 'user', 'expires_in'));
 
         $this->fireSystemEvent(self::EVENT_API_AFTER_SIGNUP, [$obUserModel, &$arResult]);
 
@@ -205,6 +213,9 @@ class Auth extends Base
         }
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function resetPassword(): JsonResponse
     {
         try {
@@ -221,6 +232,11 @@ class Auth extends Base
         }
     }
 
+    /**
+     * @param string $sSlug
+     *
+     * @return JsonResponse
+     */
     public function checkResetCode(string $sSlug): JsonResponse
     {
         try {

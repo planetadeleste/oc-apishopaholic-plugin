@@ -1,12 +1,13 @@
 <?php
+
 if (has_jwtauth_plugin()) {
     Route::middleware(['jwt.auth'])
         ->group(
-            function () {
+            static function (): void {
                 Route::prefix('profile')
                     ->name('profile.')
                     ->group(
-                        function () {
+                        static function (): void {
                             Route::post('upload/{id}', 'Profile@attach')->name('upload');
                             Route::get('avatar', 'Profile@avatar')->name('avatar');
                         }

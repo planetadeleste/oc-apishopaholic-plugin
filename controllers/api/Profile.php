@@ -1,30 +1,35 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Controllers\Api;
 
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Kharanenka\Helper\Result;
 use Lovata\Buddies\Models\User;
-use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource as ItemResourceUser;
 use PlanetaDelEste\ApiToolbox\Classes\Api\Base;
 use PlanetaDelEste\ApiToolbox\Plugin;
 
 /**
  * Class Profile
  *
- * @package PlanetaDelEste\ApiShopaholic\Controllers\Api
- *
  * @property User $obModel
  */
 class Profile extends Base
 {
+    /**
+     * @var array
+     */
     protected array $arFileList = ['attachOne' => 'avatar'];
 
+    /**
+     * @return void
+     */
     public function init(): void
     {
         $this->bindEvent(
             Plugin::EVENT_LOCAL_BEFORE_SAVE,
-            function (User $obModel, array &$arData) {
-                $obModel->rules['password'] = 'required:create|between:8,255|confirmed';
+            static function (User $obModel, array &$arData): void {
+                $obModel->rules['password']              = 'required:create|between:8,255|confirmed';
                 $obModel->rules['password_confirmation'] = 'required_with:password|between:8,255';
                 array_forget($obModel->rules, 'avatar');
                 array_forget($arData, 'phone_list');
@@ -32,19 +37,13 @@ class Profile extends Base
         );
     }
 
+    /**
+     * @return string
+     */
     public function getModelClass(): string
     {
         return User::class;
     }
-
-    /**
-     * @return ItemResourceUser
-     * @throws Exception
-     */
-//    public function index(): ItemResourceUser
-//    {
-//        return ItemResourceUser::make($this->currentUser());
-//    }
 
     /**
      * Get current user avatar path
