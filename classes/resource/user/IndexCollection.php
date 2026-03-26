@@ -1,7 +1,10 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\User;
+<?php
+
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\User;
 
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+
+use PlanetaDelEste\ApiToolbox\Classes\Resource\ResourceCollection;
 
 class IndexCollection extends ResourceCollection
 {

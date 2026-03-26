@@ -1,6 +1,8 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
+<?php
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Offer;
+
+use PlanetaDelEste\ApiToolbox\Classes\Resource\ResourceCollection;
 
 /**
  * Class IndexCollection
@@ -14,5 +16,5 @@ class IndexCollection extends ResourceCollection
     public function toArray($request)
     {
         return $this->collection;
-}
+    }
 }

@@ -1,6 +1,8 @@
-<?php namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Tax;
+<?php
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+namespace PlanetaDelEste\ApiShopaholic\Classes\Resource\Tax;
+
+use PlanetaDelEste\ApiToolbox\Classes\Resource\ResourceCollection;
 
 /**
  * Class IndexCollection

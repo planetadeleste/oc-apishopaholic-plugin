@@ -17,7 +17,7 @@ class CurrencyIndexCollection extends ResourceCollection
     public $collects = CurrencyShowResource::class;
 
     /**
-     * @param $request
+     * @param mixed $request
      *
      * @return array|Arrayable|Collection|\JsonSerializable
      */

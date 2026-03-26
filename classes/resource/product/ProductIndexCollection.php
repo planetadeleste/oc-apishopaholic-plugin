@@ -17,7 +17,7 @@ class ProductIndexCollection extends ResourceCollection
     public $collects = ProductShowResource::class;
 
     /**
-     * @param $request
+     * @param mixed $request
      *
      * @return array|Arrayable|Collection|\JsonSerializable
      */
