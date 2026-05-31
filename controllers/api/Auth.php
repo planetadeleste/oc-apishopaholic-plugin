@@ -15,6 +15,7 @@ use Lovata\Buddies\Classes\Item\UserItem;
 use Lovata\Buddies\Components\Registration;
 use Lovata\Buddies\Components\ResetPassword;
 use Lovata\Buddies\Components\RestorePassword;
+use PlanetaDelEste\ApiShopaholic\Models\ApiUser as User;
 use Lovata\OrdersShopaholic\Classes\Processor\CartProcessor;
 use Lovata\OrdersShopaholic\Models\Cart;
 use PlanetaDelEste\ApiShopaholic\Classes\Resource\User\ItemResource;
@@ -82,7 +83,6 @@ class Auth extends Base
      * @return JsonResponse
      */
     public function refresh(): JsonResponse
-    public function refresh(): JsonResponse
     {
         try {
             $tokenRefreshed = $this->JWTGuard->refresh(true);
@@ -102,7 +102,6 @@ class Auth extends Base
     /**
      * @return JsonResponse
      */
-    public function invalidate(): JsonResponse
     public function invalidate(): JsonResponse
     {
         try {
@@ -190,6 +189,7 @@ class Auth extends Base
         $expires_in = $ttl * 60;
         Result::setData(compact('token', 'user', 'expires_in'));
 
+        $arResult = [];
         $this->fireSystemEvent(self::EVENT_API_AFTER_SIGNUP, [$obUserModel, &$arResult]);
 
         return response()->json(Result::setTrue($arResult)->get());

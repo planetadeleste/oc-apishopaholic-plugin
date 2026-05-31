@@ -129,3 +129,5 @@ v2.0.8:
     - 'New ProductBasicResource class'
 v2.0.9:
     - 'Add detach route'
+v2.0.10:
+    - 'Implement ApiUser model extending User with JWTSubject support for authentication'
