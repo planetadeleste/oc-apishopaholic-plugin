@@ -30,7 +30,7 @@ class ApiShopaholicHandle
     /**
      * @param Dispatcher $obEvent
      */
-    public function subscribe(Dispatcher $obEvent)
+    public function subscribe($obEvent)
     {
         $obEvent->listen(
             PluginApiShopaholic::EVENT_ITEMRESOURCE_DATA.'.category',
